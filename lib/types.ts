@@ -302,3 +302,23 @@ export type Income = {
   user_id: string
   category?: AccountCategory
 }
+
+export type LandingPage = {
+  id: string
+  created_at: string
+  updated_at: string
+  title: string
+  description: string | null
+  slug: string
+  form_id: string | null
+  published: boolean
+  published_at: string | null
+  header_text: string | null
+  header_subtext: string | null
+  footer_text: string | null
+  primary_color: string
+  background_color: string
+  custom_css: string | null
+  user_id: string
+  organization_id: string | null
+}

@@ -33,6 +33,7 @@ import {
   Shield,
   KeyRound,
   FileCheck,
+  Globe,
 } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import type { RolePermission, UserRole } from '@/lib/types'
@@ -43,6 +44,7 @@ const navigation = [
   { name: 'Contacts', href: '/contacts', icon: Users, permission: 'contacts' },
   { name: 'Pipeline', href: '/pipeline', icon: Kanban, permission: 'pipeline' },
   { name: 'Forms', href: '/forms', icon: FileText, permission: 'forms' },
+  { name: 'Landing Pages', href: '/landing-pages', icon: Globe, permission: 'forms' },
   { name: 'Calendar', href: '/calendar', icon: Calendar, permission: 'calendar' },
   { name: 'Compliance', href: '/compliance', icon: FileCheck, permission: 'dashboard' },
 ]
