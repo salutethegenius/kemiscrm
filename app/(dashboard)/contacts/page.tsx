@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { useToast } from '@/components/ui/use-toast'
-import { Plus, Search, Mail, Phone, Building, Upload, Users, Tag } from 'lucide-react'
+import { Plus, Search, Mail, Phone, Building, Upload, Users, Tag, Trash2 } from 'lucide-react'
 import { ContactDialog } from '@/components/contacts/contact-dialog'
 import { ImportDialog } from '@/components/contacts/import-dialog'
 import { GroupDialog } from '@/components/contacts/group-dialog'
@@ -141,6 +141,34 @@ export default function ContactsPage() {
 
   const handleGroupSuccess = () => {
     handleCloseGroup()
+    fetchGroups()
+    fetchContacts()
+  }
+
+  const handleDeleteGroup = async (group: ContactGroup) => {
+    if (!confirm(`Are you sure you want to delete "${group.name}"? This will remove the group but not the contacts.`)) {
+      return
+    }
+
+    const { error } = await supabase
+      .from('contact_groups')
+      .delete()
+      .eq('id', group.id)
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      })
+      return
+    }
+
+    toast({
+      title: 'Group deleted',
+      description: `"${group.name}" has been removed.`,
+    })
+
     fetchGroups()
     fetchContacts()
   }
@@ -333,39 +361,65 @@ export default function ContactsPage() {
               {groups.map((group) => (
                 <Card 
                   key={group.id} 
-                  className="cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => handleEditGroup(group)}
+                  className="hover:shadow-md transition-shadow"
                 >
                   <CardContent className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <div
-                        className="w-12 h-12 rounded-lg flex items-center justify-center"
-                        style={{ backgroundColor: `${group.color}20` }}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center space-x-4 flex-1 min-w-0">
+                        <div
+                          className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
+                          style={{ backgroundColor: `${group.color}20` }}
+                        >
+                          <Users className="h-6 w-6" style={{ color: group.color }} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-gray-900 truncate">{group.name}</h3>
+                          <p className="text-sm text-gray-500">
+                            {group.member_count} {group.member_count === 1 ? 'contact' : 'contacts'}
+                          </p>
+                          {group.description && (
+                            <p className="text-xs text-gray-400 mt-1 truncate">{group.description}</p>
+                          )}
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="flex-shrink-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDeleteGroup(group)
+                        }}
+                        title="Delete group"
                       >
-                        <Users className="h-6 w-6" style={{ color: group.color }} />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{group.name}</h3>
-                        <p className="text-sm text-gray-500">
-                          {group.member_count} {group.member_count === 1 ? 'contact' : 'contacts'}
-                        </p>
-                        {group.description && (
-                          <p className="text-xs text-gray-400 mt-1 truncate">{group.description}</p>
-                        )}
-                      </div>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full mt-4"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setSelectedGroup(group.id)
-                        setActiveTab('all')
-                      }}
-                    >
-                      View Contacts
-                    </Button>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedGroup(group.id)
+                          setActiveTab('all')
+                        }}
+                      >
+                        View Contacts
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleEditGroup(group)
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
