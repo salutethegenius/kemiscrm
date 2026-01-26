@@ -71,6 +71,12 @@ ALTER TABLE data_export_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE data_deletion_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE consent_records ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users view own audit logs" ON audit_logs;
+DROP POLICY IF EXISTS "Users manage own export requests" ON data_export_requests;
+DROP POLICY IF EXISTS "Users manage own deletion requests" ON data_deletion_requests;
+DROP POLICY IF EXISTS "Users manage own consent" ON consent_records;
+
 -- Audit logs - users can see their own, admins see all in org
 CREATE POLICY "Users view own audit logs" ON audit_logs
   FOR SELECT USING (
@@ -83,10 +89,18 @@ CREATE POLICY "Users manage own export requests" ON data_export_requests
   FOR ALL USING (user_id = auth.uid());
 
 -- Data deletion requests - users can see their own, admins can manage
+-- Fixed: Get organization_id from user_profiles since this table doesn't have organization_id column
 CREATE POLICY "Users manage own deletion requests" ON data_deletion_requests
   FOR ALL USING (
     user_id = auth.uid() OR
-    (organization_id = get_user_organization_id() AND get_user_role() IN ('admin', 'owner'))
+    (
+      EXISTS (
+        SELECT 1 FROM user_profiles up1
+        WHERE up1.id = data_deletion_requests.user_id
+        AND up1.organization_id = get_user_organization_id()
+      )
+      AND get_user_role() IN ('admin', 'owner')
+    )
   );
 
 -- Consent records - users can see their own
