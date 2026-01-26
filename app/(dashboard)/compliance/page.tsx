@@ -48,7 +48,10 @@ export default function CompliancePage() {
   const handleExportData = async () => {
     setLoading(true)
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    if (!user) {
+      setLoading(false)
+      return
+    }
 
     try {
       // Create export request
@@ -65,21 +68,33 @@ export default function CompliancePage() {
       if (reqError) throw reqError
 
       // Get user's organization
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('user_profiles')
         .select('organization_id')
         .eq('id', user.id)
         .single()
 
+      if (profileError) throw profileError
+
       const orgId = profile?.organization_id
 
-      // Export data
+      // Export data - handle null orgId case
+      const queryFilter = orgId 
+        ? `user_id.eq.${user.id},organization_id.eq.${orgId}`
+        : `user_id.eq.${user.id}`
+
       const [contactsRes, invoicesRes, dealsRes, activitiesRes] = await Promise.all([
-        supabase.from('contacts').select('*').or(`user_id.eq.${user.id},organization_id.eq.${orgId}`),
-        supabase.from('invoices').select('*').or(`user_id.eq.${user.id},organization_id.eq.${orgId}`),
-        supabase.from('deals').select('*').or(`user_id.eq.${user.id},organization_id.eq.${orgId}`),
+        supabase.from('contacts').select('*').or(queryFilter),
+        orgId ? supabase.from('invoices').select('*').or(queryFilter) : supabase.from('invoices').select('*').eq('user_id', user.id),
+        orgId ? supabase.from('deals').select('*').or(queryFilter) : supabase.from('deals').select('*').eq('user_id', user.id),
         supabase.from('activities').select('*').eq('user_id', user.id),
       ])
+
+      // Check for errors in data fetching
+      if (contactsRes.error) console.error('Error fetching contacts:', contactsRes.error)
+      if (invoicesRes.error) console.error('Error fetching invoices:', invoicesRes.error)
+      if (dealsRes.error) console.error('Error fetching deals:', dealsRes.error)
+      if (activitiesRes.error) console.error('Error fetching activities:', activitiesRes.error)
 
       const exportData = {
         user: profile,
@@ -115,6 +130,7 @@ export default function CompliancePage() {
 
       fetchRequests()
     } catch (error: any) {
+      console.error('Export error:', error)
       toast({
         title: 'Export failed',
         description: error.message || 'Failed to export data',
@@ -132,28 +148,37 @@ export default function CompliancePage() {
 
     setLoading(true)
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-
-    const { error } = await supabase
-      .from('data_deletion_requests')
-      .insert([{
-        user_id: user.id,
-        status: 'pending',
-        reason: 'User requested data deletion',
-      }])
-
-    if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' })
+    if (!user) {
       setLoading(false)
       return
     }
 
-    toast({
-      title: 'Deletion requested',
-      description: 'Your data deletion request has been submitted. An administrator will process it shortly.',
-    })
+    try {
+      const { error } = await supabase
+        .from('data_deletion_requests')
+        .insert([{
+          user_id: user.id,
+          status: 'pending',
+          reason: 'User requested data deletion',
+        }])
 
-    fetchRequests()
+      if (error) throw error
+
+      toast({
+        title: 'Deletion requested',
+        description: 'Your data deletion request has been submitted. An administrator will process it shortly.',
+      })
+
+      fetchRequests()
+    } catch (error: any) {
+      console.error('Deletion request error:', error)
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to submit deletion request',
+        variant: 'destructive',
+      })
+    }
+
     setLoading(false)
   }
 
