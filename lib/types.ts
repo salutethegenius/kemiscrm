@@ -65,6 +65,7 @@ export type Activity = {
   due_date: string | null
   completed: boolean
   user_id: string
+  assigned_to: string | null
 }
 
 export type LeadForm = {
@@ -128,6 +129,7 @@ export const PERMISSIONS = [
   { key: 'pipeline', label: 'Pipeline', group: 'CRM' },
   { key: 'forms', label: 'Forms', group: 'CRM' },
   { key: 'calendar', label: 'Calendar', group: 'CRM' },
+  { key: 'tasks', label: 'Tasks', group: 'CRM' },
   { key: 'invoices', label: 'Invoices', group: 'Invoicing' },
   { key: 'clients', label: 'Clients', group: 'Invoicing' },
   { key: 'payments', label: 'Payments', group: 'Invoicing' },
@@ -321,4 +323,13 @@ export type LandingPage = {
   custom_css: string | null
   user_id: string
   organization_id: string | null
+}
+
+export type UserCalendar = {
+  id: string
+  created_at: string
+  user_id: string
+  name: string
+  embed_url: string
+  sort_order: number
 }

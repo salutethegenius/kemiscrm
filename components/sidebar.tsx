@@ -34,6 +34,7 @@ import {
   KeyRound,
   FileCheck,
   Globe,
+  CheckSquare,
 } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import type { RolePermission, UserRole } from '@/lib/types'
@@ -46,6 +47,7 @@ const navigation = [
   { name: 'Forms', href: '/forms', icon: FileText, permission: 'forms' },
   { name: 'Landing Pages', href: '/landing-pages', icon: Globe, permission: 'forms' },
   { name: 'Calendar', href: '/calendar', icon: Calendar, permission: 'calendar' },
+  { name: 'Tasks', href: '/tasks', icon: CheckSquare, permission: 'tasks' },
   { name: 'Compliance', href: '/compliance', icon: FileCheck, permission: 'dashboard' },
 ]
 
@@ -112,7 +114,7 @@ export function Sidebar({ user }: SidebarProps) {
     } else {
       // Default: show all for users without org (backwards compatibility)
       setPermissions(new Set([
-        'dashboard', 'contacts', 'pipeline', 'forms', 'calendar',
+        'dashboard', 'contacts', 'pipeline', 'forms', 'calendar', 'tasks',
         'invoices', 'clients', 'payments',
         'employees', 'time_tracking', 'departments',
         'expenses', 'income', 'reports',

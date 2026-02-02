@@ -225,13 +225,13 @@ ALTER TABLE role_permissions ENABLE ROW LEVEL SECURITY;
 CREATE OR REPLACE FUNCTION get_user_organization_id()
 RETURNS UUID AS $$
   SELECT organization_id FROM user_profiles WHERE id = auth.uid();
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
+$$ LANGUAGE sql SECURITY DEFINER STABLE SET search_path = public;
 
 -- Helper function to check user role
 CREATE OR REPLACE FUNCTION get_user_role()
 RETURNS TEXT AS $$
   SELECT role FROM user_profiles WHERE id = auth.uid();
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
+$$ LANGUAGE sql SECURITY DEFINER STABLE SET search_path = public;
 
 -- Drop old policies and create organization-based ones
 DROP POLICY IF EXISTS "Users manage own contacts" ON contacts;

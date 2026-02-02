@@ -8,12 +8,13 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { useToast } from '@/components/ui/use-toast'
-import { Plus, Search, Mail, Phone, Building, Upload, Users, Tag, Trash2 } from 'lucide-react'
+import { Plus, Search, Mail, Phone, Building, Upload, Users, Tag, Trash2, Kanban } from 'lucide-react'
 import { ContactDialog } from '@/components/contacts/contact-dialog'
 import { ImportDialog } from '@/components/contacts/import-dialog'
 import { GroupDialog } from '@/components/contacts/group-dialog'
 import { TagManager } from '@/components/contacts/tag-manager'
-import type { Contact, ContactGroup, ContactTag } from '@/lib/types'
+import { DealDialog } from '@/components/pipeline/deal-dialog'
+import type { Contact, ContactGroup, ContactTag, PipelineStage } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
 
 const statusColors: Record<string, 'default' | 'secondary' | 'success' | 'warning' | 'destructive'> = {
@@ -39,6 +40,9 @@ export default function ContactsPage() {
   const [groupDialogOpen, setGroupDialogOpen] = useState(false)
   const [editingContact, setEditingContact] = useState<Contact | null>(null)
   const [editingGroup, setEditingGroup] = useState<ContactGroup | null>(null)
+  const [dealDialogOpen, setDealDialogOpen] = useState(false)
+  const [contactForDeal, setContactForDeal] = useState<Contact | null>(null)
+  const [pipelineStages, setPipelineStages] = useState<PipelineStage[]>([])
   const { toast } = useToast()
   const supabase = createClient()
 
@@ -95,11 +99,28 @@ export default function ContactsPage() {
     setTags(data || [])
   }
 
+  const fetchPipelineStages = async () => {
+    const { data } = await supabase.from('pipeline_stages').select('*').order('position')
+    setPipelineStages(data || [])
+  }
+
   useEffect(() => {
     fetchContacts()
     fetchGroups()
     fetchTags()
+    fetchPipelineStages()
   }, [])
+
+  const handleAddToPipeline = (e: React.MouseEvent, contact: Contact) => {
+    e.stopPropagation()
+    setContactForDeal(contact)
+    setDealDialogOpen(true)
+  }
+
+  const handleDealDialogSuccess = () => {
+    setDealDialogOpen(false)
+    setContactForDeal(null)
+  }
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = 
@@ -324,7 +345,18 @@ export default function ContactsPage() {
                             )}
                           </div>
                         )}
-                        <p className="text-xs text-gray-400 mt-2">Added {formatDate(contact.created_at)}</p>
+                        <div className="flex items-center justify-between mt-2">
+                          <p className="text-xs text-gray-400">Added {formatDate(contact.created_at)}</p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-xs"
+                            onClick={(e) => handleAddToPipeline(e, contact)}
+                          >
+                            <Kanban className="h-3.5 w-3.5 mr-1" />
+                            Add to Pipeline
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -450,6 +482,16 @@ export default function ContactsPage() {
         onSuccess={handleGroupSuccess}
         group={editingGroup}
         contacts={contacts}
+      />
+
+      <DealDialog
+        open={dealDialogOpen}
+        onClose={() => { setDealDialogOpen(false); setContactForDeal(null) }}
+        onSuccess={handleDealDialogSuccess}
+        stages={pipelineStages}
+        contacts={contacts}
+        defaultContactId={contactForDeal?.id ?? null}
+        defaultStageId={pipelineStages[0]?.id ?? null}
       />
     </div>
   )

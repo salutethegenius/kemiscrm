@@ -140,7 +140,7 @@ BEGIN
   INSERT INTO audit_logs (user_id, organization_id, action, resource_type, resource_id, details)
   VALUES (v_user_id, v_org_id, p_action, p_resource_type, p_resource_id, p_details);
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Function to export user data
 CREATE OR REPLACE FUNCTION export_user_data(p_user_id UUID)
@@ -159,4 +159,4 @@ BEGIN
   
   RETURN v_export;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;

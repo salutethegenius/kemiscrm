@@ -80,7 +80,7 @@ BEGIN
   
   RETURN v_slug;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = public;
 
 -- Trigger to update updated_at
 CREATE OR REPLACE FUNCTION update_landing_page_updated_at()
@@ -89,7 +89,7 @@ BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = public;
 
 DROP TRIGGER IF EXISTS update_landing_pages_updated_at ON landing_pages;
 CREATE TRIGGER update_landing_pages_updated_at

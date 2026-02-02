@@ -30,9 +30,13 @@ interface DealDialogProps {
   deal?: Deal | null
   stages: PipelineStage[]
   contacts: Contact[]
+  /** Pre-fill contact when opening from Contacts "Add to Pipeline" */
+  defaultContactId?: string | null
+  /** Pre-fill stage (e.g. first stage) when creating from Contacts */
+  defaultStageId?: string | null
 }
 
-export function DealDialog({ open, onClose, onSuccess, deal, stages, contacts }: DealDialogProps) {
+export function DealDialog({ open, onClose, onSuccess, deal, stages, contacts, defaultContactId, defaultStageId }: DealDialogProps) {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
@@ -56,16 +60,18 @@ export function DealDialog({ open, onClose, onSuccess, deal, stages, contacts }:
         notes: deal.notes || '',
       })
     } else {
+      const stageId = defaultStageId ?? stages[0]?.id ?? ''
+      const contactId = defaultContactId ?? ''
       setFormData({
         title: '',
         value: '',
-        stage_id: stages[0]?.id || '',
-        contact_id: '',
+        stage_id: stageId,
+        contact_id: contactId,
         expected_close_date: '',
         notes: '',
       })
     }
-  }, [deal, open, stages])
+  }, [deal, open, stages, defaultContactId, defaultStageId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

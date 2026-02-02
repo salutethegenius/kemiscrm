@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -14,9 +14,58 @@ export default function SettingsPage() {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [accountCalendarUrl, setAccountCalendarUrl] = useState('')
+  const [accountCalendarSaving, setAccountCalendarSaving] = useState(false)
+  const [canManageOrg, setCanManageOrg] = useState(false)
+  const [orgId, setOrgId] = useState<string | null>(null)
   const { toast } = useToast()
   const router = useRouter()
   const supabase = createClient()
+
+  useEffect(() => {
+    const load = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('organization_id, role')
+        .eq('id', user.id)
+        .single()
+      const isAdmin = profile?.role === 'admin' || profile?.role === 'owner'
+      setCanManageOrg(!!isAdmin)
+      setOrgId(profile?.organization_id ?? null)
+      if (profile?.organization_id && isAdmin) {
+        const { data: org } = await supabase
+          .from('organizations')
+          .select('settings')
+          .eq('id', profile.organization_id)
+          .single()
+        const url = (org?.settings as Record<string, unknown>)?.account_calendar_embed_url as string | undefined
+        setAccountCalendarUrl(url ?? '')
+      }
+    }
+    load()
+  }, [])
+
+  const handleSaveAccountCalendar = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!orgId || !canManageOrg) return
+    setAccountCalendarSaving(true)
+    const { data: org } = await supabase.from('organizations').select('settings').eq('id', orgId).single()
+    const current = (org?.settings as Record<string, unknown>) || {}
+    const { error } = await supabase
+      .from('organizations')
+      .update({
+        settings: { ...current, account_calendar_embed_url: accountCalendarUrl.trim() || null },
+      })
+      .eq('id', orgId)
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' })
+    } else {
+      toast({ title: 'Saved', description: 'Account calendar URL has been updated.' })
+    }
+    setAccountCalendarSaving(false)
+  }
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -64,6 +113,34 @@ export default function SettingsPage() {
       </div>
 
       <div className="space-y-6">
+        {/* Account Calendar - admin/owner only */}
+        {canManageOrg && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Account Calendar</CardTitle>
+              <CardDescription>
+                Google Calendar embed URL shown to all users on the Calendar page. Leave empty to use the default.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSaveAccountCalendar} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="accountCalendarUrl">Embed URL</Label>
+                  <Input
+                    id="accountCalendarUrl"
+                    value={accountCalendarUrl}
+                    onChange={(e) => setAccountCalendarUrl(e.target.value)}
+                    placeholder="https://calendar.google.com/calendar/embed?src=..."
+                  />
+                </div>
+                <Button type="submit" disabled={accountCalendarSaving}>
+                  {accountCalendarSaving ? 'Saving...' : 'Save Account Calendar'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Change Password */}
         <Card>
           <CardHeader>

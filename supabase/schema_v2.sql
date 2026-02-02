@@ -272,7 +272,7 @@ BEGIN
   VALUES (NEW.id, NEW.raw_user_meta_data->>'full_name', 'user');
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Generate invoice number
 CREATE OR REPLACE FUNCTION generate_invoice_number(p_user_id UUID)
@@ -289,7 +289,7 @@ BEGIN
   prefix := 'INV-';
   RETURN prefix || LPAD(next_num::TEXT, 5, '0');
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = public;
 
 -- Calculate invoice totals
 CREATE OR REPLACE FUNCTION update_invoice_totals()
@@ -304,7 +304,7 @@ BEGIN
   WHERE id = NEW.invoice_id;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = public;
 
 DROP TRIGGER IF EXISTS update_invoice_on_item_change ON invoice_items;
 CREATE TRIGGER update_invoice_on_item_change
@@ -329,4 +329,4 @@ BEGIN
     ('Other Expenses', 'expense', '#6B7280', p_user_id)
   ON CONFLICT DO NOTHING;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;

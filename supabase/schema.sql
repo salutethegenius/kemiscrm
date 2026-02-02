@@ -148,9 +148,13 @@ CREATE POLICY "Users can update their own forms" ON lead_forms
 CREATE POLICY "Users can delete their own forms" ON lead_forms
   FOR DELETE USING (auth.uid() = user_id);
 
--- Form Submissions policies (anyone can submit, owner can view)
+-- Form Submissions policies (public can submit to valid forms only; owner can view)
+DROP POLICY IF EXISTS "Anyone can submit forms" ON form_submissions;
 CREATE POLICY "Anyone can submit forms" ON form_submissions
-  FOR INSERT WITH CHECK (true);
+  FOR INSERT WITH CHECK (
+    form_id IS NOT NULL
+    AND EXISTS (SELECT 1 FROM lead_forms WHERE lead_forms.id = form_submissions.form_id)
+  );
 
 CREATE POLICY "Form owners can view submissions" ON form_submissions
   FOR SELECT USING (
@@ -178,7 +182,7 @@ BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = public;
 
 -- Apply updated_at trigger to relevant tables
 DROP TRIGGER IF EXISTS contacts_updated_at ON contacts;
@@ -206,4 +210,4 @@ BEGIN
       ('Won', 5, '#10B981', p_user_id);
   END IF;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;

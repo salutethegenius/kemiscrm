@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Users, DollarSign, TrendingUp, Calendar } from 'lucide-react'
@@ -12,11 +13,11 @@ export default async function DashboardPage() {
   const [
     { count: contactsCount },
     { data: deals },
-    { count: activitiesCount },
+    { count: pendingTasksCount },
   ] = await Promise.all([
     supabase.from('contacts').select('*', { count: 'exact', head: true }),
     supabase.from('deals').select('value'),
-    supabase.from('activities').select('*', { count: 'exact', head: true }).eq('completed', false),
+    supabase.from('activities').select('*', { count: 'exact', head: true }).eq('type', 'task').eq('completed', false),
   ])
 
   const totalDealsValue = deals?.reduce((sum, deal) => sum + (Number(deal.value) || 0), 0) || 0
@@ -29,6 +30,7 @@ export default async function DashboardPage() {
       icon: Users,
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
+      href: undefined as string | undefined,
     },
     {
       title: 'Active Deals',
@@ -36,6 +38,7 @@ export default async function DashboardPage() {
       icon: TrendingUp,
       color: 'text-green-600',
       bgColor: 'bg-green-100',
+      href: undefined as string | undefined,
     },
     {
       title: 'Pipeline Value',
@@ -43,13 +46,15 @@ export default async function DashboardPage() {
       icon: DollarSign,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
+      href: undefined as string | undefined,
     },
     {
       title: 'Pending Tasks',
-      value: activitiesCount || 0,
+      value: pendingTasksCount || 0,
       icon: Calendar,
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
+      href: '/tasks',
     },
   ]
 
@@ -62,21 +67,24 @@ export default async function DashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.map((stat) => (
-          <Card key={stat.title}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">{stat.title}</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
+        {stats.map((stat) => {
+          const content = (
+            <Card key={stat.title} className={stat.href ? 'cursor-pointer hover:shadow-md transition-shadow' : undefined}>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">{stat.title}</p>
+                    <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
+                  </div>
+                  <div className={`p-3 rounded-full ${stat.bgColor}`}>
+                    <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                  </div>
                 </div>
-                <div className={`p-3 rounded-full ${stat.bgColor}`}>
-                  <stat.icon className={`h-6 w-6 ${stat.color}`} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          )
+          return stat.href ? <Link href={stat.href} key={stat.title}>{content}</Link> : content
+        })}
       </div>
 
       {/* Recent Activity */}
