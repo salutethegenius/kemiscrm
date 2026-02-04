@@ -31,6 +31,15 @@ export type ContactTag = {
   user_id: string
 }
 
+export type Pipeline = {
+  id: string
+  created_at: string
+  name: string
+  position: number
+  user_id: string
+  organization_id?: string | null
+}
+
 export type PipelineStage = {
   id: string
   created_at: string
@@ -38,6 +47,8 @@ export type PipelineStage = {
   position: number
   color: string
   user_id: string
+  organization_id?: string | null
+  pipeline_id?: string | null
 }
 
 export type Deal = {
@@ -66,6 +77,25 @@ export type Activity = {
   completed: boolean
   user_id: string
   assigned_to: string | null
+}
+
+// Internal messaging (1:1 per org)
+export type Conversation = {
+  id: string
+  created_at: string
+  updated_at: string
+  participants?: { user_id: string; profile?: UserProfile }[]
+  last_message?: Message | null
+  unread_count?: number
+}
+
+export type Message = {
+  id: string
+  conversation_id: string
+  sender_id: string
+  content: string
+  created_at: string
+  sender?: UserProfile | null
 }
 
 export type LeadForm = {
@@ -113,6 +143,18 @@ export type Organization = {
   name: string
   slug: string | null
   settings: Record<string, unknown>
+  is_master?: boolean
+  parent_org_id?: string | null
+  max_users?: number
+  max_storage_mb?: number
+  billing_status?: 'active' | 'suspended' | 'cancelled'
+  billing_plan?: 'free' | 'basic' | 'pro' | 'enterprise'
+  enabled_features?: string[]
+  branding?: {
+    logo_url?: string
+    accent_color?: string
+    display_name?: string
+  }
 }
 
 export type RolePermission = {
@@ -130,6 +172,7 @@ export const PERMISSIONS = [
   { key: 'forms', label: 'Forms', group: 'CRM' },
   { key: 'calendar', label: 'Calendar', group: 'CRM' },
   { key: 'tasks', label: 'Tasks', group: 'CRM' },
+  { key: 'messages', label: 'Messages', group: 'CRM' },
   { key: 'invoices', label: 'Invoices', group: 'Invoicing' },
   { key: 'clients', label: 'Clients', group: 'Invoicing' },
   { key: 'payments', label: 'Payments', group: 'Invoicing' },
@@ -141,6 +184,26 @@ export const PERMISSIONS = [
   { key: 'reports', label: 'Reports', group: 'Accounting' },
   { key: 'user_management', label: 'User Management', group: 'Admin' },
   { key: 'role_permissions', label: 'Role Permissions', group: 'Admin' },
+] as const
+
+export const FEATURE_OPTIONS = [
+  { key: 'dashboard', label: 'Dashboard', group: 'CRM' },
+  { key: 'contacts', label: 'Contacts', group: 'CRM' },
+  { key: 'pipeline', label: 'Pipeline', group: 'CRM' },
+  { key: 'forms', label: 'Forms', group: 'CRM' },
+  { key: 'landing_pages', label: 'Landing Pages', group: 'CRM' },
+  { key: 'calendar', label: 'Calendar', group: 'CRM' },
+  { key: 'tasks', label: 'Tasks', group: 'CRM' },
+  { key: 'invoices', label: 'Invoices', group: 'Invoicing' },
+  { key: 'clients', label: 'Clients', group: 'Invoicing' },
+  { key: 'payments', label: 'Payments', group: 'Invoicing' },
+  { key: 'employees', label: 'Employees', group: 'HR' },
+  { key: 'time_tracking', label: 'Time Tracking', group: 'HR' },
+  { key: 'departments', label: 'Departments', group: 'HR' },
+  { key: 'expenses', label: 'Expenses', group: 'Accounting' },
+  { key: 'income', label: 'Income', group: 'Accounting' },
+  { key: 'reports', label: 'Reports', group: 'Accounting' },
+  { key: 'compliance', label: 'Compliance', group: 'Admin' },
 ] as const
 
 export type PermissionKey = typeof PERMISSIONS[number]['key']
@@ -157,7 +220,22 @@ export type Client = {
   city: string | null
   country: string | null
   tax_id: string | null
+  poc_name: string | null
+  poc_email: string | null
+  poc_phone: string | null
+  notes: string | null
   user_id: string
+  contacts?: ClientContact[]
+}
+
+export type ClientContact = {
+  id: string
+  client_id: string
+  contact_id: string
+  role: string | null
+  is_primary: boolean
+  created_at: string
+  contact?: Contact
 }
 
 export type Invoice = {
@@ -166,6 +244,7 @@ export type Invoice = {
   updated_at: string
   invoice_number: string
   client_id: string | null
+  contact_id: string | null
   status: 'draft' | 'sent' | 'viewed' | 'paid' | 'overdue' | 'cancelled'
   issue_date: string
   due_date: string | null
@@ -178,6 +257,7 @@ export type Invoice = {
   terms: string | null
   user_id: string
   client?: Client
+  contact?: Contact
   items?: InvoiceItem[]
 }
 
@@ -211,6 +291,8 @@ export type Department = {
   manager_id: string | null
   user_id: string
   employee_count?: number
+  /** Populated when fetching departments with employees for card view */
+  employees?: { id: string; first_name: string; last_name: string }[]
 }
 
 export type Employee = {
@@ -246,6 +328,7 @@ export type TimeEntry = {
   break_minutes: number
   total_hours: number | null
   notes: string | null
+  project: string | null
   status: 'pending' | 'approved' | 'rejected'
   approved_by: string | null
   user_id: string
@@ -332,4 +415,21 @@ export type UserCalendar = {
   name: string
   embed_url: string
   sort_order: number
+}
+
+export type AuditLog = {
+  id: string
+  created_at: string
+  organization_id: string | null
+  user_id: string | null
+  user_email: string | null
+  user_name: string | null
+  action: 'create' | 'update' | 'delete' | 'login' | 'logout' | 'export' | 'view'
+  entity_type: string
+  entity_id: string | null
+  entity_name: string | null
+  changes: Record<string, { old: any; new: any }> | null
+  metadata: Record<string, any> | null
+  ip_address: string | null
+  user_agent: string | null
 }

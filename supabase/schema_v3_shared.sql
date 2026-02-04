@@ -235,46 +235,57 @@ $$ LANGUAGE sql SECURITY DEFINER STABLE SET search_path = public;
 
 -- Drop old policies and create organization-based ones
 DROP POLICY IF EXISTS "Users manage own contacts" ON contacts;
+DROP POLICY IF EXISTS "Org members access contacts" ON contacts;
 CREATE POLICY "Org members access contacts" ON contacts 
   FOR ALL USING (organization_id = get_user_organization_id());
 
 DROP POLICY IF EXISTS "Users manage own clients" ON clients;
+DROP POLICY IF EXISTS "Org members access clients" ON clients;
 CREATE POLICY "Org members access clients" ON clients 
   FOR ALL USING (organization_id = get_user_organization_id());
 
 DROP POLICY IF EXISTS "Users manage own invoices" ON invoices;
+DROP POLICY IF EXISTS "Org members access invoices" ON invoices;
 CREATE POLICY "Org members access invoices" ON invoices 
   FOR ALL USING (organization_id = get_user_organization_id());
 
 DROP POLICY IF EXISTS "Users manage own departments" ON departments;
+DROP POLICY IF EXISTS "Org members access departments" ON departments;
 CREATE POLICY "Org members access departments" ON departments 
   FOR ALL USING (organization_id = get_user_organization_id());
 
 DROP POLICY IF EXISTS "Users manage own employees" ON employees;
+DROP POLICY IF EXISTS "Org members access employees" ON employees;
 CREATE POLICY "Org members access employees" ON employees 
   FOR ALL USING (organization_id = get_user_organization_id());
 
 DROP POLICY IF EXISTS "Users manage own expenses" ON expenses;
+DROP POLICY IF EXISTS "Org members access expenses" ON expenses;
 CREATE POLICY "Org members access expenses" ON expenses 
   FOR ALL USING (organization_id = get_user_organization_id());
 
 DROP POLICY IF EXISTS "Users manage own income" ON income;
+DROP POLICY IF EXISTS "Org members access income" ON income;
 CREATE POLICY "Org members access income" ON income 
   FOR ALL USING (organization_id = get_user_organization_id());
 
 DROP POLICY IF EXISTS "Users manage own categories" ON account_categories;
+DROP POLICY IF EXISTS "Org members access categories" ON account_categories;
 CREATE POLICY "Org members access categories" ON account_categories 
   FOR ALL USING (organization_id = get_user_organization_id());
 
 DROP POLICY IF EXISTS "Users manage own time entries" ON time_entries;
+DROP POLICY IF EXISTS "Org members access time_entries" ON time_entries;
 CREATE POLICY "Org members access time_entries" ON time_entries 
   FOR ALL USING (organization_id = get_user_organization_id());
 
 DROP POLICY IF EXISTS "Users manage own leave requests" ON leave_requests;
+DROP POLICY IF EXISTS "Org members access leave_requests" ON leave_requests;
 CREATE POLICY "Org members access leave_requests" ON leave_requests 
   FOR ALL USING (organization_id = get_user_organization_id());
 
 DROP POLICY IF EXISTS "Users manage own payments" ON payments;
+DROP POLICY IF EXISTS "Org members access payments" ON payments;
 CREATE POLICY "Org members access payments" ON payments 
   FOR ALL USING (organization_id = get_user_organization_id());
 
@@ -300,13 +311,16 @@ CREATE POLICY "Org members access lead_forms" ON lead_forms
   FOR ALL USING (organization_id = get_user_organization_id() OR organization_id IS NULL);
 
 -- Organization access
+DROP POLICY IF EXISTS "Users access own org" ON organizations;
 CREATE POLICY "Users access own org" ON organizations 
   FOR SELECT USING (id = get_user_organization_id());
 
 -- Role permissions access
+DROP POLICY IF EXISTS "Org members view permissions" ON role_permissions;
 CREATE POLICY "Org members view permissions" ON role_permissions 
   FOR SELECT USING (organization_id = get_user_organization_id());
 
+DROP POLICY IF EXISTS "Admins manage permissions" ON role_permissions;
 CREATE POLICY "Admins manage permissions" ON role_permissions 
   FOR ALL USING (
     organization_id = get_user_organization_id() 

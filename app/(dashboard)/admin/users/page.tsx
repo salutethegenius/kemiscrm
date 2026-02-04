@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -14,7 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useToast } from '@/components/ui/use-toast'
-import { Shield, Users, UserCog } from 'lucide-react'
+import { Shield, Users, UserCog, MessageCircle } from 'lucide-react'
 import type { UserProfile, UserRole } from '@/lib/types'
 
 const roleColors: Record<UserRole, string> = {
@@ -36,14 +37,15 @@ const roleDescriptions: Record<UserRole, string> = {
 export default function UserManagementPage() {
   const [users, setUsers] = useState<UserProfile[]>([])
   const [loading, setLoading] = useState(true)
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const [currentUserRole, setCurrentUserRole] = useState<UserRole>('user')
   const { toast } = useToast()
   const supabase = createClient()
 
   const fetchUsers = async () => {
-    // First check current user's role
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
+      setCurrentUserId(user.id)
       const { data: profile } = await supabase
         .from('user_profiles')
         .select('*')
@@ -55,8 +57,6 @@ export default function UserManagementPage() {
       }
     }
 
-    // For now, just show the current user's profile
-    // In a real app, admins would see all users
     const { data, error } = await supabase
       .from('user_profiles')
       .select('*')
@@ -151,6 +151,14 @@ export default function UserManagementPage() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
+                    {user.id !== currentUserId && (
+                      <Button variant="outline" size="sm" asChild>
+                        <Link href={`/messages?user=${user.id}`}>
+                          <MessageCircle className="h-4 w-4 mr-1" />
+                          Message
+                        </Link>
+                      </Button>
+                    )}
                     <Badge className={roleColors[user.role]}>{user.role}</Badge>
                     {canManageUsers && (
                       <Select

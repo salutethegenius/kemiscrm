@@ -7,12 +7,13 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { useToast } from '@/components/ui/use-toast'
-import { Plus, Search, Building2, Mail, Phone } from 'lucide-react'
+import { Plus, Search, Building2, Mail, Phone, User } from 'lucide-react'
 import { ClientDialog } from '@/components/clients/client-dialog'
-import type { Client } from '@/lib/types'
+import type { Client, Contact } from '@/lib/types'
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([])
+  const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -20,18 +21,19 @@ export default function ClientsPage() {
   const { toast } = useToast()
   const supabase = createClient()
 
-  const fetchClients = async () => {
-    const { data, error } = await supabase
-      .from('clients')
-      .select('*')
-      .order('company_name')
+  const fetchData = async () => {
+    const [clientsRes, contactsRes] = await Promise.all([
+      supabase.from('clients').select('*').order('company_name'),
+      supabase.from('contacts').select('id, name, email, phone, company').order('name'),
+    ])
 
-    if (!error) setClients(data || [])
+    if (!clientsRes.error) setClients(clientsRes.data || [])
+    if (!contactsRes.error) setContacts(contactsRes.data || [])
     setLoading(false)
   }
 
   useEffect(() => {
-    fetchClients()
+    fetchData()
   }, [])
 
   const filteredClients = clients.filter(client =>
@@ -51,7 +53,7 @@ export default function ClientsPage() {
 
   const handleSuccess = () => {
     handleClose()
-    fetchClients()
+    fetchData()
   }
 
   return (
@@ -118,6 +120,12 @@ export default function ClientsPage() {
                           <span>{client.phone}</span>
                         </div>
                       )}
+                      {client.poc_name && (
+                        <div className="flex items-center">
+                          <User className="h-3.5 w-3.5 mr-2" />
+                          <span className="truncate">{client.poc_name}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -132,6 +140,7 @@ export default function ClientsPage() {
         onClose={handleClose}
         onSuccess={handleSuccess}
         client={editingClient}
+        contacts={contacts}
       />
     </div>
   )

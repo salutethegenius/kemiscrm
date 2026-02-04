@@ -7,9 +7,18 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/components/ui/use-toast'
-import { Plus, Search, FileText, Send, Eye, DollarSign } from 'lucide-react'
+import { Plus, Search, FileText, Send, Eye, DollarSign, Download, MoreHorizontal, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { InvoiceDialog } from '@/components/invoices/invoice-dialog'
-import type { Invoice, Client } from '@/lib/types'
+import { InvoicePreview } from '@/components/invoices/invoice-preview'
+import type { Invoice, Client, Contact } from '@/lib/types'
 import { formatDate, formatCurrency } from '@/lib/utils'
 
 const statusColors: Record<string, 'default' | 'secondary' | 'success' | 'warning' | 'destructive'> = {
@@ -24,24 +33,30 @@ const statusColors: Record<string, 'default' | 'secondary' | 'success' | 'warnin
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [clients, setClients] = useState<Client[]>([])
+  const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null)
+  const [previewInvoice, setPreviewInvoice] = useState<Invoice | null>(null)
+  const [sortField, setSortField] = useState<'invoice_number' | 'client' | 'issue_date' | 'due_date' | 'total' | 'status'>('issue_date')
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
   const { toast } = useToast()
   const supabase = createClient()
 
   const fetchData = async () => {
-    const [invoicesRes, clientsRes] = await Promise.all([
+    const [invoicesRes, clientsRes, contactsRes] = await Promise.all([
       supabase
         .from('invoices')
-        .select('*, client:clients(*)')
+        .select('*, client:clients(*), contact:contacts(id, name, email, company)')
         .order('created_at', { ascending: false }),
       supabase.from('clients').select('*').order('company_name'),
+      supabase.from('contacts').select('id, name, email, company').order('name'),
     ])
 
     if (!invoicesRes.error) setInvoices(invoicesRes.data || [])
     if (!clientsRes.error) setClients(clientsRes.data || [])
+    if (!contactsRes.error) setContacts(contactsRes.data || [])
     setLoading(false)
   }
 
@@ -49,10 +64,69 @@ export default function InvoicesPage() {
     fetchData()
   }, [])
 
-  const filteredInvoices = invoices.filter(invoice =>
-    invoice.invoice_number.toLowerCase().includes(search.toLowerCase()) ||
-    invoice.client?.company_name?.toLowerCase().includes(search.toLowerCase())
-  )
+  const getBillToName = (invoice: Invoice) => {
+    if (invoice.client?.company_name) return invoice.client.company_name
+    if (invoice.contact?.name) return invoice.contact.name
+    return 'No client'
+  }
+
+  const handleSort = (field: typeof sortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortField(field)
+      setSortDirection('asc')
+    }
+  }
+
+  const SortIcon = ({ field }: { field: typeof sortField }) => {
+    if (sortField !== field) return <ArrowUpDown className="h-3 w-3 ml-1 opacity-50" />
+    return sortDirection === 'asc' 
+      ? <ArrowUp className="h-3 w-3 ml-1" /> 
+      : <ArrowDown className="h-3 w-3 ml-1" />
+  }
+
+  const filteredInvoices = invoices
+    .filter(invoice =>
+      invoice.invoice_number.toLowerCase().includes(search.toLowerCase()) ||
+      invoice.client?.company_name?.toLowerCase().includes(search.toLowerCase()) ||
+      invoice.contact?.name?.toLowerCase().includes(search.toLowerCase())
+    )
+    .sort((a, b) => {
+      let aVal: string | number = ''
+      let bVal: string | number = ''
+
+      switch (sortField) {
+        case 'invoice_number':
+          aVal = a.invoice_number.toLowerCase()
+          bVal = b.invoice_number.toLowerCase()
+          break
+        case 'client':
+          aVal = getBillToName(a).toLowerCase()
+          bVal = getBillToName(b).toLowerCase()
+          break
+        case 'issue_date':
+          aVal = a.issue_date || ''
+          bVal = b.issue_date || ''
+          break
+        case 'due_date':
+          aVal = a.due_date || ''
+          bVal = b.due_date || ''
+          break
+        case 'total':
+          aVal = Number(a.total)
+          bVal = Number(b.total)
+          break
+        case 'status':
+          aVal = a.status
+          bVal = b.status
+          break
+      }
+
+      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1
+      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1
+      return 0
+    })
 
   const stats = {
     total: invoices.reduce((sum, inv) => sum + Number(inv.total), 0),
@@ -73,6 +147,47 @@ export default function InvoicesPage() {
 
   const handleSuccess = () => {
     handleClose()
+    fetchData()
+  }
+
+  const handleStatusChange = async (invoice: Invoice, newStatus: Invoice['status']) => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    const { error } = await supabase
+      .from('invoices')
+      .update({ status: newStatus })
+      .eq('id', invoice.id)
+
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' })
+      return
+    }
+
+    // If marking as paid, create a payment record
+    if (newStatus === 'paid' && invoice.status !== 'paid') {
+      const { data: existingPayment } = await supabase
+        .from('payments')
+        .select('id')
+        .eq('invoice_id', invoice.id)
+        .single()
+
+      if (!existingPayment) {
+        await supabase.from('payments').insert({
+          invoice_id: invoice.id,
+          amount: invoice.total,
+          payment_method: 'Not specified',
+          payment_date: new Date().toISOString().split('T')[0],
+          user_id: user.id,
+        })
+        toast({ title: 'Status updated', description: `Invoice marked as ${newStatus}. Payment recorded.` })
+      } else {
+        toast({ title: 'Status updated', description: `Invoice marked as ${newStatus}.` })
+      }
+    } else {
+      toast({ title: 'Status updated', description: `Invoice marked as ${newStatus}.` })
+    }
+
     fetchData()
   }
 
@@ -151,12 +266,60 @@ export default function InvoicesPage() {
           <table className="w-full">
             <thead className="bg-gray-50 border-b">
               <tr>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Invoice</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Client</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Date</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Due</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Amount</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <button 
+                    onClick={() => handleSort('invoice_number')} 
+                    className="flex items-center hover:text-gray-700 transition-colors"
+                  >
+                    Invoice
+                    <SortIcon field="invoice_number" />
+                  </button>
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <button 
+                    onClick={() => handleSort('client')} 
+                    className="flex items-center hover:text-gray-700 transition-colors"
+                  >
+                    Client
+                    <SortIcon field="client" />
+                  </button>
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <button 
+                    onClick={() => handleSort('issue_date')} 
+                    className="flex items-center hover:text-gray-700 transition-colors"
+                  >
+                    Date
+                    <SortIcon field="issue_date" />
+                  </button>
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <button 
+                    onClick={() => handleSort('due_date')} 
+                    className="flex items-center hover:text-gray-700 transition-colors"
+                  >
+                    Due
+                    <SortIcon field="due_date" />
+                  </button>
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <button 
+                    onClick={() => handleSort('total')} 
+                    className="flex items-center hover:text-gray-700 transition-colors"
+                  >
+                    Amount
+                    <SortIcon field="total" />
+                  </button>
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <button 
+                    onClick={() => handleSort('status')} 
+                    className="flex items-center hover:text-gray-700 transition-colors"
+                  >
+                    Status
+                    <SortIcon field="status" />
+                  </button>
+                </th>
                 <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
             </thead>
@@ -167,7 +330,7 @@ export default function InvoicesPage() {
                     <span className="font-medium">{invoice.invoice_number}</span>
                   </td>
                   <td className="px-6 py-4 text-gray-600">
-                    {invoice.client?.company_name || 'No client'}
+                    {getBillToName(invoice)}
                   </td>
                   <td className="px-6 py-4 text-gray-600">
                     {formatDate(invoice.issue_date)}
@@ -182,9 +345,63 @@ export default function InvoicesPage() {
                     <Badge variant={statusColors[invoice.status]}>{invoice.status}</Badge>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Button variant="ghost" size="sm" onClick={() => handleEdit(invoice)}>
-                      <Eye className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-center justify-end gap-1">
+                      <Button variant="ghost" size="sm" onClick={() => setPreviewInvoice(invoice)} title="Preview & Export">
+                        <Download className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => handleEdit(invoice)} title="Edit">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Change Status</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem 
+                            onClick={() => handleStatusChange(invoice, 'draft')}
+                            disabled={invoice.status === 'draft'}
+                          >
+                            Draft
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => handleStatusChange(invoice, 'sent')}
+                            disabled={invoice.status === 'sent'}
+                          >
+                            Sent
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => handleStatusChange(invoice, 'viewed')}
+                            disabled={invoice.status === 'viewed'}
+                          >
+                            Viewed
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => handleStatusChange(invoice, 'paid')}
+                            disabled={invoice.status === 'paid'}
+                            className="text-green-600"
+                          >
+                            Mark as Paid
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => handleStatusChange(invoice, 'overdue')}
+                            disabled={invoice.status === 'overdue'}
+                            className="text-red-600"
+                          >
+                            Overdue
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => handleStatusChange(invoice, 'cancelled')}
+                            disabled={invoice.status === 'cancelled'}
+                          >
+                            Cancelled
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -199,7 +416,16 @@ export default function InvoicesPage() {
         onSuccess={handleSuccess}
         invoice={editingInvoice}
         clients={clients}
+        contacts={contacts}
       />
+
+      {previewInvoice && (
+        <InvoicePreview
+          open={!!previewInvoice}
+          onClose={() => setPreviewInvoice(null)}
+          invoice={previewInvoice}
+        />
+      )}
     </div>
   )
 }

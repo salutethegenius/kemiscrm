@@ -164,14 +164,18 @@ export function ExpenseDialog({ open, onClose, onSuccess, expense, categories }:
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id}>
-                        <div className="flex items-center">
-                          <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: cat.color }} />
-                          {cat.name}
-                        </div>
-                      </SelectItem>
-                    ))}
+                    {categories
+                      .filter((cat, index, self) => 
+                        index === self.findIndex(c => c.id === cat.id)
+                      )
+                      .map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          <div className="flex items-center">
+                            <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: cat.color }} />
+                            {cat.name}
+                          </div>
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>

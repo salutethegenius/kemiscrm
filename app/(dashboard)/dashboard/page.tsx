@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Users, DollarSign, TrendingUp, Calendar } from 'lucide-react'
+import { Users, DollarSign, TrendingUp, CheckSquare } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import { RecentContacts } from '@/components/dashboard/recent-contacts'
-import { RecentDeals } from '@/components/dashboard/recent-deals'
+import { PipelineActivity } from '@/components/dashboard/pipeline-activity'
+import { RecentTasks } from '@/components/dashboard/recent-tasks'
 
 export default async function DashboardPage() {
   const supabase = createClient()
@@ -51,7 +52,7 @@ export default async function DashboardPage() {
     {
       title: 'Pending Tasks',
       value: pendingTasksCount || 0,
-      icon: Calendar,
+      icon: CheckSquare,
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
       href: '/tasks',
@@ -88,7 +89,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card>
           <CardHeader>
             <CardTitle>Recent Contacts</CardTitle>
@@ -100,10 +101,19 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Recent Deals</CardTitle>
+            <CardTitle>Pipeline Activity</CardTitle>
           </CardHeader>
           <CardContent>
-            <RecentDeals />
+            <PipelineActivity />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Upcoming Tasks</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RecentTasks />
           </CardContent>
         </Card>
       </div>

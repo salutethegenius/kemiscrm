@@ -136,10 +136,14 @@ export default function CalendarPage() {
               Account Calendar
             </CardTitle>
             <CardDescription>
-              Shared calendar for the whole team. Admins can change it in Settings.
+              Shared calendar for the whole team. Admins can change it in Settings. Use a{' '}
+              <strong>public</strong> embed URL so it loads here instead of opening sign-in in a new window.
             </CardDescription>
           </CardHeader>
           <CardContent>
+            <p className="text-sm text-gray-500 mb-3">
+              In Google Calendar: Settings → your calendar → Access permissions → &quot;Make available to everyone&quot; → then use the embed URL from Integrate calendar.
+            </p>
             <div className="rounded-lg border bg-white overflow-hidden" style={{ minHeight: 400 }}>
               <iframe
                 src={displayAccountUrl}
@@ -147,6 +151,8 @@ export default function CalendarPage() {
                 frameBorder="0"
                 scrolling="no"
                 title="Account Calendar"
+                referrerPolicy="no-referrer"
+                allowFullScreen
               />
             </div>
           </CardContent>
@@ -162,7 +168,7 @@ export default function CalendarPage() {
                   My Calendars
                 </CardTitle>
                 <CardDescription>
-                  Add your personal Google Calendar(s). These do not replace the account calendar.
+                  Add your personal Google Calendar(s). Use <strong>public</strong> embed URLs so they load in the page (Google Calendar → Settings → calendar → Make available to everyone).
                 </CardDescription>
               </div>
               <Button onClick={() => setAddDialogOpen(true)}>
@@ -203,6 +209,8 @@ export default function CalendarPage() {
                       frameBorder="0"
                       scrolling="no"
                       title={cal.name}
+                      referrerPolicy="no-referrer"
+                      allowFullScreen
                     />
                   </div>
                 ))}
@@ -249,7 +257,7 @@ export default function CalendarPage() {
                 required
               />
               <p className="text-xs text-gray-500">
-                In Google Calendar: Settings → your calendar → Integrate calendar → copy the embed code and use the src URL.
+                Use the <strong>public</strong> embed URL so it loads in the frame: Google Calendar → Settings → your calendar → Access permissions → &quot;Make available to everyone&quot; → Integrate calendar → copy the iframe src URL.
               </p>
             </div>
             <DialogFooter>

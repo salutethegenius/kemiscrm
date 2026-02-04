@@ -79,68 +79,94 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-2xl">K</span>
-            </div>
-          </div>
-          <CardTitle className="text-2xl font-bold text-center">Join Kemis CRM</CardTitle>
-          <CardDescription className="text-center">
-            Create your account to get started
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSignUp}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Creating account...' : 'Create account'}
-            </Button>
-            <p className="text-sm text-center text-muted-foreground">
-              Already have an account?{' '}
-              <Link href="/login" className="text-primary hover:underline">
-                Sign in
-              </Link>
-            </p>
-          </CardFooter>
-        </form>
-      </Card>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
+      
+      {/* Main content */}
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-12 relative">
+        {/* Hero headline */}
+        <div className="text-center mb-8 space-y-3">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
+            Join <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Kemis CRM</span>
+          </h1>
+          <p className="text-lg text-gray-600 max-w-md mx-auto">
+            Start managing your business smarter today.
+          </p>
+        </div>
+
+        {/* Signup card */}
+        <Card className="w-full max-w-md shadow-xl shadow-gray-200/50 border-0 bg-white/80 backdrop-blur-sm">
+          <CardHeader className="space-y-1 pb-4">
+            <CardTitle className="text-xl font-semibold text-center text-gray-800">Create your account</CardTitle>
+            <CardDescription className="text-center">
+              Fill in your details to get started
+            </CardDescription>
+          </CardHeader>
+          <form onSubmit={handleSignUp}>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-700">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="h-11 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-gray-700">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="h-11 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-gray-700">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="h-11 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+            </CardContent>
+            <CardFooter className="flex flex-col space-y-4 pt-2">
+              <Button 
+                type="submit" 
+                className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium shadow-md shadow-blue-500/25 transition-all duration-200" 
+                disabled={loading}
+              >
+                {loading ? 'Creating account...' : 'Create account'}
+              </Button>
+              <p className="text-sm text-center text-gray-500">
+                Already have an account?{' '}
+                <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium hover:underline">
+                  Sign in
+                </Link>
+              </p>
+            </CardFooter>
+          </form>
+        </Card>
+      </main>
+
+      {/* Footer */}
+      <footer className="relative py-6 px-4 text-center border-t border-gray-200/50 bg-white/30 backdrop-blur-sm">
+        <p className="text-sm text-gray-500">
+          &copy; {new Date().getFullYear()} Kemis CRM. All rights reserved.
+        </p>
+      </footer>
     </div>
   )
 }

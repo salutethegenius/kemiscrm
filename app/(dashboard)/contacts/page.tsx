@@ -8,12 +8,15 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { useToast } from '@/components/ui/use-toast'
-import { Plus, Search, Mail, Phone, Building, Upload, Users, Tag, Trash2, Kanban } from 'lucide-react'
+import { Plus, Search, Mail, Phone, Building, Upload, Users, Tag, Trash2, Kanban, LayoutGrid, List, LayoutList, Download } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox'
 import { ContactDialog } from '@/components/contacts/contact-dialog'
 import { ImportDialog } from '@/components/contacts/import-dialog'
 import { GroupDialog } from '@/components/contacts/group-dialog'
 import { TagManager } from '@/components/contacts/tag-manager'
 import { DealDialog } from '@/components/pipeline/deal-dialog'
+import { AddToPipelineDialog } from '@/components/contacts/add-to-pipeline-dialog'
+import { ExportDialog } from '@/components/contacts/export-dialog'
 import type { Contact, ContactGroup, ContactTag, PipelineStage } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
 
@@ -26,6 +29,7 @@ const statusColors: Record<string, 'default' | 'secondary' | 'success' | 'warnin
 }
 
 type TabType = 'all' | 'groups'
+type ViewType = 'grid' | 'list' | 'compact'
 
 export default function ContactsPage() {
   const [contacts, setContacts] = useState<Contact[]>([])
@@ -43,6 +47,10 @@ export default function ContactsPage() {
   const [dealDialogOpen, setDealDialogOpen] = useState(false)
   const [contactForDeal, setContactForDeal] = useState<Contact | null>(null)
   const [pipelineStages, setPipelineStages] = useState<PipelineStage[]>([])
+  const [selectedContactIds, setSelectedContactIds] = useState<Set<string>>(new Set())
+  const [bulkPipelineDialogOpen, setBulkPipelineDialogOpen] = useState(false)
+  const [exportDialogOpen, setExportDialogOpen] = useState(false)
+  const [viewType, setViewType] = useState<ViewType>('list')
   const { toast } = useToast()
   const supabase = createClient()
 
@@ -122,7 +130,22 @@ export default function ContactsPage() {
     setContactForDeal(null)
   }
 
-  const filteredContacts = contacts.filter(contact => {
+  const toggleSelectContact = (e: React.MouseEvent, contactId: string) => {
+    e.stopPropagation()
+    setSelectedContactIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(contactId)) next.delete(contactId)
+      else next.add(contactId)
+      return next
+    })
+  }
+
+  const clearSelection = () => {
+    setSelectedContactIds(new Set())
+  }
+
+  // Define filteredContacts FIRST, then derived values
+  const filteredContacts = contacts.filter((contact) => {
     const matchesSearch = 
       contact.name.toLowerCase().includes(search.toLowerCase()) ||
       contact.email.toLowerCase().includes(search.toLowerCase()) ||
@@ -134,6 +157,15 @@ export default function ContactsPage() {
 
     return matchesSearch
   })
+
+  const selectAllFiltered = () => {
+    setSelectedContactIds(new Set(filteredContacts.map((c) => c.id)))
+  }
+
+  const isAllFilteredSelected =
+    filteredContacts.length > 0 &&
+    filteredContacts.every((c) => selectedContactIds.has(c.id))
+  const selectedContacts = filteredContacts.filter((c) => selectedContactIds.has(c.id))
 
   const handleEdit = (contact: Contact) => {
     setEditingContact(contact)
@@ -208,6 +240,10 @@ export default function ContactsPage() {
           <p className="text-gray-500 mt-1">Manage your leads and contacts</p>
         </div>
         <div className="flex space-x-2">
+          <Button variant="outline" onClick={() => setExportDialogOpen(true)}>
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
           <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
             <Upload className="h-4 w-4 mr-2" />
             Import
@@ -258,6 +294,36 @@ export default function ContactsPage() {
               />
             </div>
             <TagManager tags={tags} onUpdate={fetchTags} />
+            {/* View Toggle */}
+            <div className="flex items-center border rounded-lg p-1 bg-gray-50">
+              <Button
+                variant={viewType === 'grid' ? 'default' : 'ghost'}
+                size="sm"
+                className="px-2"
+                onClick={() => setViewType('grid')}
+                title="Grid view"
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewType === 'list' ? 'default' : 'ghost'}
+                size="sm"
+                className="px-2"
+                onClick={() => setViewType('list')}
+                title="List view"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewType === 'compact' ? 'default' : 'ghost'}
+                size="sm"
+                className="px-2"
+                onClick={() => setViewType('compact')}
+                title="Compact view"
+              >
+                <LayoutList className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Selected Group Filter */}
@@ -273,7 +339,46 @@ export default function ContactsPage() {
             </div>
           )}
 
-          {/* Contacts Grid */}
+          {/* Bulk selection bar */}
+          {!loading && filteredContacts.length > 0 && (
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="select-all-contacts"
+                  checked={isAllFilteredSelected}
+                  onCheckedChange={(checked) => {
+                    if (checked) selectAllFiltered()
+                    else clearSelection()
+                  }}
+                />
+                <label
+                  htmlFor="select-all-contacts"
+                  className="text-sm font-medium text-gray-700 cursor-pointer select-none"
+                >
+                  Select all
+                </label>
+              </div>
+              {selectedContactIds.size > 0 && (
+                <>
+                  <span className="text-sm text-gray-500">
+                    {selectedContactIds.size} selected
+                  </span>
+                  <Button variant="ghost" size="sm" onClick={clearSelection}>
+                    Clear
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => setBulkPipelineDialogOpen(true)}
+                  >
+                    <Kanban className="h-4 w-4 mr-2" />
+                    Add {selectedContactIds.size} to pipeline
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Contacts Display */}
           {loading ? (
             <div className="text-center py-12 text-gray-500">Loading contacts...</div>
           ) : filteredContacts.length === 0 ? (
@@ -290,7 +395,8 @@ export default function ContactsPage() {
                 )}
               </CardContent>
             </Card>
-          ) : (
+          ) : viewType === 'grid' ? (
+            /* Grid View */
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredContacts.map((contact) => (
                 <Card 
@@ -300,7 +406,16 @@ export default function ContactsPage() {
                 >
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
-                      <Avatar className="h-12 w-12">
+                      <div
+                        className="flex items-center pt-1"
+                        onClick={(e) => toggleSelectContact(e, contact.id)}
+                      >
+                        <Checkbox
+                          checked={selectedContactIds.has(contact.id)}
+                          onCheckedChange={() => {}}
+                        />
+                      </div>
+                      <Avatar className="h-12 w-12 shrink-0">
                         <AvatarFallback className="bg-blue-100 text-blue-700 text-lg">
                           {contact.name.slice(0, 2).toUpperCase()}
                         </AvatarFallback>
@@ -328,7 +443,6 @@ export default function ContactsPage() {
                             </div>
                           )}
                         </div>
-                        {/* Tags */}
                         {contact.tags && contact.tags.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-2">
                             {contact.tags.slice(0, 3).map((tag) => (
@@ -363,6 +477,131 @@ export default function ContactsPage() {
                 </Card>
               ))}
             </div>
+          ) : viewType === 'list' ? (
+            /* List View (Table) */
+            <Card>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase w-10"></th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Company</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tags</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Added</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {filteredContacts.map((contact) => (
+                      <tr
+                        key={contact.id}
+                        className="hover:bg-gray-50 cursor-pointer"
+                        onClick={() => handleEdit(contact)}
+                      >
+                        <td className="px-4 py-3" onClick={(e) => toggleSelectContact(e, contact.id)}>
+                          <Checkbox
+                            checked={selectedContactIds.has(contact.id)}
+                            onCheckedChange={() => {}}
+                          />
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarFallback className="bg-blue-100 text-blue-700 text-sm">
+                                {contact.name.slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="font-medium text-gray-900">{contact.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{contact.email}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{contact.phone || '—'}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{contact.company || '—'}</td>
+                        <td className="px-4 py-3">
+                          <Badge variant={statusColors[contact.status]}>{contact.status}</Badge>
+                        </td>
+                        <td className="px-4 py-3">
+                          {contact.tags && contact.tags.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {contact.tags.slice(0, 2).map((tag) => (
+                                <span
+                                  key={tag.id}
+                                  className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+                                  style={{ backgroundColor: `${tag.color}20`, color: tag.color }}
+                                >
+                                  {tag.name}
+                                </span>
+                              ))}
+                              {contact.tags.length > 2 && (
+                                <span className="text-xs text-gray-400">+{contact.tags.length - 2}</span>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-gray-400">—</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-500">{formatDate(contact.created_at)}</td>
+                        <td className="px-4 py-3 text-right">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-xs"
+                            onClick={(e) => handleAddToPipeline(e, contact)}
+                          >
+                            <Kanban className="h-3.5 w-3.5 mr-1" />
+                            Pipeline
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          ) : (
+            /* Compact View */
+            <Card>
+              <div className="divide-y divide-gray-200">
+                {filteredContacts.map((contact) => (
+                  <div
+                    key={contact.id}
+                    className="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 cursor-pointer"
+                    onClick={() => handleEdit(contact)}
+                  >
+                    <div onClick={(e) => toggleSelectContact(e, contact.id)}>
+                      <Checkbox
+                        checked={selectedContactIds.has(contact.id)}
+                        onCheckedChange={() => {}}
+                      />
+                    </div>
+                    <Avatar className="h-8 w-8 shrink-0">
+                      <AvatarFallback className="bg-blue-100 text-blue-700 text-sm">
+                        {contact.name.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0 flex items-center gap-4">
+                      <span className="font-medium text-gray-900 truncate w-40">{contact.name}</span>
+                      <span className="text-sm text-gray-500 truncate w-48 hidden sm:block">{contact.email}</span>
+                      <span className="text-sm text-gray-500 w-28 hidden md:block">{contact.phone || '—'}</span>
+                      <span className="text-sm text-gray-500 truncate w-32 hidden lg:block">{contact.company || '—'}</span>
+                    </div>
+                    <Badge variant={statusColors[contact.status]} className="shrink-0">{contact.status}</Badge>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="shrink-0"
+                      onClick={(e) => handleAddToPipeline(e, contact)}
+                    >
+                      <Kanban className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </Card>
           )}
         </>
       )}
@@ -492,6 +731,24 @@ export default function ContactsPage() {
         contacts={contacts}
         defaultContactId={contactForDeal?.id ?? null}
         defaultStageId={pipelineStages[0]?.id ?? null}
+      />
+
+      <AddToPipelineDialog
+        open={bulkPipelineDialogOpen}
+        onClose={() => setBulkPipelineDialogOpen(false)}
+        onSuccess={() => {
+          clearSelection()
+          fetchContacts()
+        }}
+        contacts={selectedContacts}
+      />
+
+      <ExportDialog
+        open={exportDialogOpen}
+        onClose={() => setExportDialogOpen(false)}
+        contacts={contacts}
+        groups={groups}
+        selectedContactIds={selectedContactIds}
       />
     </div>
   )

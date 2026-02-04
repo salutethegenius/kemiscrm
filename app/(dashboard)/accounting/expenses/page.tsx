@@ -46,7 +46,13 @@ export default function ExpensesPage() {
     ])
 
     if (!expRes.error) setExpenses(expRes.data || [])
-    if (!catRes.error) setCategories(catRes.data || [])
+    if (!catRes.error) {
+      // Deduplicate categories by name
+      const uniqueCategories = (catRes.data || []).filter((cat, index, self) =>
+        index === self.findIndex(c => c.name === cat.name)
+      )
+      setCategories(uniqueCategories)
+    }
     setLoading(false)
   }
 

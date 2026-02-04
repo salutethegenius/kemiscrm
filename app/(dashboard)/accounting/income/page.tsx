@@ -52,7 +52,13 @@ export default function IncomePage() {
     ])
 
     if (!incRes.error) setIncomes(incRes.data || [])
-    if (!catRes.error) setCategories(catRes.data || [])
+    if (!catRes.error) {
+      // Deduplicate categories by name
+      const uniqueCategories = (catRes.data || []).filter((cat, index, self) =>
+        index === self.findIndex(c => c.name === cat.name)
+      )
+      setCategories(uniqueCategories)
+    }
     setLoading(false)
   }
 
@@ -274,9 +280,13 @@ export default function IncomePage() {
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                      {categories.map((cat) => (
-                        <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                      ))}
+                      {categories
+                        .filter((cat, index, self) => 
+                          index === self.findIndex(c => c.id === cat.id)
+                        )
+                        .map((cat) => (
+                          <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </div>

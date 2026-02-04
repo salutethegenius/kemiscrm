@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select'
 import { useToast } from '@/components/ui/use-toast'
 import { Plus, Trash2 } from 'lucide-react'
-import type { Invoice, Client, InvoiceItem } from '@/lib/types'
+import type { Invoice, Client, InvoiceItem, Contact } from '@/lib/types'
 
 interface InvoiceDialogProps {
   open: boolean
@@ -30,6 +30,7 @@ interface InvoiceDialogProps {
   onSuccess: () => void
   invoice?: Invoice | null
   clients: Client[]
+  contacts?: Contact[]
 }
 
 type LineItem = {
@@ -40,10 +41,10 @@ type LineItem = {
   amount: number
 }
 
-export function InvoiceDialog({ open, onClose, onSuccess, invoice, clients }: InvoiceDialogProps) {
+export function InvoiceDialog({ open, onClose, onSuccess, invoice, clients, contacts = [] }: InvoiceDialogProps) {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    client_id: '',
+    bill_to: '', // Can be client_id or "contact:contact_id"
     issue_date: new Date().toISOString().split('T')[0],
     due_date: '',
     tax_rate: 0,
@@ -60,8 +61,15 @@ export function InvoiceDialog({ open, onClose, onSuccess, invoice, clients }: In
 
   useEffect(() => {
     if (invoice) {
+      // Determine bill_to value from client_id or contact_id
+      let billTo = ''
+      if (invoice.client_id) {
+        billTo = invoice.client_id
+      } else if (invoice.contact_id) {
+        billTo = `contact:${invoice.contact_id}`
+      }
       setFormData({
-        client_id: invoice.client_id || '',
+        bill_to: billTo,
         issue_date: invoice.issue_date,
         due_date: invoice.due_date || '',
         tax_rate: invoice.tax_rate,
@@ -74,7 +82,7 @@ export function InvoiceDialog({ open, onClose, onSuccess, invoice, clients }: In
       loadInvoiceItems(invoice.id)
     } else {
       setFormData({
-        client_id: '',
+        bill_to: '',
         issue_date: new Date().toISOString().split('T')[0],
         due_date: '',
         tax_rate: 0,
@@ -158,10 +166,27 @@ export function InvoiceDialog({ open, onClose, onSuccess, invoice, clients }: In
       invoiceNumber = numData || `INV-${Date.now()}`
     }
 
+    // Handle bill_to - could be a client or a contact (prefixed with "contact:")
+    let clientId: string | null = null
+    let contactId: string | null = null
+    if (formData.bill_to) {
+      if (formData.bill_to.startsWith('contact:')) {
+        contactId = formData.bill_to.replace('contact:', '')
+      } else {
+        clientId = formData.bill_to
+      }
+    }
+
     const payload = {
-      ...formData,
-      client_id: formData.client_id || null,
+      client_id: clientId,
+      contact_id: contactId,
+      issue_date: formData.issue_date,
       due_date: formData.due_date || null,
+      tax_rate: formData.tax_rate,
+      discount: formData.discount,
+      notes: formData.notes,
+      terms: formData.terms,
+      status: formData.status,
       invoice_number: invoiceNumber,
       subtotal,
       tax_amount: taxAmount,
@@ -207,9 +232,29 @@ export function InvoiceDialog({ open, onClose, onSuccess, invoice, clients }: In
       }
     }
 
+    // If status changed to 'paid', create a payment record
+    if (formData.status === 'paid' && invoice?.status !== 'paid' && invoiceId) {
+      // Check if payment already exists for this invoice
+      const { data: existingPayment } = await supabase
+        .from('payments')
+        .select('id')
+        .eq('invoice_id', invoiceId)
+        .single()
+
+      if (!existingPayment) {
+        await supabase.from('payments').insert({
+          invoice_id: invoiceId,
+          amount: total,
+          payment_method: 'Not specified',
+          payment_date: new Date().toISOString().split('T')[0],
+          user_id: user.id,
+        })
+      }
+    }
+
     toast({
       title: invoice ? 'Invoice updated' : 'Invoice created',
-      description: `Invoice ${invoiceNumber} has been saved.`,
+      description: `Invoice ${invoiceNumber} has been saved.${formData.status === 'paid' && invoice?.status !== 'paid' ? ' Payment recorded.' : ''}`,
     })
 
     setLoading(false)
@@ -244,20 +289,38 @@ export function InvoiceDialog({ open, onClose, onSuccess, invoice, clients }: In
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
-            {/* Client & Dates */}
+            {/* Client/Contact & Dates */}
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label>Client</Label>
-                <Select value={formData.client_id} onValueChange={(v) => setFormData({ ...formData, client_id: v })}>
+                <Label>Bill To</Label>
+                <Select value={formData.bill_to} onValueChange={(v) => setFormData({ ...formData, bill_to: v })}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select client" />
+                    <SelectValue placeholder="Select client or contact" />
                   </SelectTrigger>
                   <SelectContent>
-                    {clients.map((client) => (
-                      <SelectItem key={client.id} value={client.id}>
-                        {client.company_name}
-                      </SelectItem>
-                    ))}
+                    {clients.length > 0 && (
+                      <>
+                        <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 uppercase">Clients</div>
+                        {clients.map((client) => (
+                          <SelectItem key={`client-${client.id}`} value={client.id}>
+                            {client.company_name}
+                          </SelectItem>
+                        ))}
+                      </>
+                    )}
+                    {contacts.length > 0 && (
+                      <>
+                        <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 uppercase mt-1">Contacts</div>
+                        {contacts.map((contact) => (
+                          <SelectItem key={`contact-${contact.id}`} value={`contact:${contact.id}`}>
+                            {contact.name}{contact.company ? ` (${contact.company})` : ''}
+                          </SelectItem>
+                        ))}
+                      </>
+                    )}
+                    {clients.length === 0 && contacts.length === 0 && (
+                      <div className="px-2 py-2 text-sm text-gray-500">No clients or contacts available</div>
+                    )}
                   </SelectContent>
                 </Select>
               </div>

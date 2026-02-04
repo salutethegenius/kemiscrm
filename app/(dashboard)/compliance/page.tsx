@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/components/ui/use-toast'
-import { Download, Trash2, FileText, Shield, AlertCircle } from 'lucide-react'
+import { Download, Trash2, FileText, Shield, AlertCircle, ClipboardList } from 'lucide-react'
 import Link from 'next/link'
 
 export default function CompliancePage() {
@@ -202,6 +202,35 @@ export default function CompliancePage() {
         <CardContent>
           <Link href="/compliance/privacy" className="text-blue-600 hover:underline">
             View Privacy Policy →
+          </Link>
+        </CardContent>
+      </Card>
+
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <ClipboardList className="h-5 w-5 mr-2" />
+            Audit Log
+          </CardTitle>
+          <CardDescription>
+            Track all account activity for compliance and accountability (Admin only)
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-gray-600">
+            The audit log records all changes made to your organization's data including:
+          </p>
+          <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
+            <li>Contact, client, and employee records</li>
+            <li>Invoices, expenses, and payments</li>
+            <li>Pipeline deals and activities</li>
+            <li>User permission changes</li>
+          </ul>
+          <Link href="/compliance/audit">
+            <Button variant="outline">
+              <ClipboardList className="h-4 w-4 mr-2" />
+              View Audit Log
+            </Button>
           </Link>
         </CardContent>
       </Card>

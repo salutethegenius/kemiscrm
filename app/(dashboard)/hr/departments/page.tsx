@@ -30,13 +30,14 @@ export default function DepartmentsPage() {
   const fetchDepartments = async () => {
     const { data } = await supabase
       .from('departments')
-      .select('*, employees(count)')
+      .select('*, employees(id, first_name, last_name)')
       .order('name')
 
     if (data) {
-      const depts = data.map(d => ({
+      const depts = data.map((d) => ({
         ...d,
-        employee_count: d.employees?.[0]?.count || 0,
+        employees: (d.employees as { id: string; first_name: string; last_name: string }[]) || [],
+        employee_count: (d.employees?.length ?? 0) as number,
       }))
       setDepartments(depts)
     }
@@ -137,13 +138,33 @@ export default function DepartmentsPage() {
                     <h3 className="font-semibold text-gray-900">{dept.name}</h3>
                     <div className="flex items-center text-sm text-gray-500 mt-1">
                       <Users className="h-4 w-4 mr-1" />
-                      {dept.employee_count} employees
+                      {dept.employees?.length ?? dept.employee_count ?? 0} employees
                     </div>
                   </div>
                 </div>
                 {dept.description && (
                   <p className="text-sm text-gray-500 mt-3">{dept.description}</p>
                 )}
+                {/* Employees in this department */}
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    Employees
+                  </p>
+                  {dept.employees && dept.employees.length > 0 ? (
+                    <ul className="space-y-1.5">
+                      {dept.employees.map((emp) => (
+                        <li
+                          key={emp.id}
+                          className="text-sm text-gray-700"
+                        >
+                          {emp.first_name} {emp.last_name}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-gray-400">No employees in this department</p>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))}
