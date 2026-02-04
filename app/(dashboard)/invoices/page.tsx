@@ -56,7 +56,7 @@ export default function InvoicesPage() {
 
     if (!invoicesRes.error) setInvoices(invoicesRes.data || [])
     if (!clientsRes.error) setClients(clientsRes.data || [])
-    if (!contactsRes.error) setContacts(contactsRes.data || [])
+    if (!contactsRes.error) setContacts((contactsRes.data || []) as Contact[])
     setLoading(false)
   }
 

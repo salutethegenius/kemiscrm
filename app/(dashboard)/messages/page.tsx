@@ -72,7 +72,7 @@ export default function MessagesPage() {
       .select('conversation_id, user_id')
       .in('conversation_id', convIds)
 
-    const userIds = [...new Set((participants || []).map((p) => p.user_id))]
+    const userIds = Array.from(new Set((participants || []).map((p) => p.user_id)))
     const { data: profiles } = await supabase
       .from('user_profiles')
       .select('id, full_name, avatar_url')

@@ -11,6 +11,7 @@ import type { Deal, PipelineStage, Pipeline } from '@/lib/types'
 type DealWithDetails = Deal & {
   stage: (PipelineStage & { pipeline?: Pipeline | null }) | null
   contact?: { name: string } | null
+  updated_at?: string | null
 }
 
 export function PipelineActivity() {

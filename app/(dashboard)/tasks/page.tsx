@@ -56,9 +56,9 @@ export default function TasksPage() {
     ])
 
     if (!tasksRes.error) setTasks(tasksRes.data || [])
-    if (!contactsRes.error) setContacts(contactsRes.data || [])
-    if (!dealsRes.error) setDeals(dealsRes.data || [])
-    if (!usersRes.error) setOrgUsers(usersRes.data || [])
+    if (!contactsRes.error) setContacts((contactsRes.data || []) as Contact[])
+    if (!dealsRes.error) setDeals((dealsRes.data || []) as Deal[])
+    if (!usersRes.error) setOrgUsers((usersRes.data || []) as UserProfile[])
     setLoading(false)
   }
 
