@@ -126,7 +126,7 @@ export default function TimeTrackingPage() {
       setActiveEntry(active || null)
 
       // Get recent unique projects for quick selection
-      const projects = [...new Set(data.map(e => e.project).filter(Boolean))]
+      const projects = Array.from(new Set(data.map(e => e.project).filter(Boolean)))
       setRecentProjects(projects.slice(0, 5) as string[])
     }
     setLoading(false)
