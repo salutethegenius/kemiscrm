@@ -24,7 +24,7 @@ export default function ClientsPage() {
   const fetchData = async () => {
     const [clientsRes, contactsRes] = await Promise.all([
       supabase.from('clients').select('*').order('company_name'),
-      supabase.from('contacts').select('id, name, email, phone, company').order('name'),
+      supabase.from('contacts').select('*').order('name'),
     ])
 
     if (!clientsRes.error) setClients(clientsRes.data || [])
