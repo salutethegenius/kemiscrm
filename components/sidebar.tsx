@@ -52,7 +52,8 @@ const navigation = [
   { name: 'Landing Pages', href: '/landing-pages', icon: Globe, permission: 'forms' },
   { name: 'Calendar', href: '/calendar', icon: Calendar, permission: 'calendar' },
   { name: 'Tasks', href: '/tasks', icon: CheckSquare, permission: 'tasks' },
-  // { name: 'Messages', href: '/messages', icon: MessageCircle, permission: 'messages' }, // Disabled for now
+  { name: 'Email', href: '/email', icon: MessageCircle, permission: 'email' },
+  // { name: 'Messages', href: '/messages', icon: MessageCircle, permission: 'messages' }, // Internal messaging (optional)
 ]
 
 const invoicingNav = [

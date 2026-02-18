@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -36,9 +36,26 @@ export default function SettingsPage() {
     invoice_footer_text: '',
   })
   const [invoiceSaving, setInvoiceSaving] = useState(false)
+  // Email/mailbox state
+  const [mailboxes, setMailboxes] = useState<
+    { id: string; email_address: string; provider: string; status: string; last_synced_at: string | null }[]
+  >([])
+  const [mailboxesLoading, setMailboxesLoading] = useState(false)
+  const [imapEmail, setImapEmail] = useState('')
+  const [imapHost, setImapHost] = useState('')
+  const [imapPort, setImapPort] = useState(993)
+  const [imapSecure, setImapSecure] = useState(true)
+  const [smtpHost, setSmtpHost] = useState('')
+  const [smtpPort, setSmtpPort] = useState(587)
+  const [smtpSecure, setSmtpSecure] = useState(true)
+  const [imapUsername, setImapUsername] = useState('')
+  const [imapPassword, setImapPassword] = useState('')
+  const [connectingImap, setConnectingImap] = useState(false)
+  const [syncingMailboxId, setSyncingMailboxId] = useState<string | null>(null)
   const { toast } = useToast()
   const router = useRouter()
   const supabase = createClient()
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     const load = async () => {
@@ -79,9 +96,44 @@ export default function SettingsPage() {
           }
         }
       }
+
+      // Load connected mailboxes
+      setMailboxesLoading(true)
+      const { data: mailboxRows } = await supabase
+        .from('mailbox_accounts')
+        .select('id, email_address, provider, status, last_synced_at')
+        .order('created_at', { ascending: true })
+      setMailboxes(
+        (mailboxRows || []).map((m) => ({
+          id: m.id as string,
+          email_address: m.email_address as string,
+          provider: m.provider as string,
+          status: m.status as string,
+          last_synced_at: (m.last_synced_at as string | null) ?? null,
+        }))
+      )
+      setMailboxesLoading(false)
     }
     load()
   }, [])
+
+  useEffect(() => {
+    const connected = searchParams.get('email_connected')
+    const error = searchParams.get('email_error')
+    if (connected) {
+      toast({
+        title: 'Email connected',
+        description: `Connected ${connected} mailbox successfully.`,
+      })
+    }
+    if (error) {
+      toast({
+        title: 'Email error',
+        description: 'There was a problem connecting your email account.',
+        variant: 'destructive',
+      })
+    }
+  }, [searchParams, toast])
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -207,6 +259,90 @@ export default function SettingsPage() {
     await supabase.auth.signOut()
     router.push('/login')
     router.refresh()
+  }
+
+  const refreshMailboxes = async () => {
+    setMailboxesLoading(true)
+    const { data: mailboxRows } = await supabase
+      .from('mailbox_accounts')
+      .select('id, email_address, provider, status, last_synced_at')
+      .order('created_at', { ascending: true })
+    setMailboxes(
+      (mailboxRows || []).map((m) => ({
+        id: m.id as string,
+        email_address: m.email_address as string,
+        provider: m.provider as string,
+        status: m.status as string,
+        last_synced_at: (m.last_synced_at as string | null) ?? null,
+      }))
+    )
+    setMailboxesLoading(false)
+  }
+
+  const handleConnectGmail = () => {
+    window.location.href = '/api/email/connect/gmail'
+  }
+
+  const handleConnectImap = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setConnectingImap(true)
+    try {
+      const res = await fetch('/api/email/connect/imap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: imapEmail.trim(),
+          imapHost: imapHost.trim(),
+          imapPort: imapPort >= 1 && imapPort <= 65535 ? imapPort : 993,
+          imapSecure,
+          smtpHost: smtpHost.trim(),
+          smtpPort: smtpPort >= 1 && smtpPort <= 65535 ? smtpPort : 587,
+          smtpSecure,
+          username: imapUsername.trim(),
+          password: imapPassword,
+        }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        throw new Error(data?.error || 'Failed to connect mailbox')
+      }
+      toast({ title: 'Connected', description: 'Mailbox connected successfully.' })
+      setImapPassword('')
+      await refreshMailboxes()
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: (err as Error).message,
+        variant: 'destructive',
+      })
+    }
+    setConnectingImap(false)
+  }
+
+  const handleInitialSync = async (mailboxId: string) => {
+    setSyncingMailboxId(mailboxId)
+    try {
+      const res = await fetch('/api/email/sync/initial', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mailboxAccountId: mailboxId }),
+      })
+      if (!res.ok) {
+        throw new Error('Initial sync failed')
+      }
+      toast({
+        title: 'Sync started',
+        description: 'Initial email sync has been triggered.',
+      })
+      await refreshMailboxes()
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: (err as Error).message,
+        variant: 'destructive',
+      })
+    }
+    setSyncingMailboxId(null)
   }
 
   return (
@@ -395,6 +531,188 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
         )}
+
+        {/* Email Accounts */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Email Accounts</CardTitle>
+            <CardDescription>
+              Connect an email inbox to send and receive email inside Kemis CRM.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-gray-700">Connected mailboxes</p>
+              {mailboxesLoading ? (
+                <p className="text-sm text-gray-500">Loading mailboxes...</p>
+              ) : mailboxes.length === 0 ? (
+                <p className="text-sm text-gray-500">
+                  No mailboxes connected yet. Connect Gmail or a custom IMAP/SMTP account.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {mailboxes.map((m) => (
+                    <div
+                      key={m.id}
+                      className="flex items-center justify-between rounded-md border px-3 py-2 text-sm"
+                    >
+                      <div>
+                        <p className="font-medium text-gray-900">{m.email_address}</p>
+                        <p className="text-xs text-gray-500">
+                          Provider: {m.provider} · Status: {m.status}
+                          {m.last_synced_at
+                            ? ` · Last sync: ${new Date(m.last_synced_at).toLocaleString()}`
+                            : ''}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          disabled={syncingMailboxId === m.id}
+                          onClick={() => handleInitialSync(m.id)}
+                        >
+                          {syncingMailboxId === m.id ? 'Syncing...' : 'Sync 30 days'}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-gray-700">Connect Gmail</p>
+              <p className="text-xs text-gray-500">
+                You&apos;ll be redirected to Google to grant access to read and send email from your
+                inbox. Only your mailbox is connected, not your entire Google account.
+              </p>
+              <Button type="button" onClick={handleConnectGmail}>
+                Connect Gmail
+              </Button>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-gray-700">Connect IMAP/SMTP</p>
+              <p className="text-xs text-gray-500">
+                Use this for generic email providers. Credentials are encrypted at rest.
+              </p>
+              <form onSubmit={handleConnectImap} className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label htmlFor="imapEmail">Email address</Label>
+                    <Input
+                      id="imapEmail"
+                      type="email"
+                      value={imapEmail}
+                      onChange={(e) => setImapEmail(e.target.value)}
+                      placeholder="you@domain.com"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="imapUsername">Username</Label>
+                    <Input
+                      id="imapUsername"
+                      value={imapUsername}
+                      onChange={(e) => setImapUsername(e.target.value)}
+                      placeholder="Usually the full email address"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="imapPassword">Password / App password</Label>
+                    <Input
+                      id="imapPassword"
+                      type="password"
+                      value={imapPassword}
+                      onChange={(e) => setImapPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="imapHost">IMAP host</Label>
+                    <Input
+                      id="imapHost"
+                      value={imapHost}
+                      onChange={(e) => setImapHost(e.target.value)}
+                      placeholder="imap.domain.com"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="imapPort">IMAP port</Label>
+                    <Input
+                      id="imapPort"
+                      type="number"
+                      min={1}
+                      max={65535}
+                      value={imapPort || ''}
+                      onChange={(e) => {
+                        const v = e.target.value
+                        if (v === '') setImapPort(0)
+                        else setImapPort(Number(v) || 993)
+                      }}
+                      placeholder="993"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="imapSecure">IMAP TLS</Label>
+                    <Input
+                      id="imapSecure"
+                      type="checkbox"
+                      checked={imapSecure}
+                      onChange={(e) => setImapSecure(e.target.checked)}
+                      className="w-4 h-4"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="smtpHost">SMTP host</Label>
+                    <Input
+                      id="smtpHost"
+                      value={smtpHost}
+                      onChange={(e) => setSmtpHost(e.target.value)}
+                      placeholder="smtp.domain.com"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="smtpPort">SMTP port</Label>
+                    <Input
+                      id="smtpPort"
+                      type="number"
+                      min={1}
+                      max={65535}
+                      value={smtpPort || ''}
+                      onChange={(e) => {
+                        const v = e.target.value
+                        if (v === '') setSmtpPort(0)
+                        else setSmtpPort(Number(v) || 587)
+                      }}
+                      placeholder="587"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="smtpSecure">SMTP secure (TLS)</Label>
+                    <Input
+                      id="smtpSecure"
+                      type="checkbox"
+                      checked={smtpSecure}
+                      onChange={(e) => setSmtpSecure(e.target.checked)}
+                      className="w-4 h-4"
+                    />
+                  </div>
+                </div>
+                <Button type="submit" disabled={connectingImap}>
+                  {connectingImap ? 'Connecting...' : 'Connect IMAP/SMTP'}
+                </Button>
+              </form>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Change Password */}
         <Card>

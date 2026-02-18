@@ -49,3 +49,29 @@ CREATE POLICY "Anyone can submit forms" ON public.form_submissions
     form_id IS NOT NULL
     AND EXISTS (SELECT 1 FROM public.lead_forms WHERE public.lead_forms.id = form_submissions.form_id)
   );
+
+-- =====================================================
+-- 3. Multiple permissive policies: remove legacy duplicates
+-- =====================================================
+-- Keep the newer consolidated "* access" / "Role permissions *" policies
+-- and drop older overlapping "Org members access ..." / broad role policies.
+
+DROP POLICY IF EXISTS "Org members access categories" ON public.account_categories;
+DROP POLICY IF EXISTS "Org members access clients" ON public.clients;
+DROP POLICY IF EXISTS "Org members access contact_groups" ON public.contact_groups;
+DROP POLICY IF EXISTS "Org members access contact_tags" ON public.contact_tags;
+DROP POLICY IF EXISTS "Org members access contacts" ON public.contacts;
+DROP POLICY IF EXISTS "Org members access deals" ON public.deals;
+DROP POLICY IF EXISTS "Org members access departments" ON public.departments;
+DROP POLICY IF EXISTS "Org members access employees" ON public.employees;
+DROP POLICY IF EXISTS "Org members access expenses" ON public.expenses;
+DROP POLICY IF EXISTS "Org members access income" ON public.income;
+DROP POLICY IF EXISTS "Org members access invoices" ON public.invoices;
+DROP POLICY IF EXISTS "Org members access lead_forms" ON public.lead_forms;
+DROP POLICY IF EXISTS "Org members access leave_requests" ON public.leave_requests;
+DROP POLICY IF EXISTS "Org members access payments" ON public.payments;
+DROP POLICY IF EXISTS "Org members access pipeline_stages" ON public.pipeline_stages;
+DROP POLICY IF EXISTS "Org members access time_entries" ON public.time_entries;
+
+DROP POLICY IF EXISTS "Org members view permissions" ON public.role_permissions;
+DROP POLICY IF EXISTS "Admins manage permissions" ON public.role_permissions;

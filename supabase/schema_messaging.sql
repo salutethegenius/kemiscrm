@@ -59,7 +59,8 @@ BEGIN
   UPDATE conversations SET updated_at = NOW() WHERE id = NEW.conversation_id;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+SET search_path = public;
 
 DROP TRIGGER IF EXISTS messages_updated_at ON messages;
 CREATE TRIGGER messages_updated_at
