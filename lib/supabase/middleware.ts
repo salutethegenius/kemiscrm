@@ -54,7 +54,12 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  await supabase.auth.getUser()
+  try {
+    await supabase.auth.getUser()
+  } catch (error) {
+    // Avoid hard-failing requests during transient DNS/network issues.
+    console.error('Supabase auth check failed in middleware:', error)
+  }
 
   return response
 }

@@ -55,7 +55,12 @@ export async function fetchRecentMessages(
         const subject = msg.envelope?.subject || ''
         const from = msg.envelope?.from?.map((a) => a.address || '').join(', ') || ''
         const to = msg.envelope?.to?.map((a) => a.address || '').join(', ') || ''
-        const date = msg.internalDate || new Date()
+        const date =
+          msg.internalDate instanceof Date
+            ? msg.internalDate
+            : msg.internalDate
+              ? new Date(msg.internalDate)
+              : new Date()
         const providerMessageId = String(msg.uid)
 
         result.push({
