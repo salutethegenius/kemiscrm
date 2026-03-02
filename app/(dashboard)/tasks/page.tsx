@@ -104,14 +104,14 @@ export default function TasksPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-6 lg:p-8">
         <div className="text-center py-12 text-gray-500">Loading tasks...</div>
       </div>
     )
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-6 lg:p-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Tasks</h1>

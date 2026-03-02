@@ -192,8 +192,8 @@ export default function InvoicesPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-6 lg:p-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Invoices</h1>
           <p className="text-gray-500 mt-1">Create and manage invoices</p>
@@ -205,7 +205,7 @@ export default function InvoicesPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
         <Card>
           <CardContent className="p-4">
             <p className="text-sm text-gray-500">Total Invoiced</p>
@@ -262,152 +262,140 @@ export default function InvoicesPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="bg-white rounded-lg border overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
-                  <button 
-                    onClick={() => handleSort('invoice_number')} 
-                    className="flex items-center hover:text-gray-700 transition-colors"
-                  >
-                    Invoice
-                    <SortIcon field="invoice_number" />
-                  </button>
-                </th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
-                  <button 
-                    onClick={() => handleSort('client')} 
-                    className="flex items-center hover:text-gray-700 transition-colors"
-                  >
-                    Client
-                    <SortIcon field="client" />
-                  </button>
-                </th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
-                  <button 
-                    onClick={() => handleSort('issue_date')} 
-                    className="flex items-center hover:text-gray-700 transition-colors"
-                  >
-                    Date
-                    <SortIcon field="issue_date" />
-                  </button>
-                </th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
-                  <button 
-                    onClick={() => handleSort('due_date')} 
-                    className="flex items-center hover:text-gray-700 transition-colors"
-                  >
-                    Due
-                    <SortIcon field="due_date" />
-                  </button>
-                </th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
-                  <button 
-                    onClick={() => handleSort('total')} 
-                    className="flex items-center hover:text-gray-700 transition-colors"
-                  >
-                    Amount
-                    <SortIcon field="total" />
-                  </button>
-                </th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
-                  <button 
-                    onClick={() => handleSort('status')} 
-                    className="flex items-center hover:text-gray-700 transition-colors"
-                  >
-                    Status
-                    <SortIcon field="status" />
-                  </button>
-                </th>
-                <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {filteredInvoices.map((invoice) => (
-                <tr key={invoice.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <span className="font-medium">{invoice.invoice_number}</span>
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">
-                    {getBillToName(invoice)}
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">
-                    {formatDate(invoice.issue_date)}
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">
-                    {invoice.due_date ? formatDate(invoice.due_date) : '-'}
-                  </td>
-                  <td className="px-6 py-4 font-medium">
-                    {formatCurrency(Number(invoice.total))}
-                  </td>
-                  <td className="px-6 py-4">
+        <>
+          {/* Mobile card view */}
+          <div className="md:hidden space-y-3">
+            {filteredInvoices.map((invoice) => (
+              <Card key={invoice.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleEdit(invoice)}>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold">{invoice.invoice_number}</span>
                     <Badge variant={statusColors[invoice.status]}>{invoice.status}</Badge>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Button variant="ghost" size="sm" onClick={() => setPreviewInvoice(invoice)} title="Preview & Export">
-                        <Download className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={() => handleEdit(invoice)} title="Edit">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Change Status</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            onClick={() => handleStatusChange(invoice, 'draft')}
-                            disabled={invoice.status === 'draft'}
+                  </div>
+                  <p className="text-sm text-gray-600 mb-1">{getBillToName(invoice)}</p>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">{formatDate(invoice.issue_date)}</span>
+                    <span className="font-semibold">{formatCurrency(Number(invoice.total))}</span>
+                  </div>
+                  <div className="flex items-center gap-1 mt-3 pt-3 border-t">
+                    <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setPreviewInvoice(invoice) }}>
+                      <Download className="h-4 w-4 mr-1" /> Export
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()}>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Change Status</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        {(['draft', 'sent', 'viewed', 'paid', 'overdue', 'cancelled'] as const).map((s) => (
+                          <DropdownMenuItem
+                            key={s}
+                            onClick={() => handleStatusChange(invoice, s)}
+                            disabled={invoice.status === s}
+                            className={s === 'paid' ? 'text-green-600' : s === 'overdue' ? 'text-red-600' : ''}
                           >
-                            Draft
+                            {s === 'paid' ? 'Mark as Paid' : s.charAt(0).toUpperCase() + s.slice(1)}
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => handleStatusChange(invoice, 'sent')}
-                            disabled={invoice.status === 'sent'}
-                          >
-                            Sent
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => handleStatusChange(invoice, 'viewed')}
-                            disabled={invoice.status === 'viewed'}
-                          >
-                            Viewed
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => handleStatusChange(invoice, 'paid')}
-                            disabled={invoice.status === 'paid'}
-                            className="text-green-600"
-                          >
-                            Mark as Paid
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => handleStatusChange(invoice, 'overdue')}
-                            disabled={invoice.status === 'overdue'}
-                            className="text-red-600"
-                          >
-                            Overdue
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => handleStatusChange(invoice, 'cancelled')}
-                            disabled={invoice.status === 'cancelled'}
-                          >
-                            Cancelled
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </td>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Desktop table view */}
+          <div className="hidden md:block bg-white rounded-lg border overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <button onClick={() => handleSort('invoice_number')} className="flex items-center hover:text-gray-700 transition-colors">
+                      Invoice <SortIcon field="invoice_number" />
+                    </button>
+                  </th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <button onClick={() => handleSort('client')} className="flex items-center hover:text-gray-700 transition-colors">
+                      Client <SortIcon field="client" />
+                    </button>
+                  </th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <button onClick={() => handleSort('issue_date')} className="flex items-center hover:text-gray-700 transition-colors">
+                      Date <SortIcon field="issue_date" />
+                    </button>
+                  </th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <button onClick={() => handleSort('due_date')} className="flex items-center hover:text-gray-700 transition-colors">
+                      Due <SortIcon field="due_date" />
+                    </button>
+                  </th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <button onClick={() => handleSort('total')} className="flex items-center hover:text-gray-700 transition-colors">
+                      Amount <SortIcon field="total" />
+                    </button>
+                  </th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                    <button onClick={() => handleSort('status')} className="flex items-center hover:text-gray-700 transition-colors">
+                      Status <SortIcon field="status" />
+                    </button>
+                  </th>
+                  <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y">
+                {filteredInvoices.map((invoice) => (
+                  <tr key={invoice.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      <span className="font-medium">{invoice.invoice_number}</span>
+                    </td>
+                    <td className="px-6 py-4 text-gray-600">{getBillToName(invoice)}</td>
+                    <td className="px-6 py-4 text-gray-600">{formatDate(invoice.issue_date)}</td>
+                    <td className="px-6 py-4 text-gray-600">{invoice.due_date ? formatDate(invoice.due_date) : '-'}</td>
+                    <td className="px-6 py-4 font-medium">{formatCurrency(Number(invoice.total))}</td>
+                    <td className="px-6 py-4">
+                      <Badge variant={statusColors[invoice.status]}>{invoice.status}</Badge>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Button variant="ghost" size="sm" onClick={() => setPreviewInvoice(invoice)} title="Preview & Export">
+                          <Download className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(invoice)} title="Edit">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Change Status</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {(['draft', 'sent', 'viewed', 'paid', 'overdue', 'cancelled'] as const).map((s) => (
+                              <DropdownMenuItem
+                                key={s}
+                                onClick={() => handleStatusChange(invoice, s)}
+                                disabled={invoice.status === s}
+                                className={s === 'paid' ? 'text-green-600' : s === 'overdue' ? 'text-red-600' : ''}
+                              >
+                                {s === 'paid' ? 'Mark as Paid' : s.charAt(0).toUpperCase() + s.slice(1)}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       <InvoiceDialog

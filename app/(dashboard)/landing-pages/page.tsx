@@ -84,15 +84,15 @@ export default function LandingPagesPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-6 lg:p-8">
         <p className="text-gray-500">Loading...</p>
       </div>
     )
   }
 
   return (
-    <div className="p-8">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="p-4 md:p-6 lg:p-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Landing Pages</h1>
           <p className="text-gray-500 mt-1">Create beautiful landing pages to collect leads</p>

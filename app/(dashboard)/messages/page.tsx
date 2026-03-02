@@ -298,7 +298,7 @@ export default function MessagesPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-6 lg:p-8">
         <div className="text-center py-12 text-gray-500">Loading messages...</div>
       </div>
     )

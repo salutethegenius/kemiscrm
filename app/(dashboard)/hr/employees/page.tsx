@@ -65,8 +65,8 @@ export default function EmployeesPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-6 lg:p-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Employees</h1>
           <p className="text-gray-500 mt-1">Manage your team members</p>

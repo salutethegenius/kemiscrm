@@ -32,11 +32,13 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/use-toast'
-import { Plus, LayoutList } from 'lucide-react'
+import { Plus, LayoutList, ChevronLeft, ChevronRight } from 'lucide-react'
 import { PipelineColumn } from '@/components/pipeline/pipeline-column'
 import { DealCard } from '@/components/pipeline/deal-card'
 import { DealDialog } from '@/components/pipeline/deal-dialog'
 import { StageDialog } from '@/components/pipeline/stage-dialog'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { formatCurrency } from '@/lib/utils'
 import type { Deal, Pipeline, PipelineStage, Contact } from '@/lib/types'
 
 export default function PipelinePage() {
@@ -55,6 +57,8 @@ export default function PipelinePage() {
   const [newPipelineName, setNewPipelineName] = useState('')
   const [pipelineSaving, setPipelineSaving] = useState(false)
   const [canManageStages, setCanManageStages] = useState(false)
+  const [mobileStageIndex, setMobileStageIndex] = useState(0)
+  const isMobile = useIsMobile()
   const { toast } = useToast()
   const supabase = createClient()
 
@@ -209,6 +213,11 @@ export default function PipelinePage() {
     ? stages.filter((s) => s.pipeline_id === selectedPipelineId)
     : stages.filter((s) => s.pipeline_id == null)
 
+  // Reset mobile stage index when switching pipelines or stages change
+  useEffect(() => {
+    setMobileStageIndex(0)
+  }, [selectedPipelineId])
+
   const stageIds = new Set(filteredStages.map((s) => s.id))
   const filteredDeals = deals.filter((d) => stageIds.has(d.stage_id))
 
@@ -257,23 +266,23 @@ export default function PipelinePage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-6 lg:p-8">
         <div className="text-center py-12 text-gray-500">Loading pipeline...</div>
       </div>
     )
   }
 
   return (
-    <div className="p-8 h-full">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-6 lg:p-8 h-full">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Pipeline</h1>
           <p className="text-gray-500 mt-1">Track your deals through the sales process</p>
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex flex-wrap gap-2 items-center">
           {pipelines.length > 0 && (
             <Select value={selectedPipelineId ?? ''} onValueChange={(v) => setSelectedPipelineId(v || null)}>
-              <SelectTrigger className="w-[200px]">
+              <SelectTrigger className="w-[160px] sm:w-[200px]">
                 <SelectValue placeholder="Select pipeline" />
               </SelectTrigger>
               <SelectContent>
@@ -285,7 +294,7 @@ export default function PipelinePage() {
               </SelectContent>
             </Select>
           )}
-          {canManageStages && (
+          {canManageStages && !isMobile && (
             <>
               <Button variant="outline" onClick={() => setPipelineDialogOpen(true)}>
                 <Plus className="h-4 w-4 mr-2" />
@@ -327,30 +336,102 @@ export default function PipelinePage() {
           )}
         </div>
       ) : (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCorners}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
-          <div className="flex gap-4 overflow-x-auto pb-4" style={{ minHeight: 'calc(100vh - 220px)' }}>
-            {filteredStages.map((stage) => (
-              <PipelineColumn
-                key={stage.id}
-                stage={stage}
-                deals={getDealsForStage(stage.id)}
-                onEditDeal={handleEditDeal}
-                canManageStages={canManageStages}
-                onEditStage={canManageStages ? handleOpenStageDialog : undefined}
-                onDeleteStage={canManageStages ? handleDeleteStage : undefined}
-              />
-            ))}
-          </div>
+        <>
+          {/* Mobile: single stage view with swipe-like navigation */}
+          {isMobile ? (
+            <div>
+              {/* Stage tab bar */}
+              <div className="flex items-center gap-2 mb-4">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0 h-8 w-8"
+                  disabled={mobileStageIndex === 0}
+                  onClick={() => setMobileStageIndex(i => Math.max(0, i - 1))}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <div className="flex-1 overflow-x-auto">
+                  <div className="flex gap-1">
+                    {filteredStages.map((stage, idx) => (
+                      <button
+                        key={stage.id}
+                        onClick={() => setMobileStageIndex(idx)}
+                        className={`shrink-0 px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
+                          idx === mobileStageIndex
+                            ? 'bg-primary text-white'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}
+                      >
+                        {stage.name} ({getDealsForStage(stage.id).length})
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0 h-8 w-8"
+                  disabled={mobileStageIndex >= filteredStages.length - 1}
+                  onClick={() => setMobileStageIndex(i => Math.min(filteredStages.length - 1, i + 1))}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
 
-          <DragOverlay>
-            {activeDeal ? <DealCard deal={activeDeal} isDragging /> : null}
-          </DragOverlay>
-        </DndContext>
+              {/* Active stage header */}
+              {filteredStages[mobileStageIndex] && (
+                <div className="mb-3 flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: filteredStages[mobileStageIndex].color }}
+                  />
+                  <h3 className="font-semibold text-gray-900">{filteredStages[mobileStageIndex].name}</h3>
+                  <span className="text-sm text-gray-500">
+                    {formatCurrency(getDealsForStage(filteredStages[mobileStageIndex].id).reduce((s, d) => s + (Number(d.value) || 0), 0))}
+                  </span>
+                </div>
+              )}
+
+              {/* Deal cards for current stage */}
+              <div className="space-y-3 min-h-[200px]">
+                {filteredStages[mobileStageIndex] && getDealsForStage(filteredStages[mobileStageIndex].id).length === 0 ? (
+                  <div className="text-center py-8 text-gray-400 text-sm">No deals in this stage</div>
+                ) : (
+                  filteredStages[mobileStageIndex] && getDealsForStage(filteredStages[mobileStageIndex].id).map((deal) => (
+                    <DealCard key={deal.id} deal={deal} onClick={() => handleEditDeal(deal)} />
+                  ))
+                )}
+              </div>
+            </div>
+          ) : (
+            /* Desktop: full kanban board */
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCorners}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            >
+              <div className="flex gap-4 overflow-x-auto pb-4" style={{ minHeight: 'calc(100vh - 220px)' }}>
+                {filteredStages.map((stage) => (
+                  <PipelineColumn
+                    key={stage.id}
+                    stage={stage}
+                    deals={getDealsForStage(stage.id)}
+                    onEditDeal={handleEditDeal}
+                    canManageStages={canManageStages}
+                    onEditStage={canManageStages ? handleOpenStageDialog : undefined}
+                    onDeleteStage={canManageStages ? handleDeleteStage : undefined}
+                  />
+                ))}
+              </div>
+
+              <DragOverlay>
+                {activeDeal ? <DealCard deal={activeDeal} isDragging /> : null}
+              </DragOverlay>
+            </DndContext>
+          )}
+        </>
       )}
 
       <DealDialog

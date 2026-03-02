@@ -67,14 +67,14 @@ export default function ReportsPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-6 lg:p-8">
         <div className="text-center py-12 text-gray-500">Loading reports...</div>
       </div>
     )
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-6 lg:p-8">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Financial Reports</h1>
         <p className="text-gray-500 mt-1">Overview of your financial performance</p>
@@ -153,7 +153,7 @@ export default function ReportsPage() {
           <CardTitle>This Month</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8">
             <div>
               <p className="text-sm text-gray-500">Income</p>
               <p className="text-xl font-bold text-green-600">{formatCurrency(stats.monthlyIncome)}</p>
@@ -178,7 +178,7 @@ export default function ReportsPage() {
           <CardTitle>Invoice Summary</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
             <div>
               <p className="text-sm text-gray-500">Total Invoiced</p>
               <p className="text-xl font-bold">{formatCurrency(stats.totalInvoiced)}</p>

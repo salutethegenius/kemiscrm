@@ -233,24 +233,24 @@ export default function ContactsPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-6 lg:p-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Contacts</h1>
           <p className="text-gray-500 mt-1">Manage your leads and contacts</p>
         </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={() => setExportDialogOpen(true)}>
-            <Download className="h-4 w-4 mr-2" />
-            Export
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={() => setExportDialogOpen(true)}>
+            <Download className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Export</span>
           </Button>
-          <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
-            <Upload className="h-4 w-4 mr-2" />
-            Import
+          <Button variant="outline" size="sm" onClick={() => setImportDialogOpen(true)}>
+            <Upload className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Import</span>
           </Button>
-          <Button onClick={() => setDialogOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Contact
+          <Button size="sm" onClick={() => setDialogOpen(true)}>
+            <Plus className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Add Contact</span>
           </Button>
         </div>
       </div>
@@ -283,7 +283,7 @@ export default function ContactsPage() {
       {activeTab === 'all' && (
         <>
           {/* Search and Filters */}
-          <div className="flex items-center space-x-4 mb-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center mb-6">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
@@ -293,36 +293,38 @@ export default function ContactsPage() {
                 className="pl-10"
               />
             </div>
-            <TagManager tags={tags} onUpdate={fetchTags} />
-            {/* View Toggle */}
-            <div className="flex items-center border rounded-lg p-1 bg-gray-50">
-              <Button
-                variant={viewType === 'grid' ? 'default' : 'ghost'}
-                size="sm"
-                className="px-2"
-                onClick={() => setViewType('grid')}
-                title="Grid view"
-              >
-                <LayoutGrid className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewType === 'list' ? 'default' : 'ghost'}
-                size="sm"
-                className="px-2"
-                onClick={() => setViewType('list')}
-                title="List view"
-              >
-                <List className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewType === 'compact' ? 'default' : 'ghost'}
-                size="sm"
-                className="px-2"
-                onClick={() => setViewType('compact')}
-                title="Compact view"
-              >
-                <LayoutList className="h-4 w-4" />
-              </Button>
+            <div className="flex items-center gap-2">
+              <TagManager tags={tags} onUpdate={fetchTags} />
+              {/* View Toggle */}
+              <div className="flex items-center border rounded-lg p-1 bg-gray-50">
+                <Button
+                  variant={viewType === 'grid' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="px-2"
+                  onClick={() => setViewType('grid')}
+                  title="Grid view"
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewType === 'list' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="px-2"
+                  onClick={() => setViewType('list')}
+                  title="List view"
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewType === 'compact' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="px-2"
+                  onClick={() => setViewType('compact')}
+                  title="Compact view"
+                >
+                  <LayoutList className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
 

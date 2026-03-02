@@ -149,8 +149,8 @@ export default function IncomePage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-6 lg:p-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Income</h1>
           <p className="text-gray-500 mt-1">Track revenue and income sources</p>
@@ -201,40 +201,64 @@ export default function IncomePage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="bg-white rounded-lg border overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Date</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Description</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Category</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Source</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Amount</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {filteredIncomes.map((income) => (
-                <tr
-                  key={income.id}
-                  className="hover:bg-gray-50 cursor-pointer"
-                  onClick={() => handleEdit(income)}
-                >
-                  <td className="px-6 py-4 text-gray-600">{formatDate(income.date)}</td>
-                  <td className="px-6 py-4 font-medium">{income.description}</td>
-                  <td className="px-6 py-4">
-                    {income.category && (
-                      <Badge variant="outline" style={{ borderColor: income.category.color, color: income.category.color }}>
+        <>
+          {/* Mobile card view */}
+          <div className="md:hidden space-y-3">
+            {filteredIncomes.map((income) => (
+              <Card key={income.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleEdit(income)}>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-semibold truncate mr-2">{income.description}</span>
+                    <span className="font-semibold text-green-600 shrink-0">{formatCurrency(Number(income.amount))}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm text-gray-500">
+                    <span>{formatDate(income.date)}</span>
+                    {income.source && <span>{income.source}</span>}
+                  </div>
+                  {income.category && (
+                    <div className="mt-2">
+                      <Badge variant="outline" className="text-xs" style={{ borderColor: income.category.color, color: income.category.color }}>
                         {income.category.name}
                       </Badge>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">{income.source || '-'}</td>
-                  <td className="px-6 py-4 font-medium text-green-600">{formatCurrency(Number(income.amount))}</td>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Desktop table view */}
+          <div className="hidden md:block bg-white rounded-lg border overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Date</th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Description</th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Category</th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Source</th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Amount</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y">
+                {filteredIncomes.map((income) => (
+                  <tr key={income.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => handleEdit(income)}>
+                    <td className="px-6 py-4 text-gray-600">{formatDate(income.date)}</td>
+                    <td className="px-6 py-4 font-medium">{income.description}</td>
+                    <td className="px-6 py-4">
+                      {income.category && (
+                        <Badge variant="outline" style={{ borderColor: income.category.color, color: income.category.color }}>
+                          {income.category.name}
+                        </Badge>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-gray-600">{income.source || '-'}</td>
+                    <td className="px-6 py-4 font-medium text-green-600">{formatCurrency(Number(income.amount))}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       <Dialog open={dialogOpen} onOpenChange={handleClose}>

@@ -16,6 +16,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+} from '@/components/ui/sheet'
+import {
   LayoutDashboard,
   Users,
   Kanban,
@@ -39,10 +44,12 @@ import {
   CheckSquare,
   MessageCircle,
   User as UserIcon,
+  Menu,
 } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import type { Organization } from '@/lib/types'
 import { PERMISSIONS } from '@/lib/types'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 // Navigation items with their permission keys
 const navigation = [
@@ -54,7 +61,6 @@ const navigation = [
   { name: 'Calendar', href: '/calendar', icon: Calendar, permission: 'calendar' },
   { name: 'Tasks', href: '/tasks', icon: CheckSquare, permission: 'tasks' },
   { name: 'Email', href: '/email', icon: MessageCircle, permission: 'email' },
-  // { name: 'Messages', href: '/messages', icon: MessageCircle, permission: 'messages' }, // Internal messaging (optional)
 ]
 
 const invoicingNav = [
@@ -89,6 +95,8 @@ export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const isMobile = useIsMobile()
+  const [mobileOpen, setMobileOpen] = useState(false)
   const [permissions, setPermissions] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
@@ -96,12 +104,16 @@ export function Sidebar({ user }: SidebarProps) {
   const [organization, setOrganization] = useState<Organization | null>(null)
   const [userFullName, setUserFullName] = useState<string>('')
 
+  // Close mobile sidebar on navigation
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [pathname])
+
   useEffect(() => {
     fetchUserPermissions()
   }, [])
 
   const fetchUserPermissions = async () => {
-    // Get user's role and full name
     const { data: profile } = await supabase
       .from('user_profiles')
       .select('role, organization_id, full_name')
@@ -113,7 +125,6 @@ export function Sidebar({ user }: SidebarProps) {
     }
 
     if (profile?.role && profile?.organization_id) {
-      // Get permissions for this role
       const { data: perms } = await supabase
         .from('role_permissions')
         .select('permission, enabled')
@@ -126,12 +137,9 @@ export function Sidebar({ user }: SidebarProps) {
         )
         setPermissions(enabledPerms)
       } else {
-        // If no role_permissions are configured yet for this org/role,
-        // fall back to enabling all known permissions so the menu is visible.
         setPermissions(new Set(PERMISSIONS.map(p => p.key)))
       }
 
-      // Fetch organization details
       const { data: org } = await supabase
         .from('organizations')
         .select('id, name, slug, settings, is_master, parent_org_id, max_users, max_storage_mb, billing_status, billing_plan, enabled_features, branding')
@@ -145,7 +153,6 @@ export function Sidebar({ user }: SidebarProps) {
         }
       }
     } else {
-      // Default: show all for users without org (backwards compatibility)
       setPermissions(new Set([
         'dashboard', 'contacts', 'pipeline', 'forms', 'calendar', 'tasks', 'messages',
         'invoices', 'clients', 'payments',
@@ -163,31 +170,25 @@ export function Sidebar({ user }: SidebarProps) {
     router.refresh()
   }
 
-  // Generate initials from full name or email
   const userInitials = userFullName
     ? userFullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
     : user.email?.split('@')[0].slice(0, 2).toUpperCase() || 'U'
   
-  // Display name: prefer full name, fallback to email username
   const displayName = userFullName || user.email?.split('@')[0] || 'User'
 
   const isDemoAccount = user.email === 'demo@krm.bs'
 
   const isFeatureEnabled = (featureKey: string) => {
-    // Demo account sees all features
     if (isDemoAccount) return true
-    // Master org can access everything
     if (organization?.is_master) return true
     if (!organization?.enabled_features || organization.enabled_features.length === 0) return true
     return organization.enabled_features.includes(featureKey)
   }
 
   const hasPermission = (permission: string, featureKey?: string) => {
-    // Demo account sees all menu items
     if (isDemoAccount) return true
     const permitted = permissions.has(permission)
     if (!permitted) return false
-    // If a feature key is provided, also check org feature gating
     return featureKey ? isFeatureEnabled(featureKey) : true
   }
 
@@ -230,8 +231,32 @@ export function Sidebar({ user }: SidebarProps) {
     )
   }
 
-  return (
-    <div className="flex flex-col w-64 bg-white border-r">
+  const renderCollapsibleSection = (title: string, key: string, items: typeof navigation) => {
+    if (items.length === 0) return null
+    return (
+      <div className="pt-4" key={key}>
+        <button
+          onClick={() => toggleSection(key)}
+          className="w-full flex items-center justify-between px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
+        >
+          <span>{title}</span>
+          {isSectionExpanded(key) ? (
+            <ChevronDown className="h-3.5 w-3.5" />
+          ) : (
+            <ChevronRight className="h-3.5 w-3.5" />
+          )}
+        </button>
+        {isSectionExpanded(key) && (
+          <div className="mt-2 space-y-1">
+            {items.map(renderNavItem)}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  const sidebarContent = (
+    <>
       {/* Logo */}
       <div className="flex flex-col gap-1 h-auto min-h-[4rem] px-4 py-3 border-b">
         <Link href="/dashboard" className="flex items-center">
@@ -246,98 +271,13 @@ export function Sidebar({ user }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
-        {/* Main CRM - shown for all accounts */}
         {filteredNav.map(renderNavItem)}
+        {renderCollapsibleSection('Invoicing', 'invoicing', filteredInvoicing)}
+        {renderCollapsibleSection('HR', 'hr', filteredHr)}
+        {renderCollapsibleSection('Accounting', 'accounting', filteredAccounting)}
+        {renderCollapsibleSection('Admin', 'admin', filteredAdmin)}
 
-        {/* Invoicing Section */}
-        {filteredInvoicing.length > 0 && (
-          <div className="pt-4">
-            <button
-              onClick={() => toggleSection('invoicing')}
-              className="w-full flex items-center justify-between px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
-            >
-              <span>Invoicing</span>
-              {isSectionExpanded('invoicing') ? (
-                <ChevronDown className="h-3.5 w-3.5" />
-              ) : (
-                <ChevronRight className="h-3.5 w-3.5" />
-              )}
-            </button>
-            {isSectionExpanded('invoicing') && (
-              <div className="mt-2 space-y-1">
-                {filteredInvoicing.map(renderNavItem)}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* HR Section */}
-        {filteredHr.length > 0 && (
-          <div className="pt-4">
-            <button
-              onClick={() => toggleSection('hr')}
-              className="w-full flex items-center justify-between px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
-            >
-              <span>HR</span>
-              {isSectionExpanded('hr') ? (
-                <ChevronDown className="h-3.5 w-3.5" />
-              ) : (
-                <ChevronRight className="h-3.5 w-3.5" />
-              )}
-            </button>
-            {isSectionExpanded('hr') && (
-              <div className="mt-2 space-y-1">
-                {filteredHr.map(renderNavItem)}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Accounting Section */}
-        {filteredAccounting.length > 0 && (
-          <div className="pt-4">
-            <button
-              onClick={() => toggleSection('accounting')}
-              className="w-full flex items-center justify-between px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
-            >
-              <span>Accounting</span>
-              {isSectionExpanded('accounting') ? (
-                <ChevronDown className="h-3.5 w-3.5" />
-              ) : (
-                <ChevronRight className="h-3.5 w-3.5" />
-              )}
-            </button>
-            {isSectionExpanded('accounting') && (
-              <div className="mt-2 space-y-1">
-                {filteredAccounting.map(renderNavItem)}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Admin Section */}
-        {filteredAdmin.length > 0 && (
-          <div className="pt-4">
-            <button
-              onClick={() => toggleSection('admin')}
-              className="w-full flex items-center justify-between px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
-            >
-              <span>Admin</span>
-              {isSectionExpanded('admin') ? (
-                <ChevronDown className="h-3.5 w-3.5" />
-              ) : (
-                <ChevronRight className="h-3.5 w-3.5" />
-              )}
-            </button>
-            {isSectionExpanded('admin') && (
-              <div className="mt-2 space-y-1">
-                {filteredAdmin.map(renderNavItem)}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Master Admin Section - only for master platform org */}
+        {/* Master Admin Section */}
         {organization?.is_master === true && (
           <div className="pt-4">
             <button
@@ -408,6 +348,43 @@ export function Sidebar({ user }: SidebarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+    </>
+  )
+
+  if (isMobile) {
+    return (
+      <>
+        {/* Mobile top bar */}
+        <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between h-14 px-4 bg-white border-b">
+          <Button variant="ghost" size="icon" onClick={() => setMobileOpen(true)}>
+            <Menu className="h-5 w-5" />
+          </Button>
+          <Link href="/dashboard">
+            <KrmFullLockup variant="light" height={24} />
+          </Link>
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="bg-primary/10 text-primary text-sm">
+              {userInitials}
+            </AvatarFallback>
+          </Avatar>
+        </div>
+
+        {/* Mobile sidebar sheet */}
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetContent side="left" className="w-64 p-0">
+            <SheetTitle className="sr-only">Navigation</SheetTitle>
+            <div className="flex flex-col h-full">
+              {sidebarContent}
+            </div>
+          </SheetContent>
+        </Sheet>
+      </>
+    )
+  }
+
+  return (
+    <div className="hidden md:flex flex-col w-64 bg-white border-r">
+      {sidebarContent}
     </div>
   )
 }

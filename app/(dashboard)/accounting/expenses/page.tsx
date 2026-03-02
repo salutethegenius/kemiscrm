@@ -91,8 +91,8 @@ export default function ExpensesPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-6 lg:p-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Expenses</h1>
           <p className="text-gray-500 mt-1">Track and manage expenses</p>
@@ -143,44 +143,71 @@ export default function ExpensesPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="bg-white rounded-lg border overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Date</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Description</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Category</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Vendor</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Amount</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {filteredExpenses.map((expense) => (
-                <tr
-                  key={expense.id}
-                  className="hover:bg-gray-50 cursor-pointer"
-                  onClick={() => handleEdit(expense)}
-                >
-                  <td className="px-6 py-4 text-gray-600">{formatDate(expense.date)}</td>
-                  <td className="px-6 py-4 font-medium">{expense.description}</td>
-                  <td className="px-6 py-4">
-                    {expense.category && (
-                      <Badge variant="outline" style={{ borderColor: expense.category.color, color: expense.category.color }}>
-                        {expense.category.name}
-                      </Badge>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">{expense.vendor || '-'}</td>
-                  <td className="px-6 py-4 font-medium text-red-600">{formatCurrency(Number(expense.amount))}</td>
-                  <td className="px-6 py-4">
+        <>
+          {/* Mobile card view */}
+          <div className="md:hidden space-y-3">
+            {filteredExpenses.map((expense) => (
+              <Card key={expense.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleEdit(expense)}>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-semibold truncate mr-2">{expense.description}</span>
+                    <span className="font-semibold text-red-600 shrink-0">{formatCurrency(Number(expense.amount))}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">{formatDate(expense.date)}</span>
                     <Badge variant={statusColors[expense.status]}>{expense.status}</Badge>
-                  </td>
+                  </div>
+                  {(expense.vendor || expense.category) && (
+                    <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
+                      {expense.vendor && <span>{expense.vendor}</span>}
+                      {expense.category && (
+                        <Badge variant="outline" className="text-xs" style={{ borderColor: expense.category.color, color: expense.category.color }}>
+                          {expense.category.name}
+                        </Badge>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Desktop table view */}
+          <div className="hidden md:block bg-white rounded-lg border overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Date</th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Description</th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Category</th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Vendor</th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Amount</th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y">
+                {filteredExpenses.map((expense) => (
+                  <tr key={expense.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => handleEdit(expense)}>
+                    <td className="px-6 py-4 text-gray-600">{formatDate(expense.date)}</td>
+                    <td className="px-6 py-4 font-medium">{expense.description}</td>
+                    <td className="px-6 py-4">
+                      {expense.category && (
+                        <Badge variant="outline" style={{ borderColor: expense.category.color, color: expense.category.color }}>
+                          {expense.category.name}
+                        </Badge>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-gray-600">{expense.vendor || '-'}</td>
+                    <td className="px-6 py-4 font-medium text-red-600">{formatCurrency(Number(expense.amount))}</td>
+                    <td className="px-6 py-4">
+                      <Badge variant={statusColors[expense.status]}>{expense.status}</Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       <ExpenseDialog
