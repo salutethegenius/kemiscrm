@@ -20,7 +20,7 @@ export function ClosingSection({ isOwner }: ClosingSectionProps) {
             Section 8
           </h2>
           <h3 className="text-2xl md:text-3xl font-[var(--font-bebas)] tracking-[0.18em] text-[var(--krm-navy)]">
-            KRM™ BUILT IN NASSAU. STRUCTURED FOR SERIOUS BUSINESS.
+            KRM™ BUILT IN THE BAHAMAS. STRUCTURED FOR SERIOUS BUSINESS.
           </h3>
         </div>
         <div className="flex flex-wrap gap-3">

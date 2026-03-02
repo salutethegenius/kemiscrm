@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { Footer } from '@/components/footer'
 import { HomeHeader } from './HomeHeader'
 import { HeroSection } from './HeroSection'
 import { ProblemSection } from './ProblemSection'
@@ -32,8 +33,8 @@ export default async function HomePage() {
   const isAuthenticated = !!user
 
   return (
-    <div className="min-h-screen bg-[var(--krm-off-white)] text-foreground">
-      <main className="mx-auto max-w-6xl px-6 pb-grid-4 pt-grid">
+    <div className="flex min-h-screen flex-col bg-[var(--krm-off-white)] text-foreground">
+      <main className="mx-auto flex-1 max-w-6xl px-6 pb-grid-4 pt-grid">
         <HomeHeader isAuthenticated={isAuthenticated} />
         <div className="space-y-grid-3">
           <HeroSection isOwner={isOwner} isAuthenticated={isAuthenticated} />
@@ -47,6 +48,7 @@ export default async function HomePage() {
           <ClosingSection isOwner={isOwner} />
         </div>
       </main>
+      <Footer />
     </div>
   )
 }
