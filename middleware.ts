@@ -1,7 +1,14 @@
-import { type NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Allow public access to the logo system
+  if (pathname === '/logo' || pathname.startsWith('/logo/')) {
+    return NextResponse.next()
+  }
+
   return await updateSession(request)
 }
 
