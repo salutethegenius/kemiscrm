@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+import Image from "next/image"
 import { ArrowRight, Play } from "lucide-react"
 import { useIntersection } from "@/hooks/use-intersection"
 
@@ -9,7 +11,7 @@ export function HeroSection() {
   return (
     <section
       ref={ref}
-      className="relative min-h-screen overflow-hidden pt-24 pb-20 lg:pt-32 lg:pb-28"
+      className="relative min-h-screen pt-24 pb-20 lg:pt-32 lg:pb-28"
     >
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-accent/5 blur-3xl" />
@@ -17,7 +19,7 @@ export function HeroSection() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="grid items-center gap-16 lg:grid-cols-2 lg:gap-20">
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <div
               className={`${isVisible ? "animate-fade-up" : "opacity-0"}`}
@@ -73,20 +75,20 @@ export function HeroSection() {
                 isVisible ? "animate-fade-up delay-500" : "opacity-0"
               }`}
             >
-              <a
-                href="#cta"
+              <Link
+                href="/login?demo=1"
                 className="group inline-flex items-center gap-2.5 rounded-xl bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:shadow-xl hover:shadow-primary/20"
               >
-                Book 15-Min Walkthrough
+                Explore demo
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </a>
-              <a
+              </Link>
+              <Link
                 href="#modules"
                 className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--landing-border)] bg-[var(--landing-card)]/50 px-7 py-3.5 text-sm font-semibold text-foreground backdrop-blur-sm transition-all duration-300 hover:border-accent/50 hover:bg-[var(--landing-card)]"
               >
                 <Play className="h-4 w-4 text-accent" />
                 See Live Dashboard
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -95,34 +97,16 @@ export function HeroSection() {
               isVisible ? "animate-scale-in delay-300" : "opacity-0"
             }`}
           >
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { bg: "bg-primary", label: "CRM" },
-                { bg: "bg-primary/80", label: "HR" },
-                { bg: "bg-accent", label: "Finance" },
-                { bg: "bg-accent/80", label: "Invoice" },
-                { bg: "bg-primary", label: "Comply" },
-                { bg: "bg-secondary", label: "Reports" },
-                { bg: "bg-secondary", label: "Pipeline" },
-                { bg: "bg-accent/60", label: "Audit" },
-                { bg: "bg-primary/60", label: "Data" },
-              ].map((block, i) => (
-                <div
-                  key={i}
-                  className={`group relative aspect-square cursor-default overflow-hidden rounded-2xl ${block.bg} transition-all duration-500 hover:scale-[1.03] hover:shadow-lg`}
-                >
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <span className={`text-xs font-semibold tracking-wider uppercase ${
-                      block.bg.includes("secondary") ? "text-foreground" : "text-primary-foreground"
-                    }`}>
-                      {block.label}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 opacity-10">
-                    <div className="absolute bottom-0 left-0 h-1/2 w-full bg-gradient-to-t from-black/20 to-transparent" />
-                  </div>
-                </div>
-              ))}
+            <div className="overflow-hidden rounded-2xl border border-[var(--landing-border)] shadow-2xl ring-1 ring-black/5 lg:-mr-32 xl:-mr-48">
+              <Image
+                src="/dashboard-screenshot.png"
+                alt="KRM Dashboard - Contacts, Pipeline, Tasks, and unified CRM for Bahamian businesses"
+                width={1600}
+                height={1000}
+                className="w-full object-cover"
+                priority
+                sizes="(max-width: 1024px) 100vw, min(55vw, 900px)"
+              />
             </div>
 
             <div className="absolute -bottom-4 -left-4 rounded-xl border border-[var(--landing-border)] bg-[var(--landing-card)] px-4 py-3 shadow-lg backdrop-blur-sm">
@@ -138,6 +122,43 @@ export function HeroSection() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Module blocks - key visual element */}
+        <div
+          className={`mt-16 lg:mt-20 ${
+            isVisible ? "animate-fade-up delay-500" : "opacity-0"
+          }`}
+        >
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-9">
+            {[
+              { bg: "bg-primary", label: "CRM" },
+              { bg: "bg-primary/80", label: "HR" },
+              { bg: "bg-accent", label: "Finance" },
+              { bg: "bg-accent/80", label: "Invoice" },
+              { bg: "bg-primary", label: "Comply" },
+              { bg: "bg-secondary", label: "Reports" },
+              { bg: "bg-secondary", label: "Pipeline" },
+              { bg: "bg-accent/60", label: "Audit" },
+              { bg: "bg-primary/60", label: "Data" },
+            ].map((block, i) => (
+              <div
+                key={i}
+                className={`group relative aspect-square cursor-default overflow-hidden rounded-2xl ${block.bg} transition-all duration-500 hover:scale-[1.05] hover:shadow-lg`}
+              >
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <span className={`text-[10px] font-semibold tracking-wider uppercase sm:text-xs ${
+                    block.bg.includes("secondary") ? "text-foreground" : "text-primary-foreground"
+                  }`}>
+                    {block.label}
+                  </span>
+                </div>
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute bottom-0 left-0 h-1/2 w-full bg-gradient-to-t from-black/20 to-transparent" />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
