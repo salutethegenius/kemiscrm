@@ -32,7 +32,7 @@ export function Navigation() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         <Link href="/" className="flex items-center gap-3 group">
-          <KrmFullLockup variant="light" showSub height={28} />
+          <KrmFullLockup variant="light" showSub height={44} />
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">

@@ -9,7 +9,7 @@ export function HomeHeader({ isAuthenticated }: HomeHeaderProps) {
   return (
     <header className="flex items-center justify-between py-grid">
       <Link href="/" className="inline-flex items-center">
-        <KrmFullLockup variant="light" showSub height={32} />
+        <KrmFullLockup variant="light" showSub height={48} />
       </Link>
       <nav className="flex items-center gap-4 text-sm font-medium">
         {isAuthenticated ? (
