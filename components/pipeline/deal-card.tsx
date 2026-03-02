@@ -36,7 +36,7 @@ export function DealCard({ deal, isDragging, onClick }: DealCardProps) {
       {...attributes}
       {...listeners}
       className={`cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow ${
-        isDragging ? 'shadow-lg ring-2 ring-blue-400' : ''
+        isDragging ? 'shadow-lg ring-2 ring-primary' : ''
       }`}
       onClick={onClick}
     >
@@ -58,7 +58,7 @@ export function DealCard({ deal, isDragging, onClick }: DealCardProps) {
         {deal.contact && (
           <div className="flex items-center space-x-2 pt-2 border-t">
             <Avatar className="h-6 w-6">
-              <AvatarFallback className="bg-blue-100 text-blue-700 text-xs">
+              <AvatarFallback className="bg-primary/10 text-primary text-xs">
                 {deal.contact.name.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>

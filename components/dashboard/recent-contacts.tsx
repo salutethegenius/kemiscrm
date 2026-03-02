@@ -43,7 +43,7 @@ export function RecentContacts() {
     return (
       <div className="text-center py-8 text-gray-500">
         <p>No contacts yet.</p>
-        <Link href="/contacts" className="text-blue-600 hover:underline mt-2 inline-block">
+        <Link href="/contacts" className="text-primary hover:underline mt-2 inline-block">
           Add your first contact
         </Link>
       </div>
@@ -59,7 +59,7 @@ export function RecentContacts() {
           className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors"
         >
           <Avatar>
-            <AvatarFallback className="bg-blue-100 text-blue-700">
+            <AvatarFallback className="bg-primary/10 text-primary">
               {contact.name.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>

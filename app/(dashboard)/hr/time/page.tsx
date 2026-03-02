@@ -384,7 +384,7 @@ export default function TimeTrackingPage() {
                           onClick={() => { setCurrentProject(proj); setCustomProject(''); }}
                           className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
                             currentProject === proj && !customProject
-                              ? 'bg-blue-100 text-blue-700 border-blue-300 border'
+                              ? 'bg-primary/10 text-primary border-primary/30 border'
                               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                           }`}
                         >
@@ -459,8 +459,8 @@ export default function TimeTrackingPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <Card>
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <Timer className="h-6 w-6 text-blue-600" />
+            <div className="p-3 bg-primary/10 rounded-lg">
+              <Timer className="h-6 w-6 text-primary" />
             </div>
             <div>
               <p className="text-sm text-gray-500">This Week</p>

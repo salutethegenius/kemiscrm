@@ -289,7 +289,7 @@ export function ImportDialog({ open, onClose, onSuccess, groups = [] }: ImportDi
               {/* File Upload Area */}
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
               >
                 <input
                   ref={fileInputRef}
@@ -300,7 +300,7 @@ export function ImportDialog({ open, onClose, onSuccess, groups = [] }: ImportDi
                 />
                 {file ? (
                   <div className="flex items-center justify-center space-x-2">
-                    <FileText className="h-8 w-8 text-blue-600" />
+                    <FileText className="h-8 w-8 text-primary" />
                     <div className="text-left">
                       <p className="font-medium">{file.name}</p>
                       <p className="text-sm text-gray-500">{(file.size / 1024).toFixed(1)} KB</p>

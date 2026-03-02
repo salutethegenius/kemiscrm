@@ -1,0 +1,29 @@
+export function ShiftSection() {
+  return (
+    <section className="py-grid-2 border-t border-[var(--border)]">
+      <div className="grid gap-grid md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] items-start">
+        <div>
+          <h2 className="text-sm font-mono tracking-[0.18em] uppercase text-[var(--krm-slate)] mb-2">
+            Section 2
+          </h2>
+          <h3 className="text-2xl md:text-3xl font-[var(--font-bebas)] tracking-[0.18em] text-[var(--krm-navy)]">
+            KRM replaces the patchwork
+          </h3>
+        </div>
+        <div className="space-y-2 text-sm text-[var(--krm-slate)]">
+          <ul className="space-y-1">
+            <li>One login.</li>
+            <li>One database.</li>
+            <li>Role-based control.</li>
+            <li>Audit visibility.</li>
+            <li>Structured workflows.</li>
+          </ul>
+          <p className="mt-3 font-medium text-[var(--krm-navy)]">
+            KRM is not another app. It is your operating layer.
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
+

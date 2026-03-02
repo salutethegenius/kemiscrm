@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { KrmFullLockup } from '@/components/logo/krm-logo'
 import { useToast } from '@/components/ui/use-toast'
 
 export default function LoginPage() {
@@ -47,24 +48,24 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen flex flex-col bg-[#F5F3EE]">
       {/* Subtle background pattern */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwRTFDMkYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-80" />
       
       {/* Main content */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-12 relative">
-        {/* Hero headline */}
-        <div className="text-center mb-8 space-y-3">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
-            Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">KRM</span>
-          </h1>
-          <p className="text-lg text-gray-600 max-w-md mx-auto">
-            Kemis Relationship Management — built in Nassau, for Bahamian businesses.
+        {/* Logo and headline */}
+        <div className="text-center mb-8 space-y-4">
+          <div className="flex justify-center">
+            <KrmFullLockup variant="light" showSub height={48} />
+          </div>
+          <p className="text-lg text-[#4A5D6E] max-w-md mx-auto">
+            Kemis Relationship Management — built in the Bahamas, for Bahamian businesses.
           </p>
         </div>
 
         {/* Login card */}
-        <Card className="w-full max-w-md shadow-xl shadow-gray-200/50 border-0 bg-white/80 backdrop-blur-sm">
+        <Card className="w-full max-w-md shadow-xl shadow-[#0E1C2F]/10 border-0 bg-white/90 backdrop-blur-sm">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-xl font-semibold text-center text-gray-800">Sign in to your account</CardTitle>
             <CardDescription className="text-center">
@@ -82,7 +83,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                  className="h-11 bg-white border-gray-200 focus:border-[#0E1C2F] focus:ring-[#0E1C2F]/20"
                 />
               </div>
               <div className="space-y-2">
@@ -94,21 +95,21 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-11 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                  className="h-11 bg-white border-gray-200 focus:border-[#0E1C2F] focus:ring-[#0E1C2F]/20"
                 />
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4 pt-2">
               <Button 
                 type="submit" 
-                className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium shadow-md shadow-blue-500/25 transition-all duration-200" 
+                className="w-full h-11 bg-[#0E1C2F] hover:bg-[#172440] text-white font-medium shadow-md shadow-[#0E1C2F]/20 transition-all duration-200" 
                 disabled={loading}
               >
                 {loading ? 'Signing in...' : 'Sign in'}
               </Button>
               <p className="text-sm text-center text-gray-500">
                 Don&apos;t have an account?{' '}
-                <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-medium hover:underline">
+                <Link href="/signup" className="text-[#0E1C2F] hover:text-[#172440] font-medium hover:underline">
                   Sign up
                 </Link>
               </p>
@@ -118,9 +119,9 @@ export default function LoginPage() {
       </main>
 
       {/* Footer */}
-      <footer className="relative py-6 px-4 text-center border-t border-gray-200/50 bg-white/30 backdrop-blur-sm">
+      <footer className="relative py-6 px-4 text-center border-t border-[#0E1C2F]/10 bg-white/30 backdrop-blur-sm">
         <p className="text-sm text-gray-500">
-          &copy; {new Date().getFullYear()} KRM — Kemis Relationship Management. Built in Nassau, built for Nassau.
+          &copy; {new Date().getFullYear()} KRM — Kemis Relationship Management. Built in the Bahamas, built for Bahamian businesses.
         </p>
       </footer>
     </div>

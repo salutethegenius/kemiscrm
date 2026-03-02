@@ -34,7 +34,7 @@ export function RecentDeals() {
     return (
       <div className="text-center py-8 text-gray-500">
         <p>No deals yet.</p>
-        <Link href="/pipeline" className="text-blue-600 hover:underline mt-2 inline-block">
+        <Link href="/pipeline" className="text-primary hover:underline mt-2 inline-block">
           Create your first deal
         </Link>
       </div>

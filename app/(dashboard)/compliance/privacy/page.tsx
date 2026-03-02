@@ -7,7 +7,7 @@ export default function PrivacyPolicyPage() {
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <div className="mb-6">
-        <Link href="/compliance" className="text-blue-600 hover:underline text-sm">
+        <Link href="/compliance" className="text-primary hover:underline text-sm">
           ← Back to Compliance
         </Link>
         <h1 className="text-3xl font-bold text-gray-900 mt-4">Privacy Policy</h1>
@@ -98,7 +98,7 @@ export default function PrivacyPolicyPage() {
               <li><strong>Right to Withdraw Consent:</strong> Withdraw consent for data processing at any time</li>
             </ul>
             <p className="text-gray-700 leading-relaxed mt-4">
-              To exercise these rights, please visit the <Link href="/compliance" className="text-blue-600 hover:underline">Compliance page</Link> or contact us directly.
+              To exercise these rights, please visit the <Link href="/compliance" className="text-primary hover:underline">Compliance page</Link> or contact us directly.
             </p>
           </section>
 

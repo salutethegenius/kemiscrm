@@ -200,7 +200,7 @@ export default function CompliancePage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Link href="/compliance/privacy" className="text-blue-600 hover:underline">
+          <Link href="/compliance/privacy" className="text-primary hover:underline">
             View Privacy Policy →
           </Link>
         </CardContent>

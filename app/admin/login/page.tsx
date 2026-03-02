@@ -15,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { KrmFullLockup } from '@/components/logo/krm-logo'
 import { useToast } from '@/components/ui/use-toast'
 
 export default function AdminLoginPage() {
@@ -95,34 +96,34 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen flex flex-col bg-[#0E1C2F]">
       {/* Subtle grid pattern */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
       
       {/* Main content */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-12 relative">
-        {/* Hero headline */}
-        <div className="text-center mb-8 space-y-3">
-          <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">KRM</span> Admin
-          </h1>
-          <p className="text-lg text-slate-400 max-w-md mx-auto">
+        {/* Logo and headline */}
+        <div className="text-center mb-8 space-y-4">
+          <div className="flex justify-center">
+            <KrmFullLockup variant="dark" showSub height={48} />
+          </div>
+          <p className="text-lg text-white/70 max-w-md mx-auto">
             Master portal for managing client sub-accounts
           </p>
         </div>
 
         {/* Login card */}
-        <Card className="w-full max-w-md shadow-2xl shadow-black/30 border-slate-700/50 bg-slate-800/80 backdrop-blur-sm">
+        <Card className="w-full max-w-md shadow-2xl shadow-black/30 border-white/10 bg-[#172440]/90 backdrop-blur-sm">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-xl font-semibold text-center text-white">Admin Sign In</CardTitle>
-            <CardDescription className="text-center text-slate-400">
+            <CardDescription className="text-center text-white/60">
               Enter your admin credentials to continue
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleLogin}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-slate-200">
+                <Label htmlFor="email" className="text-white/90">
                   Admin Email
                 </Label>
                 <Input
@@ -132,11 +133,11 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500"
+                  className="h-11 bg-white/5 border-white/20 text-white placeholder:text-slate-500 focus:border-[#C4AB78] focus:ring-[#C4AB78]/30"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-slate-200">
+                <Label htmlFor="password" className="text-white/90">
                   Password
                 </Label>
                 <Input
@@ -146,21 +147,21 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-11 bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500"
+                  className="h-11 bg-white/5 border-white/20 text-white placeholder:text-slate-500 focus:border-[#C4AB78] focus:ring-[#C4AB78]/30"
                 />
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4 pt-2">
               <Button 
                 type="submit" 
-                className="w-full h-11 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-medium shadow-md shadow-emerald-500/25 transition-all duration-200" 
+                className="w-full h-11 bg-[#C4AB78] hover:bg-[#9E8A5C] text-[#0E1C2F] font-medium shadow-md shadow-[#9E8A5C]/30 transition-all duration-200" 
                 disabled={loading}
               >
                 {loading ? 'Signing in...' : 'Sign in as Admin'}
               </Button>
-              <p className="text-xs text-center text-slate-500">
+              <p className="text-xs text-center text-white/50">
                 This portal is for KRM platform master administrators.{' '}
-                <Link href="/login" className="text-emerald-400 hover:text-emerald-300 hover:underline">
+                <Link href="/login" className="text-[#C4AB78] hover:text-[#E5D9B8] hover:underline">
                   Regular login
                 </Link>
               </p>
@@ -170,9 +171,9 @@ export default function AdminLoginPage() {
       </main>
 
       {/* Footer */}
-      <footer className="relative py-6 px-4 text-center border-t border-slate-700/50 bg-slate-900/30 backdrop-blur-sm">
-        <p className="text-sm text-slate-500">
-          &copy; {new Date().getFullYear()} KRM — Kemis Relationship Management. Built in Nassau, built for Nassau.
+      <footer className="relative py-6 px-4 text-center border-t border-white/10 bg-[#172440]/50 backdrop-blur-sm">
+        <p className="text-sm text-white/50">
+          &copy; {new Date().getFullYear()} KRM — Kemis Relationship Management. Built in the Bahamas, built for Bahamian businesses.
         </p>
       </footer>
     </div>

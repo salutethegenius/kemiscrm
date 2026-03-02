@@ -141,7 +141,7 @@ export default function MasterBillingPage() {
               <DollarSign className="h-3 w-3" />
               Est. Monthly (Active)
             </p>
-            <p className="text-2xl font-bold text-blue-600 mt-2">
+            <p className="text-2xl font-bold text-primary mt-2">
               ${totalMonthly.toLocaleString()}
             </p>
           </CardContent>

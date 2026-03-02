@@ -27,7 +27,7 @@ export function PipelineColumn({ stage, deals, onEditDeal, canManageStages, onEd
   return (
     <div
       className={`flex-shrink-0 w-80 bg-gray-50 rounded-lg flex flex-col ${
-        isOver ? 'ring-2 ring-blue-400 ring-opacity-50' : ''
+        isOver ? 'ring-2 ring-primary ring-opacity-50' : ''
       }`}
     >
       {/* Column Header */}

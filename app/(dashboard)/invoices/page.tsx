@@ -221,7 +221,7 @@ export default function InvoicesPage() {
         <Card>
           <CardContent className="p-4">
             <p className="text-sm text-gray-500">Pending</p>
-            <p className="text-2xl font-bold text-blue-600">{formatCurrency(stats.pending)}</p>
+            <p className="text-2xl font-bold text-primary">{formatCurrency(stats.pending)}</p>
           </CardContent>
         </Card>
         <Card>

@@ -14,7 +14,7 @@ const ROLES: UserRole[] = ['admin', 'owner', 'manager', 'accountant', 'user']
 const roleColors: Record<UserRole, string> = {
   admin: 'bg-red-100 text-red-700',
   owner: 'bg-purple-100 text-purple-700',
-  manager: 'bg-blue-100 text-blue-700',
+  manager: 'bg-primary/10 text-primary',
   accountant: 'bg-green-100 text-green-700',
   user: 'bg-gray-100 text-gray-700',
 }

@@ -334,7 +334,7 @@ export default function MessagesPage() {
                 onClick={() => setSelectedId(conv.id)}
                 className={
                   'w-full flex items-center gap-3 p-4 text-left border-b hover:bg-gray-50 transition-colors ' +
-                  (selectedId === conv.id ? 'bg-blue-50 border-l-4 border-l-blue-600' : '')
+                  (selectedId === conv.id ? 'bg-primary/5 border-l-4 border-l-primary' : '')
                 }
               >
                 <Avatar className="h-10 w-10 shrink-0">
@@ -357,7 +357,7 @@ export default function MessagesPage() {
                   </p>
                 </div>
                 {conv.unreadCount && conv.unreadCount > 0 ? (
-                  <span className="shrink-0 rounded-full bg-blue-600 text-white text-xs font-medium px-2 py-0.5">
+                  <span className="shrink-0 rounded-full bg-primary text-primary-foreground text-xs font-medium px-2 py-0.5">
                     {conv.unreadCount}
                   </span>
                 ) : null}
@@ -408,7 +408,7 @@ export default function MessagesPage() {
                       className={
                         'max-w-[75%] rounded-lg px-4 py-2 ' +
                         (isMe
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-primary text-primary-foreground'
                           : 'bg-gray-100 text-gray-900')
                       }
                     >
@@ -416,7 +416,7 @@ export default function MessagesPage() {
                       <p
                         className={
                           'text-xs mt-1 ' +
-                          (isMe ? 'text-blue-200' : 'text-gray-400')
+                          (isMe ? 'text-primary/80' : 'text-gray-400')
                         }
                       >
                         {new Date(msg.created_at).toLocaleString(undefined, {
@@ -497,7 +497,7 @@ export default function MessagesPage() {
                   className={
                     'w-full flex items-center gap-3 p-3 text-left transition-colors ' +
                     (selectedUserId === u.id 
-                      ? 'bg-blue-50 border-l-4 border-l-blue-600' 
+                      ? 'bg-primary/5 border-l-4 border-l-primary' 
                       : 'hover:bg-gray-50 border-l-4 border-l-transparent')
                   }
                 >

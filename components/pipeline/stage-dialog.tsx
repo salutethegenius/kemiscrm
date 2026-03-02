@@ -121,7 +121,7 @@ export function StageDialog({ open, onClose, onSuccess, stage, nextPosition, pip
                 <button
                   key={c}
                   type="button"
-                  className="w-8 h-8 rounded-full border-2 border-gray-200 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-8 h-8 rounded-full border-2 border-gray-200 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
                   style={{ backgroundColor: c }}
                   aria-label={`Color ${c}`}
                   onClick={() => setFormData((p) => ({ ...p, color: c }))}

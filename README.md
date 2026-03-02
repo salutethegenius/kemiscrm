@@ -1,22 +1,132 @@
 # KRM — Kemis Relationship Management
 
-KRM is a homegrown relationship management platform built in Nassau for Bahamian businesses, combining CRM, billing, HR, accounting, email, and compliance in one place.
+A full-featured relationship management platform built in the Bahamas for Bahamian businesses. KRM unifies CRM, invoicing, HR, accounting, email, compliance, and internal collaboration in a single, sovereign, multi-tenant SaaS application.
 
-## Features
+---
 
-- **CRM**: Contacts, Pipeline, Forms, Calendar
-- **Invoicing**: Invoices, Clients, Payments
-- **HR**: Employees, Departments, Time Tracking
-- **Accounting**: Expenses, Income, Reports
-- **Admin**: User Management, Role Permissions
+## Overview
+
+KRM (Kemis Relationship Management) is an all-in-one business platform designed for Bahamian organizations. It provides:
+
+- **Customer relationship management** — contacts, pipeline, deals, forms, calendar, tasks
+- **Invoicing & payments** — clients, invoices, payment tracking
+- **HR** — employees, departments, time tracking
+- **Accounting** — expenses, income, reports
+- **Email integration** — Gmail OAuth and IMAP/SMTP for sending and syncing
+- **Internal messaging** — 1:1 conversations within an organization
+- **Landing pages** — customizable public pages with embedded forms
+- **Compliance** — Bahamas Data Protection Act and GDPR readiness (data export, deletion, audit logs, privacy policy)
+- **Platform administration** — master org with sub-accounts, billing, and feature gating
+
+The application supports **multi-tenancy** via organizations: each organization has its own data, users, and configurable permissions. A **master platform org** can manage client sub-accounts (limits, billing plans, enabled features, branding).
+
+---
+
+## Features in Detail
+
+### CRM
+| Feature | Description |
+|--------|-------------|
+| **Contacts** | Manage leads and customers with tags, groups, status, notes, import/export |
+| **Pipeline** | Kanban-style deal board with stages, drag-and-drop, deal values |
+| **Forms** | Custom lead forms with text, email, phone, textarea, select fields; public form URLs |
+| **Landing Pages** | Publish marketing pages with forms, custom styling, slugs |
+| **Calendar** | Embedded external calendar support |
+| **Tasks** | Tasks linked to contacts/deals with due dates, assignment, completion |
+| **Email** | Connect Gmail or IMAP/SMTP; send and sync email from the app |
+| **Messages** | Internal 1:1 messaging between organization members |
+
+### Invoicing
+| Feature | Description |
+|--------|-------------|
+| **Clients** | Company records with contacts, addresses, tax ID, POC |
+| **Invoices** | Create, send, track invoices; draft/sent/paid/overdue status |
+| **Payments** | Record payments against invoices with method and date |
+
+### HR
+| Feature | Description |
+|--------|-------------|
+| **Employees** | Employee records with department, hire date, salary, employment type |
+| **Departments** | Organizational structure with manager assignment |
+| **Time Tracking** | Clock in/out, break minutes, approval workflow, project tagging |
+
+### Accounting
+| Feature | Description |
+|--------|-------------|
+| **Expenses** | Track expenses by category, vendor, status, employee |
+| **Income** | Log income by category and source |
+| **Reports** | Financial reporting and summaries |
+
+### Admin & Compliance
+| Feature | Description |
+|--------|-------------|
+| **User Management** | Invite users, assign roles (admin, owner, manager, accountant, user) |
+| **Role Permissions** | Fine-grained permissions per role (e.g. dashboard, contacts, invoices) |
+| **Compliance** | Data export, deletion requests, privacy policy, audit logs |
+| **Platform (Master)** | Sub-accounts, billing plans, storage limits, feature toggles |
+
+---
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
-- **Database**: Supabase (PostgreSQL)
-- **Styling**: Tailwind CSS + shadcn/ui
-- **Authentication**: Supabase Auth
-- **Deployment**: Railway
+| Layer | Technology |
+|-------|------------|
+| **Framework** | Next.js 14 (App Router) |
+| **Language** | TypeScript |
+| **Database** | Supabase (PostgreSQL) |
+| **Auth** | Supabase Auth |
+| **Styling** | Tailwind CSS, shadcn/ui (Radix) |
+| **Forms** | React Hook Form, Zod |
+| **Drag & Drop** | @dnd-kit (pipeline board) |
+| **Email** | Nodemailer, Gmail API, IMAP/SMTP |
+| **Deployment** | Railway (Nixpacks) |
+
+---
+
+## Architecture
+
+- **Multi-tenancy**: Data scoped by `organization_id`; users belong to one org
+- **Row Level Security (RLS)**: Supabase RLS enforces org isolation and role-based access
+- **Master org**: One organization (`is_master=true`) can manage sub-accounts; admins use `/admin/login` to access `/master/accounts` and `/master/billing`
+- **Feature gating**: Per-org `enabled_features` controls which modules each sub-account can use
+- ** branding**: Per-org `branding` (logo, accent color, display name) for white-label potential
+
+---
+
+## Project Structure
+
+```
+├── app/
+│   ├── (auth)/          # Login, signup (public)
+│   ├── (dashboard)/      # Main app: dashboard, contacts, pipeline, etc.
+│   ├── admin/           # Master admin login (separate portal)
+│   ├── api/             # API routes (email send, Gmail/IMAP connect, sync)
+│   ├── f/[formId]/      # Public form submission page
+│   ├── lp/[slug]/       # Public landing pages
+│   └── layout.tsx       # Root layout, fonts, favicon
+├── components/          # React components
+│   ├── logo/            # KRM logo (grid mark, full lockup)
+│   ├── ui/              # shadcn/ui primitives
+│   └── ...              # Feature-specific components
+├── lib/
+│   ├── supabase/        # Supabase client (browser/server)
+│   ├── email/           # Gmail, IMAP, SMTP providers
+│   ├── types.ts         # TypeScript types
+│   └── utils.ts
+├── supabase/            # SQL migrations
+│   ├── schema.sql       # Core CRM
+│   ├── schema_update.sql
+│   ├── schema_v2.sql    # Invoicing, HR, Accounting
+│   ├── schema_v3_shared.sql  # Organizations, sharing
+│   ├── schema_master_accounts.sql
+│   ├── schema_*.sql     # Email, compliance, landing pages, etc.
+│   └── ...
+└── public/
+    ├── favicon.svg
+    └── logo/            # Logo system reference
+```
+
+---
 
 ## Getting Started
 
@@ -28,106 +138,79 @@ KRM is a homegrown relationship management platform built in Nassau for Bahamian
 
 ### Local Development
 
-1. Clone the repository:
-```bash
-git clone https://github.com/salutethegenius/kemiscrm.git
-cd kemiscrm
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/salutethegenius/kemiscrm.git
+   cd kemiscrm
+   ```
 
-2. Install dependencies:
-```bash
-npm install
-```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-3. Create `.env.local` file:
-```env
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-```
+3. **Create `.env.local`**
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
 
-4. Run database migrations:
-   - Run `supabase/schema.sql` in Supabase SQL Editor
-   - Run `supabase/schema_update.sql` for tags/groups
-   - Run `supabase/schema_v2.sql` for invoicing/HR/accounting
-   - Run `supabase/schema_v3_shared.sql` for organization-based sharing
+4. **Run database migrations** (in Supabase SQL Editor, in order)
+   - `supabase/schema.sql` — Core CRM
+   - `supabase/schema_update.sql` — Tags, groups
+   - `supabase/schema_v2.sql` — Invoicing, HR, Accounting
+   - `supabase/schema_v3_shared.sql` — Organizations, sharing
+   - `supabase/schema_master_accounts.sql` — Master/sub-accounts
+   - Other `schema_*.sql` as needed (email, compliance, landing pages, time tracking, etc.)
 
-5. Start the development server:
-```bash
-npm run dev
-```
+5. **Start the dev server**
+   ```bash
+   npm run dev
+   ```
 
 6. Open [http://localhost:3000](http://localhost:3000)
 
-## Railway Deployment
+---
 
-### Step 1: Connect Repository
+## Deployment (Railway)
 
-1. Go to [Railway Dashboard](https://railway.app)
-2. Create a new project
-3. Select "Deploy from GitHub repo"
-4. Choose `salutethegenius/kemiscrm`
+1. Create a project on [Railway](https://railway.app)
+2. Deploy from GitHub (repo: `salutethegenius/kemiscrm`)
+3. Set environment variables:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+4. Railway uses `nixpacks.toml` for `npm ci --legacy-peer-deps` and build
+5. Add a custom domain if desired
 
-### Step 2: Configure Environment Variables
-
-In Railway project settings, add these environment variables:
-
-```
-NEXT_PUBLIC_SUPABASE_URL=https://cyikdafnybflqsbznxgq.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
-```
-
-**Important**: Replace `your-anon-key-here` with your actual Supabase anon key from your Supabase dashboard.
-
-### Step 3: Deploy
-
-Railway will automatically:
-- Detect Next.js
-- Install dependencies (using `--legacy-peer-deps` via nixpacks.toml)
-- Build the application
-- Start the server
-
-### Step 4: Get Your URL
-
-Railway will provide a `.railway.app` domain. You can also add a custom domain in Railway settings.
-
-## Database Setup
-
-After deployment, run these SQL scripts in your Supabase SQL Editor (in order):
-
-1. `supabase/schema.sql` - Core CRM tables
-2. `supabase/schema_update.sql` - Tags and groups
-3. `supabase/schema_v2.sql` - Invoicing, HR, Accounting
-4. `supabase/schema_v3_shared.sql` - Organization-based sharing
+---
 
 ## User Roles
 
-- **Admin**: Full access to all features
-- **Owner**: Business owner with full access
-- **Manager**: Can manage team and view reports
-- **Accountant**: Access to invoicing and accounting
-- **User**: Basic CRM access
+| Role | Typical Access |
+|------|----------------|
+| **Admin** | Full access to all features |
+| **Owner** | Business owner, full access |
+| **Manager** | Team management, reports |
+| **Accountant** | Invoicing, payments, accounting |
+| **User** | Basic CRM (contacts, pipeline, tasks) |
 
-## Troubleshooting
+Permissions are configurable per role per organization via **Role Permissions**.
 
-### Railway Build Fails
+---
 
-If you see ESLint peer dependency errors:
-- The `nixpacks.toml` file should handle this automatically
-- Ensure `.npmrc` is committed to the repository
-- Try redeploying in Railway
+## Compliance
 
-### Invalid Login Credentials
+KRM is designed for **Bahamas Data Protection Act** and **GDPR** alignment:
 
-1. Verify environment variables are set correctly in Railway
-2. Check that users exist in Supabase Auth
-3. Ensure email confirmation is disabled (if desired) in Supabase Auth settings
+- Data export (Right to Access)
+- Data deletion requests (Right to Erasure)
+- Privacy policy
+- Audit logging (create, update, delete, login, export)
 
-### Database Connection Issues
+See [COMPLIANCE.md](./COMPLIANCE.md) for details.
 
-- Verify `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are correct
-- Check Supabase project is active
-- Ensure Row Level Security policies are set up correctly
+---
 
 ## License
 
-Private - All rights reserved
+Private — All rights reserved.

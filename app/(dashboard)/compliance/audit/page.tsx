@@ -42,7 +42,7 @@ import Link from 'next/link'
 
 const ACTION_ICONS: Record<string, React.ReactNode> = {
   create: <Plus className="h-4 w-4 text-green-600" />,
-  update: <Pencil className="h-4 w-4 text-blue-600" />,
+  update: <Pencil className="h-4 w-4 text-primary" />,
   delete: <Trash2 className="h-4 w-4 text-red-600" />,
   view: <Eye className="h-4 w-4 text-gray-600" />,
   export: <Download className="h-4 w-4 text-purple-600" />,
@@ -341,7 +341,7 @@ export default function AuditViewerPage() {
         <Card>
           <CardContent className="p-4">
             <p className="text-sm text-gray-500">Updates</p>
-            <p className="text-2xl font-bold text-blue-600">
+            <p className="text-2xl font-bold text-primary">
               {logs.filter(l => l.action === 'update').length}
             </p>
           </CardContent>
@@ -419,7 +419,7 @@ export default function AuditViewerPage() {
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
                       {log.action === 'update' && log.changes && (
-                        <span className="text-blue-600">
+                        <span className="text-primary">
                           {Object.keys(log.changes).length} field(s) changed
                         </span>
                       )}

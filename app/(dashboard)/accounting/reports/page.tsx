@@ -135,12 +135,12 @@ export default function ReportsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Outstanding Invoices</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-2xl font-bold text-primary">
                   {formatCurrency(stats.totalInvoiced - stats.totalPaid)}
                 </p>
               </div>
-              <div className="p-3 bg-blue-100 rounded-full">
-                <PieChart className="h-6 w-6 text-blue-600" />
+              <div className="p-3 bg-primary/10 rounded-full">
+                <PieChart className="h-6 w-6 text-primary" />
               </div>
             </div>
           </CardContent>

@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { KrmFullLockup } from '@/components/logo/krm-logo'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -213,11 +214,11 @@ export function Sidebar({ user }: SidebarProps) {
         className={cn(
           'flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors',
           isActive
-            ? 'bg-blue-50 text-blue-700'
-            : 'text-gray-700 hover:bg-gray-100'
+            ? 'bg-primary/10 text-primary'
+            : 'text-foreground/80 hover:bg-muted'
         )}
       >
-        <item.icon className={cn('mr-3 h-5 w-5', isActive ? 'text-blue-700' : 'text-gray-400')} />
+        <item.icon className={cn('mr-3 h-5 w-5 shrink-0', isActive ? 'text-primary' : 'text-muted-foreground')} />
         {item.name}
       </Link>
     )
@@ -226,21 +227,13 @@ export function Sidebar({ user }: SidebarProps) {
   return (
     <div className="flex flex-col w-64 bg-white border-r">
       {/* Logo */}
-      <div className="flex items-center h-16 px-6 border-b">
-        <Link href="/dashboard" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">K</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-bold text-gray-900 leading-tight">KRM</span>
-            <span className="text-[10px] uppercase tracking-wide text-blue-600">
-              Kemis Relationship Management
-            </span>
-            {organizationName && (
-              <span className="text-xs text-gray-500 truncate max-w-[140px]">{organizationName}</span>
-            )}
-          </div>
+      <div className="flex flex-col gap-1 h-auto min-h-[4rem] px-4 py-3 border-b">
+        <Link href="/dashboard" className="flex items-center">
+          <KrmFullLockup variant="light" showSub height={32} />
         </Link>
+        {organizationName && (
+          <span className="text-xs text-muted-foreground truncate max-w-[200px] pl-1">{organizationName}</span>
+        )}
       </div>
 
       {/* Navigation */}
@@ -376,7 +369,7 @@ export function Sidebar({ user }: SidebarProps) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="w-full justify-start px-2">
               <Avatar className="h-8 w-8 mr-2">
-                <AvatarFallback className="bg-blue-100 text-blue-700">
+                <AvatarFallback className="bg-primary/10 text-primary">
                   {userInitials}
                 </AvatarFallback>
               </Avatar>

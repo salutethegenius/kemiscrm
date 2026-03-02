@@ -197,12 +197,12 @@ export default function TasksPage() {
                           {getAssigneeName(task.assigned_to)}
                         </span>
                         {getContactName(task.contact_id) && (
-                          <Link href="/contacts" className="text-blue-600 hover:underline">
+                          <Link href="/contacts" className="text-primary hover:underline">
                             {getContactName(task.contact_id)}
                           </Link>
                         )}
                         {getDealTitle(task.deal_id) && (
-                          <Link href="/pipeline" className="text-blue-600 hover:underline">
+                          <Link href="/pipeline" className="text-primary hover:underline">
                             {getDealTitle(task.deal_id)}
                           </Link>
                         )}

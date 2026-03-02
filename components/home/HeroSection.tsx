@@ -1,0 +1,69 @@
+import Link from 'next/link'
+import { HeroGridVisual } from './HeroGridVisual'
+
+interface HeroSectionProps {
+  isOwner: boolean
+  isAuthenticated: boolean
+}
+
+export function HeroSection({ isOwner, isAuthenticated }: HeroSectionProps) {
+  const primaryClasses = isOwner
+    ? 'bg-gold text-[var(--krm-navy)] border-gold hover:bg-gold-light'
+    : 'bg-[var(--krm-navy)] text-[var(--krm-off-white)] border-[var(--krm-navy)] hover:bg-[var(--krm-gold)] hover:text-[var(--krm-navy)]'
+
+  const walkthroughHref = '#schedule-walkthrough'
+  const dashboardHref = isAuthenticated ? '/dashboard' : '/login'
+
+  return (
+    <section className="grid gap-grid-2 py-grid-3 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-center">
+      <div className="space-y-grid">
+        <div className="space-y-3">
+          <div className="inline-flex flex-col gap-1">
+            <span className="text-xs font-mono tracking-[0.25em] text-[var(--krm-slate)]">
+              KRM™
+            </span>
+            <h1
+              className="text-4xl md:text-5xl font-[var(--font-bebas)] tracking-[0.25em] text-[var(--krm-navy)]"
+            >
+              YOUR BUSINESS. ONE SYSTEM.
+            </h1>
+          </div>
+          <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--krm-slate)]">
+            RELATIONSHIP MANAGEMENT · OPERATIONS · CONTROL
+          </p>
+        </div>
+
+        <div className="space-y-4 text-sm md:text-base leading-relaxed text-[var(--krm-slate)] max-w-xl">
+          <p>
+            A sovereign business operating system built in the Bahamas for Bahamian
+            companies that want structure without foreign complexity.
+          </p>
+          <p>
+            CRM. Digital Marketing. Invoicing. HR. Accounting. Compliance. Unified under
+            one disciplined dashboard.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href={walkthroughHref}
+            className={`inline-flex items-center justify-center rounded-[3px] border px-6 py-3 text-xs font-semibold tracking-[0.18em] uppercase transition-colors ${primaryClasses}`}
+          >
+            Book 15-min walkthrough
+          </Link>
+          <Link
+            href={dashboardHref}
+            className="inline-flex items-center justify-center rounded-[3px] border border-[var(--krm-navy)] px-6 py-3 text-xs font-semibold tracking-[0.18em] uppercase text-[var(--krm-navy)] hover:bg-[var(--krm-navy)] hover:text-[var(--krm-off-white)] transition-colors"
+          >
+            See live dashboard
+          </Link>
+        </div>
+      </div>
+
+      <div className="hidden md:flex justify-end">
+        <HeroGridVisual />
+      </div>
+    </section>
+  )
+}
+

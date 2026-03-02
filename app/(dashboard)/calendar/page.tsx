@@ -132,7 +132,7 @@ export default function CalendarPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
-              <CalendarIcon className="h-5 w-5 mr-2 text-blue-600" />
+              <CalendarIcon className="h-5 w-5 mr-2 text-primary" />
               Account Calendar
             </CardTitle>
             <CardDescription>

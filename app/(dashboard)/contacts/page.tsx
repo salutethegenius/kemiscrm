@@ -261,7 +261,7 @@ export default function ContactsPage() {
           onClick={() => { setActiveTab('all'); setSelectedGroup(null); }}
           className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
             activeTab === 'all'
-              ? 'border-blue-600 text-blue-600'
+              ? 'border-primary text-primary'
               : 'border-transparent text-gray-500 hover:text-gray-700'
           }`}
         >
@@ -271,7 +271,7 @@ export default function ContactsPage() {
           onClick={() => setActiveTab('groups')}
           className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
             activeTab === 'groups'
-              ? 'border-blue-600 text-blue-600'
+              ? 'border-primary text-primary'
               : 'border-transparent text-gray-500 hover:text-gray-700'
           }`}
         >
@@ -416,7 +416,7 @@ export default function ContactsPage() {
                         />
                       </div>
                       <Avatar className="h-12 w-12 shrink-0">
-                        <AvatarFallback className="bg-blue-100 text-blue-700 text-lg">
+                        <AvatarFallback className="bg-primary/10 text-primary text-lg">
                           {contact.name.slice(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
@@ -511,7 +511,7 @@ export default function ContactsPage() {
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8">
-                              <AvatarFallback className="bg-blue-100 text-blue-700 text-sm">
+                              <AvatarFallback className="bg-primary/10 text-primary text-sm">
                                 {contact.name.slice(0, 2).toUpperCase()}
                               </AvatarFallback>
                             </Avatar>
@@ -579,7 +579,7 @@ export default function ContactsPage() {
                       />
                     </div>
                     <Avatar className="h-8 w-8 shrink-0">
-                      <AvatarFallback className="bg-blue-100 text-blue-700 text-sm">
+                      <AvatarFallback className="bg-primary/10 text-primary text-sm">
                         {contact.name.slice(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>

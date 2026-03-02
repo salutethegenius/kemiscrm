@@ -4,48 +4,56 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* KRM brand: navy, gold, off-white (no green) */
+    --background: 40 22% 96%; /* off-white #F5F3EE */
+    --foreground: 214 53% 12%; /* navy #0E1C2F */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 214 53% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 214 53% 12%;
+    --primary: 214 53% 12%; /* navy #0E1C2F */
+    --primary-foreground: 40 22% 96%; /* off-white on navy */
+    --secondary: 213 31% 93%;
+    --secondary-foreground: 214 53% 12%;
+    --muted: 213 20% 94%;
+    --muted-foreground: 211 19% 36%; /* slate #4A5D6E */
+    --accent: 43 36% 65%; /* gold light #C4AB78 */
+    --accent-foreground: 214 53% 12%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 214 53% 12%; /* navy */
     --radius: 0.5rem;
+    /* KRM brand hex for direct use */
+    --krm-navy: #0E1C2F;
+    --krm-navy-mid: #172440;
+    --krm-gold: #9E8A5C;
+    --krm-gold-light: #C4AB78;
+    --krm-off-white: #F5F3EE;
+    --krm-slate: #4A5D6E;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 214 53% 12%; /* navy #0E1C2F */
+    --foreground: 40 22% 96%; /* off-white */
+    --card: 213 44% 18%; /* navy mid #172440 */
+    --card-foreground: 40 22% 96%;
+    --popover: 213 44% 18%;
+    --popover-foreground: 40 22% 96%;
+    --primary: 43 36% 65%; /* gold light on dark */
+    --primary-foreground: 214 53% 12%;
+    --secondary: 213 44% 18%;
+    --secondary-foreground: 40 22% 96%;
+    --muted: 213 32% 22%;
+    --muted-foreground: 211 19% 55%;
+    --accent: 43 25% 52%; /* gold #9E8A5C */
+    --accent-foreground: 214 53% 12%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --destructive-foreground: 40 22% 96%;
+    --border: 213 32% 25%;
+    --input: 213 32% 25%;
+    --ring: 43 36% 65%; /* gold light */
   }
 }
 

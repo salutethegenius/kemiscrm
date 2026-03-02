@@ -63,7 +63,7 @@ export function RecentTasks() {
       <div className="text-center py-8 text-gray-500">
         <CheckSquare className="h-8 w-8 mx-auto mb-2 text-gray-300" />
         <p>No pending tasks.</p>
-        <Link href="/tasks" className="text-blue-600 hover:underline mt-2 inline-block">
+        <Link href="/tasks" className="text-primary hover:underline mt-2 inline-block">
           View all tasks
         </Link>
       </div>
@@ -115,7 +115,7 @@ export function RecentTasks() {
       ))}
       <Link
         href="/tasks"
-        className="block text-center text-sm text-blue-600 hover:underline py-2"
+        className="block text-center text-sm text-primary hover:underline py-2"
       >
         View all tasks
       </Link>

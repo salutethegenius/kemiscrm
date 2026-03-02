@@ -210,7 +210,7 @@ export default function EmailPage() {
                 onClick={() => setSelectedMailboxId(m.id)}
                 className={`w-full rounded-md px-3 py-2 text-left text-sm border ${
                   selectedMailboxId === m.id
-                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                    ? 'border-primary bg-primary/5 text-primary'
                     : 'border-gray-200 hover:bg-gray-50'
                 }`}
               >

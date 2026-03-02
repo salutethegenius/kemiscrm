@@ -17,6 +17,13 @@ const config: Config = {
       },
     },
     extend: {
+      spacing: {
+        // 28px grid rhythm for marketing layout
+        grid: "28px",
+        "grid-2": "56px",
+        "grid-3": "84px",
+        "grid-4": "112px",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -26,6 +33,14 @@ const config: Config = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+        },
+        navy: {
+          DEFAULT: "var(--krm-navy)",
+          mid: "var(--krm-navy-mid)",
+        },
+        gold: {
+          DEFAULT: "var(--krm-gold)",
+          light: "var(--krm-gold-light)",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",

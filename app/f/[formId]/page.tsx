@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
 import { CheckCircle } from 'lucide-react'
+import { KrmGridMark } from '@/components/logo/krm-logo'
 import type { LeadForm, FormField } from '@/lib/types'
 
 export default function PublicFormPage() {
@@ -120,7 +121,7 @@ export default function PublicFormPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F3EE] p-4">
         <Card className="w-full max-w-md">
           <CardContent className="py-12 text-center">
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
@@ -135,13 +136,11 @@ export default function PublicFormPage() {
   const fields = form.fields as FormField[]
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#F5F3EE] p-4">
       <Card className="w-full max-w-lg">
         <CardHeader>
           <div className="flex justify-center mb-2">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">K</span>
-            </div>
+            <KrmGridMark variant="light" size={40} />
           </div>
           <CardTitle className="text-center">{form.name}</CardTitle>
           <CardDescription className="text-center">Fill out the form below and we&apos;ll get back to you.</CardDescription>

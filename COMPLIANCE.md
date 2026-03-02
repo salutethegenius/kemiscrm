@@ -1,7 +1,7 @@
 # Compliance Documentation for KRM — Kemis Relationship Management
 
 ## Overview
-KRM — Kemis Relationship Management is compliant with the **Bahamas Data Protection Act** and **GDPR** standards for data protection and privacy. It is a homegrown platform built in Nassau for Bahamian businesses.
+KRM — Kemis Relationship Management is compliant with the **Bahamas Data Protection Act** and **GDPR** standards for data protection and privacy. It is a homegrown platform built in the Bahamas for Bahamian businesses.
 
 ## Compliance Features Implemented
 

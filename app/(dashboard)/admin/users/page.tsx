@@ -21,7 +21,7 @@ import type { UserProfile, UserRole } from '@/lib/types'
 const roleColors: Record<UserRole, string> = {
   admin: 'bg-red-100 text-red-700',
   owner: 'bg-purple-100 text-purple-700',
-  manager: 'bg-blue-100 text-blue-700',
+  manager: 'bg-primary/10 text-primary',
   accountant: 'bg-green-100 text-green-700',
   user: 'bg-gray-100 text-gray-700',
 }
@@ -141,7 +141,7 @@ export default function UserManagementPage() {
                 >
                   <div className="flex items-center space-x-4">
                     <Avatar>
-                      <AvatarFallback className="bg-blue-100 text-blue-700">
+                      <AvatarFallback className="bg-primary/10 text-primary">
                         {user.full_name?.slice(0, 2).toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
