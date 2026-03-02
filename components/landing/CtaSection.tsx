@@ -1,7 +1,8 @@
 "use client"
 
+import Link from "next/link"
 import { useIntersection } from "@/hooks/use-intersection"
-import { ArrowRight, Calendar } from "lucide-react"
+import { ArrowRight, Play } from "lucide-react"
 
 export function CtaSection() {
   const { ref, isVisible } = useIntersection()
@@ -33,20 +34,20 @@ export function CtaSection() {
             </h2>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <a
-                href="#"
+              <Link
+                href="/login?demo=1"
                 className="group inline-flex items-center gap-2.5 rounded-xl bg-accent px-7 py-3.5 text-sm font-semibold text-accent-foreground transition-all duration-300 hover:shadow-xl hover:shadow-accent/30"
               >
-                <Calendar className="h-4 w-4" />
-                Schedule Walkthrough
+                <Play className="h-4 w-4" />
+                Explore demo
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="/login"
                 className="group inline-flex items-center gap-2.5 rounded-xl border border-primary-foreground/20 px-7 py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:border-primary-foreground/40 hover:bg-primary-foreground/5"
               >
-                Request Enterprise Demo
-              </a>
+                Sign in
+              </Link>
             </div>
           </div>
         </div>

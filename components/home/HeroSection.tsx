@@ -16,7 +16,7 @@ export function HeroSection({ isOwner, isAuthenticated }: HeroSectionProps) {
     ? 'bg-gold text-[var(--krm-navy)] border-gold hover:bg-gold-light'
     : 'bg-[var(--krm-navy)] text-[var(--krm-off-white)] border-[var(--krm-navy)] hover:bg-[var(--krm-gold)] hover:text-[var(--krm-navy)]'
 
-  const walkthroughHref = '#schedule-walkthrough'
+  const demoHref = '/login?demo=1'
   const dashboardHref = isAuthenticated ? '/dashboard' : '/login'
 
   return (
@@ -49,17 +49,17 @@ export function HeroSection({ isOwner, isAuthenticated }: HeroSectionProps) {
             companies that want structure without foreign complexity.
           </p>
           <p>
-            CRM. Digital Marketing. Invoicing. HR. Accounting. Compliance. Unified under
+            CRM. Marketing. Invoicing. HR. Accounting. Compliance. Unified under
             one disciplined dashboard.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-3">
           <Link
-            href={walkthroughHref}
+            href={demoHref}
             className={`inline-flex items-center justify-center rounded-[3px] border px-6 py-3 text-xs font-semibold tracking-[0.18em] uppercase transition-colors ${primaryClasses}`}
           >
-            Book 15-min walkthrough
+            Explore demo
           </Link>
           <Link
             href={dashboardHref}

@@ -171,7 +171,11 @@ export function Sidebar({ user }: SidebarProps) {
   // Display name: prefer full name, fallback to email username
   const displayName = userFullName || user.email?.split('@')[0] || 'User'
 
+  const isDemoAccount = user.email === 'demo@krm.bs'
+
   const isFeatureEnabled = (featureKey: string) => {
+    // Demo account sees all features
+    if (isDemoAccount) return true
     // Master org can access everything
     if (organization?.is_master) return true
     if (!organization?.enabled_features || organization.enabled_features.length === 0) return true
@@ -179,6 +183,8 @@ export function Sidebar({ user }: SidebarProps) {
   }
 
   const hasPermission = (permission: string, featureKey?: string) => {
+    // Demo account sees all menu items
+    if (isDemoAccount) return true
     const permitted = permissions.has(permission)
     if (!permitted) return false
     // If a feature key is provided, also check org feature gating
@@ -231,8 +237,10 @@ export function Sidebar({ user }: SidebarProps) {
         <Link href="/dashboard" className="flex items-center">
           <KrmFullLockup variant="light" showSub height={32} />
         </Link>
-        {organizationName && (
-          <span className="text-xs text-muted-foreground truncate max-w-[200px] pl-1">{organizationName}</span>
+        {(organizationName || user.email === 'demo@krm.bs') && (
+          <span className="text-xs text-muted-foreground truncate max-w-[200px] pl-1">
+            {user.email === 'demo@krm.bs' ? 'Demo Account' : organizationName}
+          </span>
         )}
       </div>
 

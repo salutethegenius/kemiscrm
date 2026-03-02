@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -11,13 +11,25 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { KrmFullLockup } from '@/components/logo/krm-logo'
 import { useToast } from '@/components/ui/use-toast'
 
+const DEMO_EMAIL = 'demo@krm.bs'
+const DEMO_PASSWORD = 'Demo123!'
+
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { toast } = useToast()
   const supabase = createClient()
+  const isDemo = searchParams.get('demo') === '1'
+
+  useEffect(() => {
+    if (isDemo) {
+      setEmail(DEMO_EMAIL)
+      setPassword(DEMO_PASSWORD)
+    }
+  }, [isDemo])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -69,7 +81,13 @@ export default function LoginPage() {
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-xl font-semibold text-center text-gray-800">Sign in to your account</CardTitle>
             <CardDescription className="text-center">
-              Enter your credentials to continue
+              {isDemo ? (
+                <span className="inline-flex items-center gap-1.5 rounded-md bg-[#0E1C2F]/5 px-2 py-1 text-[#0E1C2F]/80">
+                  Demo credentials pre-filled — click Sign in to explore
+                </span>
+              ) : (
+                'Enter your credentials to continue'
+              )}
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleLogin}>

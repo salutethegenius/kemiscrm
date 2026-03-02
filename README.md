@@ -163,12 +163,18 @@ The application supports **multi-tenancy** via organizations: each organization 
    - `supabase/schema_master_accounts.sql` — Master/sub-accounts
    - Other `schema_*.sql` as needed (email, compliance, landing pages, time tracking, etc.)
 
-5. **Start the dev server**
+5. **Create demo account** (optional, for "Explore demo" on homepage)
+   ```bash
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key npm run seed:demo
+   ```
+   Demo credentials: `demo@krm.bs` / `Demo123!`
+
+6. **Start the dev server**
    ```bash
    npm run dev
    ```
 
-6. Open [http://localhost:3000](http://localhost:3000)
+7. Open [http://localhost:3000](http://localhost:3000). Click **Explore demo** to try the pre-filled demo account.
 
 ---
 

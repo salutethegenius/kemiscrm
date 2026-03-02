@@ -14,8 +14,7 @@ export function ClosingSection({ isOwner }: ClosingSectionProps) {
     ? 'bg-gold text-[var(--krm-navy)] border-gold hover:bg-gold-light'
     : 'bg-[var(--krm-navy)] text-[var(--krm-off-white)] border-[var(--krm-navy)] hover:bg-[var(--krm-gold)] hover:text-[var(--krm-navy)]'
 
-  const walkthroughHref = '#schedule-walkthrough'
-  const demoHref = '#enterprise-demo'
+  const demoHref = '/login?demo=1'
 
   return (
     <section
@@ -36,16 +35,16 @@ export function ClosingSection({ isOwner }: ClosingSectionProps) {
         </div>
         <div className="flex flex-wrap gap-3">
           <Link
-            href={walkthroughHref}
+            href={demoHref}
             className={`inline-flex items-center justify-center rounded-[3px] border px-6 py-3 text-xs font-semibold tracking-[0.18em] uppercase transition-colors ${primaryClasses}`}
           >
-            Schedule walkthrough
+            Explore demo
           </Link>
           <Link
-            href={demoHref}
+            href="/login"
             className="inline-flex items-center justify-center rounded-[3px] border border-[var(--krm-navy)] px-6 py-3 text-xs font-semibold tracking-[0.18em] uppercase text-[var(--krm-navy)] hover:bg-[var(--krm-navy)] hover:text-[var(--krm-off-white)] transition-colors"
           >
-            Request enterprise demo
+            Sign in
           </Link>
         </div>
       </div>
