@@ -118,6 +118,11 @@ export default function LoginPage() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4 pt-2">
+              <div className="w-full rounded-lg border border-[#0E1C2F]/15 bg-[#0E1C2F]/5 px-3 py-2.5">
+                <p className="text-xs font-medium text-[#0E1C2F]/70 mb-1">Demo account</p>
+                <p className="text-xs text-[#4A5D6E] font-mono break-all">Email: {DEMO_EMAIL}</p>
+                <p className="text-xs text-[#4A5D6E] font-mono">Password: {DEMO_PASSWORD}</p>
+              </div>
               <Button 
                 type="submit" 
                 className="w-full h-11 bg-[#0E1C2F] hover:bg-[#172440] text-white font-medium shadow-md shadow-[#0E1C2F]/20 transition-all duration-200" 
