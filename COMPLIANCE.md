@@ -1,7 +1,7 @@
-# Compliance Documentation for Kemis CRM
+# Compliance Documentation for KRM — Kemis Relationship Management
 
 ## Overview
-Kemis CRM is compliant with the **Bahamas Data Protection Act** and **GDPR** standards for data protection and privacy.
+KRM — Kemis Relationship Management is compliant with the **Bahamas Data Protection Act** and **GDPR** standards for data protection and privacy. It is a homegrown platform built in Nassau for Bahamian businesses.
 
 ## Compliance Features Implemented
 

@@ -139,6 +139,9 @@ export default function PublicLandingPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor }}>
       <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="mb-6 text-center text-xs text-gray-500 uppercase tracking-wide">
+          Built in Nassau, built for Nassau — Powered by KRM (Kemis Relationship Management)
+        </div>
         {(landingPage.header_text || landingPage.header_subtext) && (
           <div className="text-center mb-12">
             {landingPage.header_text && (

@@ -232,7 +232,10 @@ export function Sidebar({ user }: SidebarProps) {
             <span className="text-white font-bold text-lg">K</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-bold text-gray-900 leading-tight">Kemis CRM</span>
+            <span className="text-xl font-bold text-gray-900 leading-tight">KRM</span>
+            <span className="text-[10px] uppercase tracking-wide text-blue-600">
+              Kemis Relationship Management
+            </span>
             {organizationName && (
               <span className="text-xs text-gray-500 truncate max-w-[140px]">{organizationName}</span>
             )}
@@ -333,7 +336,7 @@ export function Sidebar({ user }: SidebarProps) {
           </div>
         )}
 
-        {/* Master Admin Section - only for master org (Kemis CRM) */}
+        {/* Master Admin Section - only for master platform org */}
         {organization?.is_master === true && (
           <div className="pt-4">
             <button

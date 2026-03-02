@@ -8,7 +8,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
           <p className="text-sm text-gray-600">
-            © {currentYear} Kemis CRM. All rights reserved.
+            © {currentYear} KRM — Kemis Relationship Management. Built in Nassau, built for Nassau.
           </p>
           <div className="flex items-center space-x-6 text-sm text-gray-600">
             <span>Compliant with Bahamas Data Protection Act</span>

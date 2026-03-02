@@ -19,7 +19,7 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
             <p className="text-gray-700 leading-relaxed">
-              Kemis CRM ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Customer Relationship Management (CRM) platform, in compliance with the Bahamas Data Protection Act and international data protection standards.
+              KRM — Kemis Relationship Management ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our relationship management platform, in compliance with the Bahamas Data Protection Act and international data protection standards.
             </p>
           </section>
 
@@ -115,7 +115,7 @@ export default function PrivacyPolicyPage() {
               If you have questions about this Privacy Policy or wish to exercise your data protection rights, please contact us:
             </p>
             <div className="mt-3 p-4 bg-gray-50 rounded-lg">
-              <p className="font-medium">Kemis CRM</p>
+              <p className="font-medium">KRM — Kemis Relationship Management</p>
               <p className="text-sm text-gray-600">Email: info@drewbersolutions.com</p>
               <p className="text-sm text-gray-600">Location: Bahamas</p>
             </div>

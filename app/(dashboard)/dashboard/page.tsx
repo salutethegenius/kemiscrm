@@ -63,7 +63,9 @@ export default async function DashboardPage() {
     <div className="p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-500 mt-1">Welcome to Kemis CRM! Here&apos;s your overview.</p>
+        <p className="text-gray-500 mt-1">
+          Welcome to KRM — Kemis Relationship Management. Built in Nassau, for Bahamian businesses.
+        </p>
       </div>
 
       {/* Stats Grid */}

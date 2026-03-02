@@ -110,7 +110,7 @@ export default function MasterAccountsPage() {
             <AlertCircle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
             <p className="text-lg font-semibold text-gray-900 mb-2">Master access required</p>
             <p className="text-sm text-gray-500">
-              Only Kemis CRM master accounts can manage sub-accounts.
+              Only KRM platform master accounts can manage sub-accounts.
             </p>
           </CardContent>
         </Card>

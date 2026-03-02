@@ -77,7 +77,7 @@ export default function AdminLoginPage() {
     if (!org?.is_master) {
       toast({
         title: 'Access restricted',
-        description: 'This portal is for Kemis CRM master admins only. Redirecting to main app.',
+        description: 'This portal is for KRM platform master admins only. Redirecting to main app.',
         variant: 'destructive',
       })
       router.push('/dashboard')
@@ -87,7 +87,7 @@ export default function AdminLoginPage() {
 
     toast({
       title: 'Welcome, master admin!',
-      description: 'You have successfully logged in to the Kemis CRM admin portal.',
+      description: 'You have successfully logged in to the KRM platform admin portal.',
     })
 
     router.push('/master/accounts')
@@ -104,7 +104,7 @@ export default function AdminLoginPage() {
         {/* Hero headline */}
         <div className="text-center mb-8 space-y-3">
           <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Kemis CRM</span> Admin
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">KRM</span> Admin
           </h1>
           <p className="text-lg text-slate-400 max-w-md mx-auto">
             Master portal for managing client sub-accounts
@@ -159,7 +159,7 @@ export default function AdminLoginPage() {
                 {loading ? 'Signing in...' : 'Sign in as Admin'}
               </Button>
               <p className="text-xs text-center text-slate-500">
-                This portal is for Kemis CRM master administrators.{' '}
+                This portal is for KRM platform master administrators.{' '}
                 <Link href="/login" className="text-emerald-400 hover:text-emerald-300 hover:underline">
                   Regular login
                 </Link>
@@ -172,7 +172,7 @@ export default function AdminLoginPage() {
       {/* Footer */}
       <footer className="relative py-6 px-4 text-center border-t border-slate-700/50 bg-slate-900/30 backdrop-blur-sm">
         <p className="text-sm text-slate-500">
-          &copy; {new Date().getFullYear()} Kemis CRM. All rights reserved.
+          &copy; {new Date().getFullYear()} KRM — Kemis Relationship Management. Built in Nassau, built for Nassau.
         </p>
       </footer>
     </div>

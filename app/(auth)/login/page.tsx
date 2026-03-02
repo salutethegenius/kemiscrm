@@ -56,10 +56,10 @@ export default function LoginPage() {
         {/* Hero headline */}
         <div className="text-center mb-8 space-y-3">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
-            Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Kemis CRM</span>
+            Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">KRM</span>
           </h1>
           <p className="text-lg text-gray-600 max-w-md mx-auto">
-            Manage your contacts, pipeline, and business — all in one place.
+            Kemis Relationship Management — built in Nassau, for Bahamian businesses.
           </p>
         </div>
 
@@ -120,7 +120,7 @@ export default function LoginPage() {
       {/* Footer */}
       <footer className="relative py-6 px-4 text-center border-t border-gray-200/50 bg-white/30 backdrop-blur-sm">
         <p className="text-sm text-gray-500">
-          &copy; {new Date().getFullYear()} Kemis CRM. All rights reserved.
+          &copy; {new Date().getFullYear()} KRM — Kemis Relationship Management. Built in Nassau, built for Nassau.
         </p>
       </footer>
     </div>

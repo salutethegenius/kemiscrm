@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KRM — Identity System</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700;900&display=swap');
+
+  :root {
+    --navy: #0E1C2F;
+    --navy-mid: #172440;
+    --navy-light: #1E3054;
+    --teal: #1B6B72;
+    --teal-light: #2A9BA5;
+    --gold: #9E8A5C;
+    --gold-light: #C4AB78;
+    --gold-pale: #E8DCC4;
+    --charcoal: #2C3A47;
+    --slate: #4A5D6E;
+    --off-white: #F5F3EE;
+    --white: #FFFFFF;
+    --grid-line: rgba(255,255,255,0.07);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: #EDECEA;
+    color: var(--navy);
+  }
+
+  /* ─── COVER ─── */
+  .cover {
+    background: var(--navy);
+    min-height: 340px;
+    padding: 80px 72px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* subtle grid bg */
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .cover-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cover-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .cover h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 96px;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    line-height: 0.9;
+    position: relative;
+  }
+
+  .cover h1 span { color: var(--gold); }
+
+  .cover-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.08em;
+    font-weight: 400;
+    margin-top: 20px;
+    position: relative;
+    font-family: 'DM Mono', monospace;
+    line-height: 2;
+  }
+
+  .cover-meta {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.1em;
+    line-height: 2.2;
+    position: relative;
+  }
+
+  .cover-meta strong {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ─── SECTION ─── */
+  .section {
+    padding: 80px 72px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .section.dark {
+    background: var(--navy);
+  }
+
+  .section.mid {
+    background: var(--navy-light);
+  }
+
+  .section.light {
+    background: var(--white);
+  }
+
+  .section.warm {
+    background: var(--off-white);
+  }
+
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-eyebrow::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    letter-spacing: 0.06em;
+    color: var(--navy);
+    margin-bottom: 56px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .section.dark .section-title,
+  .section.mid .section-title {
+    color: var(--white);
+    border-bottom-color: rgba(255,255,255,0.08);
+  }
+
+  /* ─── LOGO CELLS ─── */
+  .logo-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+    margin-bottom: 3px;
+  }
+
+  .logo-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 56px 32px 48px;
+    position: relative;
+    min-height: 220px;
+  }
+
+  .cell-light  { background: var(--off-white); }
+  .cell-white  { background: var(--white); }
+  .cell-dark   { background: var(--navy); }
+  .cell-navy2  { background: var(--navy-mid); }
+  .cell-teal   { background: var(--teal); }
+  .cell-gold   { background: var(--gold); }
+  .cell-charcoal { background: var(--charcoal); }
+
+  .cell-tag {
+    position: absolute;
+    bottom: 14px;
+    left: 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    opacity: 0.35;
+  }
+
+  .tag-dark { color: var(--white); }
+  .tag-light { color: var(--navy); }
+
+  /* ─── ANNOTATION ─── */
+  .annotation-block {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 64px;
+    align-items: start;
+    margin-top: 48px;
+  }
+
+  .annotation h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+
+  .section.dark .annotation h3,
+  .section.mid .annotation h3 { color: var(--white); }
+
+  .annotation p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--slate);
+    margin-bottom: 14px;
+  }
+
+  .section.dark .annotation p,
+  .section.mid .annotation p { color: rgba(255,255,255,0.55); }
+
+  .spec-list {
+    list-style: none;
+    margin-top: 20px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding-top: 20px;
+  }
+
+  .section.dark .spec-list,
+  .section.mid .spec-list { border-top-color: rgba(255,255,255,0.08); }
+
+  .spec-list li {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    padding: 5px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .spec-list li::before {
+    content: '▪';
+    color: var(--gold);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ─── GOLD DIVIDER ─── */
+  .gold-rule {
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.3;
+    margin: 0;
+  }
+
+  /* ─── COLOR SWATCHES ─── */
+  .swatch-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3px;
+    margin-bottom: 48px;
+  }
+
+  .swatch {
+    height: 100px;
+    display: flex;
+    align-items: flex-end;
+    padding: 12px;
+  }
+
+  .swatch-info {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    line-height: 1.9;
+  }
+
+  /* ─── COMPARISON TABLE ─── */
+  .versus {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+  }
+
+  .versus-col {
+    padding: 48px 40px;
+  }
+
+  .versus-col.them { background: var(--charcoal); }
+  .versus-col.us   { background: var(--navy-mid); border-left: 3px solid var(--gold); }
+
+  .versus-col h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0.5;
+    color: white;
+  }
+
+  .versus-col.us h4 { color: var(--gold); opacity: 1; }
+
+  .versus-col ul {
+    list-style: none;
+  }
+
+  .versus-col ul li {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  .versus-col.us ul li { color: rgba(255,255,255,0.85); font-weight: 500; }
+
+  /* ─── FAVICON STRIP ─── */
+  .favicon-strip {
+    display: flex;
+    gap: 40px;
+    align-items: flex-end;
+    padding: 56px 48px;
+    background: var(--navy-mid);
+    flex-wrap: wrap;
+  }
+
+  .fav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .fav-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.1em;
+  }
+
+  .fav-divider {
+    width: 1px;
+    height: 80px;
+    background: rgba(255,255,255,0.1);
+    align-self: center;
+  }
+
+  .fav-section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    align-self: center;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    background: var(--navy);
+    padding: 40px 72px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(158,138,92,0.2);
+  }
+
+  .footer-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.1em;
+    line-height: 2;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    opacity: 0.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ COVER ═══════════════════════════════ -->
+<div class="cover">
+  <div>
+    <div class="cover-eyebrow">KRM — Kemis Relationship Management</div>
+    <h1>Logo<br><span>Geometry</span></h1>
+    <div class="cover-sub">
+      Built in Nassau · Sovereign Bahamian Infrastructure<br>
+      Identity System v1.0 · Three Concept Directions
+    </div>
+  </div>
+  <div class="cover-meta">
+    <strong>Modular Grid Mark</strong><br>
+    Primary Direction<br>
+    <br>
+    <strong>Fortress Badge</strong><br>
+    Security / Compliance<br>
+    <br>
+    <strong>KRM Monogram</strong><br>
+    Icon / Favicon
+  </div>
+</div>
+
+<div class="gold-rule"></div>
+
+
+<!-- ═══════════════════════════════ OPTION 01: MODULAR GRID ═══════════════════════════════ -->
+<div class="section light">
+  <div class="section-eyebrow">Concept 01 — Primary Recommendation</div>
+  <div class="section-title">The Modular Grid Mark</div>
+
+  <!-- 3 main variants -->
+  <div class="logo-grid-3">
+    <div class="logo-cell cell-light">
+      <!-- 3×3 Grid Mark — Navy on Off-White -->
+      <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Grid unit = 28px, gap = 6px, origin = (4,4) -->
+        <!-- Row 1 -->
+        <rect x="4"  y="4"  width="28" height="28" rx="3" fill="#0E1C2F"/>
+        <!-- Row 1 col 2 hollow -->
+        <rect x="38" y="4"  width="28" height="28" rx="3" fill="none" stroke="#0E1C2F" stroke-width="2" opacity="0.18"/>
+        <!-- Row 1 col 3 hollow -->
+        <rect x="72" y="4"  width="20" height="28" rx="3" fill="none" stroke="#0E1C2F" stroke-width="2" opacity="0.18"/>
+
+        <!-- Row 2: K middle arm → col1 solid, col2 solid, col3 empty -->
+        <rect x="4"  y="38" width="28" height="20" rx="3" fill="#0E1C2F"/>
+        <rect x="38" y="38" width="28" height="20" rx="3" fill="#0E1C2F"/>
+        <rect x="72" y="38" width="20" height="20" rx="3" fill="none" stroke="#0E1C2F" stroke-width="2" opacity="0.18"/>
+
+        <!-- Row 3: K bottom → col1 solid, col2 empty, col3 solid -->
+        <rect x="4"  y="64" width="28" height="28" rx="3" fill="#0E1C2F"/>
+        <rect x="38" y="64" width="28" height="28" rx="3" fill="none" stroke="#0E1C2F" stroke-width="2" opacity="0.18"/>
+        <rect x="72" y="64" width="20" height="28" rx="3" fill="#0E1C2F"/>
+
+        <!-- Gold accent: top-right pixel -->
+        <rect x="72" y="4" width="20" height="28" rx="3" fill="#9E8A5C" opacity="0.55"/>
+      </svg>
+      <div class="cell-tag tag-light">Primary · Light</div>
+    </div>
+
+    <div class="logo-cell cell-dark">
+      <!-- Navy bg, white/teal marks -->
+      <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4"  y="4"  width="28" height="28" rx="3" fill="#FFFFFF"/>
+        <rect x="38" y="4"  width="28" height="28" rx="3" fill="none" stroke="white" stroke-width="2" opacity="0.15"/>
+        <rect x="72" y="4"  width="20" height="28" rx="3" fill="#9E8A5C" opacity="0.8"/>
+
+        <rect x="4"  y="38" width="28" height="20" rx="3" fill="#FFFFFF"/>
+        <rect x="38" y="38" width="28" height="20" rx="3" fill="#FFFFFF"/>
+        <rect x="72" y="38" width="20" height="20" rx="3" fill="none" stroke="white" stroke-width="2" opacity="0.15"/>
+
+        <rect x="4"  y="64" width="28" height="28" rx="3" fill="#FFFFFF"/>
+        <rect x="38" y="64" width="28" height="28" rx="3" fill="none" stroke="white" stroke-width="2" opacity="0.15"/>
+        <rect x="72" y="64" width="20" height="28" rx="3" fill="#FFFFFF"/>
+      </svg>
+      <div class="cell-tag tag-dark">Inverted · Dark</div>
+    </div>
+
+    <div class="logo-cell cell-teal">
+      <!-- On teal -->
+      <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4"  y="4"  width="28" height="28" rx="3" fill="white"/>
+        <rect x="38" y="4"  width="28" height="28" rx="3" fill="none" stroke="white" stroke-width="2" opacity="0.3"/>
+        <rect x="72" y="4"  width="20" height="28" rx="3" fill="white" opacity="0.7"/>
+
+        <rect x="4"  y="38" width="28" height="20" rx="3" fill="white"/>
+        <rect x="38" y="38" width="28" height="20" rx="3" fill="white"/>
+        <rect x="72" y="38" width="20" height="20" rx="3" fill="none" stroke="white" stroke-width="2" opacity="0.3"/>
+
+        <rect x="4"  y="64" width="28" height="28" rx="3" fill="white"/>
+        <rect x="38" y="64" width="28" height="28" rx="3" fill="none" stroke="white" stroke-width="2" opacity="0.3"/>
+        <rect x="72" y="64" width="20" height="28" rx="3" fill="white"/>
+      </svg>
+      <div class="cell-tag tag-dark">On Teal</div>
+    </div>
+  </div>
+
+  <!-- Full lockup row -->
+  <div class="logo-grid-3" style="margin-bottom: 0;">
+    <!-- Light lockup -->
+    <div class="logo-cell cell-white" style="padding: 40px 32px; min-height: 160px;">
+      <svg width="300" height="72" viewBox="0 0 300 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Mark at 60% scale -->
+        <rect x="0"  y="4"  width="17" height="17" rx="2" fill="#0E1C2F"/>
+        <rect x="21" y="4"  width="17" height="17" rx="2" fill="none" stroke="#0E1C2F" stroke-width="1.5" opacity="0.2"/>
+        <rect x="41" y="4"  width="13" height="17" rx="2" fill="#9E8A5C" opacity="0.7"/>
+
+        <rect x="0"  y="25" width="17" height="12" rx="2" fill="#0E1C2F"/>
+        <rect x="21" y="25" width="17" height="12" rx="2" fill="#0E1C2F"/>
+        <rect x="41" y="25" width="13" height="12" rx="2" fill="none" stroke="#0E1C2F" stroke-width="1.5" opacity="0.2"/>
+
+        <rect x="0"  y="41" width="17" height="17" rx="2" fill="#0E1C2F"/>
+        <rect x="21" y="41" width="17" height="17" rx="2" fill="none" stroke="#0E1C2F" stroke-width="1.5" opacity="0.2"/>
+        <rect x="41" y="41" width="13" height="17" rx="2" fill="#0E1C2F"/>
+
+        <!-- Wordmark -->
+        <text x="68" y="44" font-family="'Bebas Neue', sans-serif" font-size="44" fill="#0E1C2F" letter-spacing="6">KRM</text>
+        <!-- Sub -->
+        <text x="69" y="60" font-family="'DM Mono', monospace" font-size="8" fill="#4A5D6E" letter-spacing="3">RELATIONSHIP MANAGEMENT</text>
+      </svg>
+      <div class="cell-tag tag-light">Full Lockup · Light</div>
+    </div>
+
+    <!-- Dark lockup -->
+    <div class="logo-cell cell-dark" style="padding: 40px 32px; min-height: 160px;">
+      <svg width="300" height="72" viewBox="0 0 300 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0"  y="4"  width="17" height="17" rx="2" fill="white"/>
+        <rect x="21" y="4"  width="17" height="17" rx="2" fill="none" stroke="white" stroke-width="1.5" opacity="0.2"/>
+        <rect x="41" y="4"  width="13" height="17" rx="2" fill="#C4AB78" opacity="0.85"/>
+
+        <rect x="0"  y="25" width="17" height="12" rx="2" fill="white"/>
+        <rect x="21" y="25" width="17" height="12" rx="2" fill="white"/>
+        <rect x="41" y="25" width="13" height="12" rx="2" fill="none" stroke="white" stroke-width="1.5" opacity="0.2"/>
+
+        <rect x="0"  y="41" width="17" height="17" rx="2" fill="white"/>
+        <rect x="21" y="41" width="17" height="17" rx="2" fill="none" stroke="white" stroke-width="1.5" opacity="0.2"/>
+        <rect x="41" y="41" width="13" height="17" rx="2" fill="white"/>
+
+        <text x="68" y="44" font-family="'Bebas Neue', sans-serif" font-size="44" fill="white" letter-spacing="6">KRM</text>
+        <text x="69" y="60" font-family="'DM Mono', monospace" font-size="8" fill="rgba(255,255,255,0.35)" letter-spacing="3">RELATIONSHIP MANAGEMENT</text>
+      </svg>
+      <div class="cell-tag tag-dark">Full Lockup · Dark</div>
+    </div>
+
+    <!-- Stacked / sub-brand -->
+    <div class="logo-cell cell-light" style="padding: 40px 32px; min-height: 160px;">
+      <svg width="180" height="120" viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Centered mark -->
+        <rect x="41" y="0"  width="17" height="17" rx="2" fill="#0E1C2F"/>
+        <rect x="62" y="0"  width="17" height="17" rx="2" fill="none" stroke="#0E1C2F" stroke-width="1.5" opacity="0.2"/>
+        <rect x="82" y="0"  width="13" height="17" rx="2" fill="#9E8A5C" opacity="0.7"/>
+
+        <rect x="41" y="21" width="17" height="12" rx="2" fill="#0E1C2F"/>
+        <rect x="62" y="21" width="17" height="12" rx="2" fill="#0E1C2F"/>
+        <rect x="82" y="21" width="13" height="12" rx="2" fill="none" stroke="#0E1C2F" stroke-width="1.5" opacity="0.2"/>
+
+        <rect x="41" y="37" width="17" height="17" rx="2" fill="#0E1C2F"/>
+        <rect x="62" y="37" width="17" height="17" rx="2" fill="none" stroke="#0E1C2F" stroke-width="1.5" opacity="0.2"/>
+        <rect x="82" y="37" width="13" height="17" rx="2" fill="#0E1C2F"/>
+
+        <!-- Stacked wordmark -->
+        <text x="90" y="82" font-family="'Bebas Neue', sans-serif" font-size="36" fill="#0E1C2F" letter-spacing="8" text-anchor="middle">KRM</text>
+        <text x="90" y="96" font-family="'DM Mono', monospace" font-size="7" fill="#4A5D6E" letter-spacing="2.5" text-anchor="middle">BY KEMIS</text>
+        <!-- Gold rule under -->
+        <line x1="60" y1="104" x2="120" y2="104" stroke="#9E8A5C" stroke-width="1" opacity="0.5"/>
+        <text x="90" y="118" font-family="'DM Mono', monospace" font-size="6" fill="#4A5D6E" letter-spacing="2" text-anchor="middle" opacity="0.6">NASSAU · BAHAMAS</text>
+      </svg>
+      <div class="cell-tag tag-light">Stacked + Origin</div>
+    </div>
+  </div>
+
+  <div class="annotation-block">
+    <div></div>
+    <div class="annotation">
+      <h3>Modular Grid Mark</h3>
+      <p>A 3×3 block grid where the active cells trace a hidden K in negative space. Hollow cells read as inactive modules. Solid cells read as enabled features.</p>
+      <p>The gold block occupies the top-right position — the only color deviation. It marks the authority layer: the master tenant, the administrative apex. It never appears on hollow cells.</p>
+      <ul class="spec-list">
+        <li>Grid unit 28px · Gap 6px · Radius 3px</li>
+        <li>Hollow cells = 18% opacity stroke only</li>
+        <li>Gold accent = Master / Owner tier</li>
+        <li>Hidden K: Col 1 full, Col 2 mid-row, Col 3 top+bottom</li>
+        <li>Wordmark: Bebas Neue, tracking +6px</li>
+        <li>Sub: DM Mono, all caps, tracking +3px</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="gold-rule"></div>
+
+
+<!-- ═══════════════════════════════ OPTION 02: FORTRESS BADGE ═══════════════════════════════ -->
+<div class="section dark">
+  <div class="section-eyebrow">Concept 02 — Security / Compliance Surface</div>
+  <div class="section-title">The Fortress Badge</div>
+
+  <div class="logo-grid-3">
+    <!-- Light badge -->
+    <div class="logo-cell cell-light">
+      <svg width="100" height="116" viewBox="0 0 100 116" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Bastion outer shape: pentagon-like with notched top corners -->
+        <path d="
+          M 50 4
+          L 96 22
+          L 96 70
+          Q 96 96 50 112
+          Q 4 96 4 70
+          L 4 22
+          Z
+        " fill="none" stroke="#0E1C2F" stroke-width="3"/>
+
+        <!-- Inner border inset -->
+        <path d="
+          M 50 14
+          L 86 29
+          L 86 68
+          Q 86 88 50 102
+          Q 14 88 14 68
+          L 14 29
+          Z
+        " fill="none" stroke="#0E1C2F" stroke-width="1.5" opacity="0.25"/>
+
+        <!-- Bastion notches top left/right (merlons) -->
+        <rect x="4" y="14" width="10" height="10" rx="1" fill="#F5F3EE"/>
+        <rect x="86" y="14" width="10" height="10" rx="1" fill="#F5F3EE"/>
+
+        <!-- Gold top notch accent -->
+        <rect x="45" y="4" width="10" height="8" rx="1" fill="#9E8A5C" opacity="0.8"/>
+
+        <!-- Center K mini-mark -->
+        <rect x="34" y="42" width="9" height="9" rx="1.5" fill="#0E1C2F"/>
+        <rect x="46" y="42" width="9" height="9" rx="1.5" fill="none" stroke="#0E1C2F" stroke-width="1.5" opacity="0.25"/>
+        <rect x="57" y="42" width="7" height="9" rx="1.5" fill="#9E8A5C" opacity="0.7"/>
+
+        <rect x="34" y="54" width="9" height="7" rx="1.5" fill="#0E1C2F"/>
+        <rect x="46" y="54" width="9" height="7" rx="1.5" fill="#0E1C2F"/>
+        <rect x="57" y="54" width="7" height="7" rx="1.5" fill="none" stroke="#0E1C2F" stroke-width="1.5" opacity="0.25"/>
+
+        <rect x="34" y="64" width="9" height="9" rx="1.5" fill="#0E1C2F"/>
+        <rect x="46" y="64" width="9" height="9" rx="1.5" fill="none" stroke="#0E1C2F" stroke-width="1.5" opacity="0.25"/>
+        <rect x="57" y="64" width="7" height="9" rx="1.5" fill="#0E1C2F"/>
+
+        <!-- SECURE text bottom -->
+        <text x="50" y="88" font-family="'DM Mono', monospace" font-size="7" fill="#0E1C2F" text-anchor="middle" letter-spacing="3" opacity="0.6">SECURE</text>
+      </svg>
+      <div class="cell-tag tag-light">Badge · Light</div>
+    </div>
+
+    <!-- Dark badge -->
+    <div class="logo-cell cell-navy2">
+      <svg width="100" height="116" viewBox="0 0 100 116" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 50 4 L 96 22 L 96 70 Q 96 96 50 112 Q 4 96 4 70 L 4 22 Z"
+          fill="none" stroke="white" stroke-width="3"/>
+        <path d="M 50 14 L 86 29 L 86 68 Q 86 88 50 102 Q 14 88 14 68 L 14 29 Z"
+          fill="none" stroke="white" stroke-width="1.5" opacity="0.15"/>
+
+        <rect x="4"  y="14" width="10" height="10" rx="1" fill="#172440"/>
+        <rect x="86" y="14" width="10" height="10" rx="1" fill="#172440"/>
+        <rect x="45" y="4"  width="10" height="8"  rx="1" fill="#C4AB78" opacity="0.9"/>
+
+        <rect x="34" y="42" width="9" height="9" rx="1.5" fill="white"/>
+        <rect x="46" y="42" width="9" height="9" rx="1.5" fill="none" stroke="white" stroke-width="1.5" opacity="0.2"/>
+        <rect x="57" y="42" width="7" height="9" rx="1.5" fill="#C4AB78" opacity="0.8"/>
+
+        <rect x="34" y="54" width="9" height="7" rx="1.5" fill="white"/>
+        <rect x="46" y="54" width="9" height="7" rx="1.5" fill="white"/>
+        <rect x="57" y="54" width="7" height="7" rx="1.5" fill="none" stroke="white" stroke-width="1.5" opacity="0.2"/>
+
+        <rect x="34" y="64" width="9" height="9" rx="1.5" fill="white"/>
+        <rect x="46" y="64" width="9" height="9" rx="1.5" fill="none" stroke="white" stroke-width="1.5" opacity="0.2"/>
+        <rect x="57" y="64" width="7" height="9" rx="1.5" fill="white"/>
+
+        <text x="50" y="88" font-family="'DM Mono', monospace" font-size="7" fill="white" text-anchor="middle" letter-spacing="3" opacity="0.4">SECURE</text>
+      </svg>
+      <div class="cell-tag tag-dark">Badge · Dark</div>
+    </div>
+
+    <!-- Gold badge — compliance surface -->
+    <div class="logo-cell cell-charcoal">
+      <svg width="100" height="116" viewBox="0 0 100 116" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 50 4 L 96 22 L 96 70 Q 96 96 50 112 Q 4 96 4 70 L 4 22 Z"
+          fill="none" stroke="#C4AB78" stroke-width="3"/>
+        <path d="M 50 14 L 86 29 L 86 68 Q 86 88 50 102 Q 14 88 14 68 L 14 29 Z"
+          fill="none" stroke="#C4AB78" stroke-width="1.5" opacity="0.3"/>
+
+        <rect x="4"  y="14" width="10" height="10" rx="1" fill="#2C3A47"/>
+        <rect x="86" y="14" width="10" height="10" rx="1" fill="#2C3A47"/>
+        <rect x="45" y="4"  width="10" height="8"  rx="1" fill="#C4AB78"/>
+
+        <rect x="34" y="42" width="9" height="9" rx="1.5" fill="#C4AB78"/>
+        <rect x="46" y="42" width="9" height="9" rx="1.5" fill="none" stroke="#C4AB78" stroke-width="1.5" opacity="0.3"/>
+        <rect x="57" y="42" width="7" height="9" rx="1.5" fill="#C4AB78" opacity="0.5"/>
+
+        <rect x="34" y="54" width="9" height="7" rx="1.5" fill="#C4AB78"/>
+        <rect x="46" y="54" width="9" height="7" rx="1.5" fill="#C4AB78"/>
+        <rect x="57" y="54" width="7" height="7" rx="1.5" fill="none" stroke="#C4AB78" stroke-width="1.5" opacity="0.3"/>
+
+        <rect x="34" y="64" width="9" height="9" rx="1.5" fill="#C4AB78"/>
+        <rect x="46" y="64" width="9" height="9" rx="1.5" fill="none" stroke="#C4AB78" stroke-width="1.5" opacity="0.3"/>
+        <rect x="57" y="64" width="7" height="9" rx="1.5" fill="#C4AB78"/>
+
+        <text x="50" y="88" font-family="'DM Mono', monospace" font-size="7" fill="#C4AB78" text-anchor="middle" letter-spacing="3" opacity="0.7">SECURE</text>
+      </svg>
+      <div class="cell-tag tag-dark">Compliance / Gold</div>
+    </div>
+  </div>
+
+  <!-- Badge usage strip -->
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-top: 3px; margin-bottom: 0;">
+    <!-- Audit badge -->
+    <div class="logo-cell cell-dark" style="min-height: 140px; padding: 28px;">
+      <svg width="140" height="40" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- tiny badge inline -->
+        <path d="M 12 2 L 23 6 L 23 20 Q 23 28 12 34 Q 1 28 1 20 L 1 6 Z"
+          fill="none" stroke="#C4AB78" stroke-width="1.5"/>
+        <rect x="6" y="12" width="4" height="4" rx="0.8" fill="#C4AB78"/>
+        <rect x="12" y="12" width="4" height="4" rx="0.8" fill="none" stroke="#C4AB78" stroke-width="1" opacity="0.3"/>
+        <rect x="6" y="18" width="4" height="3" rx="0.8" fill="#C4AB78"/>
+        <rect x="12" y="18" width="4" height="3" rx="0.8" fill="#C4AB78"/>
+        <rect x="6" y="23" width="4" height="4" rx="0.8" fill="#C4AB78"/>
+        <rect x="12" y="23" width="4" height="4" rx="0.8" fill="none" stroke="#C4AB78" stroke-width="1" opacity="0.3"/>
+        <rect x="18" y="23" width="3" height="4" rx="0.8" fill="#C4AB78"/>
+        <text x="30" y="18" font-family="'DM Mono', monospace" font-size="9" fill="#C4AB78" letter-spacing="1.5">AUDIT READY</text>
+        <text x="30" y="30" font-family="'DM Mono', monospace" font-size="7.5" fill="rgba(255,255,255,0.3)" letter-spacing="1">KRM CERTIFIED</text>
+      </svg>
+      <div class="cell-tag tag-dark">Audit Surface</div>
+    </div>
+
+    <!-- Data sovereign badge -->
+    <div class="logo-cell cell-navy2" style="min-height: 140px; padding: 28px;">
+      <svg width="160" height="40" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 12 2 L 23 6 L 23 20 Q 23 28 12 34 Q 1 28 1 20 L 1 6 Z"
+          fill="none" stroke="white" stroke-width="1.5"/>
+        <rect x="6" y="12" width="4" height="4" rx="0.8" fill="white"/>
+        <rect x="12" y="12" width="4" height="4" rx="0.8" fill="none" stroke="white" stroke-width="1" opacity="0.25"/>
+        <rect x="6" y="18" width="4" height="3" rx="0.8" fill="white"/>
+        <rect x="12" y="18" width="4" height="3" rx="0.8" fill="white"/>
+        <rect x="6" y="23" width="4" height="4" rx="0.8" fill="white"/>
+        <rect x="12" y="23" width="4" height="4" rx="0.8" fill="none" stroke="white" stroke-width="1" opacity="0.25"/>
+        <rect x="18" y="23" width="3" height="4" rx="0.8" fill="white"/>
+        <text x="30" y="18" font-family="'DM Mono', monospace" font-size="9" fill="white" letter-spacing="1.5">DATA SOVEREIGN</text>
+        <text x="30" y="30" font-family="'DM Mono', monospace" font-size="7.5" fill="rgba(255,255,255,0.3)" letter-spacing="1">NASSAU, BAHAMAS</text>
+      </svg>
+      <div class="cell-tag tag-dark">Sovereignty Mark</div>
+    </div>
+
+    <!-- Compliance footer stamp -->
+    <div class="logo-cell cell-charcoal" style="min-height: 140px; padding: 28px;">
+      <svg width="160" height="56" viewBox="0 0 160 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Horizontal rule -->
+        <line x1="0" y1="0" x2="160" y2="0" stroke="#9E8A5C" stroke-width="0.75" opacity="0.5"/>
+        <text x="0" y="16" font-family="'Bebas Neue', sans-serif" font-size="18" fill="#C4AB78" letter-spacing="4">KRM</text>
+        <text x="46" y="15" font-family="'DM Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)" letter-spacing="1.5">SECURED · COMPLIANT</text>
+        <text x="0" y="30" font-family="'DM Mono', monospace" font-size="7" fill="rgba(255,255,255,0.25)" letter-spacing="1">KEMIS DIGITAL LTD · NASSAU · BAHAMAS</text>
+        <line x1="0" y1="40" x2="160" y2="40" stroke="#9E8A5C" stroke-width="0.75" opacity="0.3"/>
+      </svg>
+      <div class="cell-tag tag-dark">Footer Stamp</div>
+    </div>
+
+    <!-- White label variant -->
+    <div class="logo-cell cell-light" style="min-height: 140px; padding: 28px;">
+      <svg width="160" height="56" viewBox="0 0 160 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- White label: Powered by KRM -->
+        <rect x="0" y="0" width="160" height="56" rx="4" fill="none" stroke="#0E1C2F" stroke-width="1" opacity="0.12"/>
+        <text x="12" y="20" font-family="'DM Mono', monospace" font-size="7.5" fill="#4A5D6E" letter-spacing="1.5">POWERED BY</text>
+        <!-- small mark -->
+        <rect x="12" y="28" width="6" height="6" rx="1" fill="#0E1C2F"/>
+        <rect x="21" y="28" width="6" height="6" rx="1" fill="none" stroke="#0E1C2F" stroke-width="1" opacity="0.2"/>
+        <rect x="30" y="28" width="5" height="6" rx="1" fill="#9E8A5C" opacity="0.7"/>
+        <text x="42" y="36" font-family="'Bebas Neue', sans-serif" font-size="18" fill="#0E1C2F" letter-spacing="4">KRM</text>
+        <text x="12" y="50" font-family="'DM Mono', monospace" font-size="6.5" fill="#4A5D6E" letter-spacing="1">BY KEMIS · NASSAU</text>
+      </svg>
+      <div class="cell-tag tag-light">White Label Surface</div>
+    </div>
+  </div>
+
+  <div class="annotation-block">
+    <div></div>
+    <div class="annotation">
+      <h3>Fortress Badge</h3>
+      <p>A bastion form — taken from the geometry of Fort Charlotte: a downward-tapered pentagon with merlon notches cut from the upper corners. The shape reads as a shield but was never designed as one.</p>
+      <p>The mini grid mark lives at the center. This badge is never the primary logo — it marks secure surfaces, audit-ready features, and compliance documentation.</p>
+      <ul class="spec-list">
+        <li>Use on: compliance certificates, data agreements</li>
+        <li>Use on: admin dashboards, security settings</li>
+        <li>Use on: "Powered by KRM" white-label footers</li>
+        <li>Never: as a primary logo on outward-facing collateral</li>
+        <li>Gold variant reserved for Kemis master tier only</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="gold-rule"></div>
+
+
+<!-- ═══════════════════════════════ OPTION 03: MONOGRAM ═══════════════════════════════ -->
+<div class="section warm">
+  <div class="section-eyebrow">Concept 03 — Icon / Favicon / App</div>
+  <div class="section-title">KRM Architectural Monogram</div>
+
+  <div class="logo-grid-3">
+    <!-- Light -->
+    <div class="logo-cell cell-white">
+      <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- K: left spine -->
+        <rect x="8" y="8" width="10" height="80" rx="2" fill="#0E1C2F"/>
+        <!-- K: upper arm diagonal (approximated with rect+transform) -->
+        <polygon points="18,8 36,8 20,48 18,48" fill="#0E1C2F"/>
+        <!-- K: lower arm diagonal -->
+        <polygon points="18,48 20,48 40,88 36,88" fill="#0E1C2F"/>
+
+        <!-- R: spine -->
+        <rect x="44" y="8" width="10" height="80" rx="2" fill="#0E1C2F"/>
+        <!-- R: top bump -->
+        <path d="M 54 8 Q 76 8 76 28 Q 76 46 54 46" stroke="#0E1C2F" stroke-width="9" fill="none" stroke-linecap="square"/>
+        <!-- R: leg -->
+        <polygon points="54,46 63,46 76,88 68,88" fill="#0E1C2F"/>
+
+        <!-- M hidden in right: two verticals + chevron -->
+        <!-- Subtle: treated as right column -->
+        <rect x="82" y="8" width="7" height="80" rx="2" fill="#9E8A5C" opacity="0.6"/>
+        <line x1="82" y1="8" x2="88" y2="48" stroke="#9E8A5C" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+      <div class="cell-tag tag-light">Monogram · Light</div>
+    </div>
+
+    <!-- Dark -->
+    <div class="logo-cell cell-dark">
+      <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="8" width="10" height="80" rx="2" fill="white"/>
+        <polygon points="18,8 36,8 20,48 18,48" fill="white"/>
+        <polygon points="18,48 20,48 40,88 36,88" fill="white"/>
+
+        <rect x="44" y="8" width="10" height="80" rx="2" fill="white"/>
+        <path d="M 54 8 Q 76 8 76 28 Q 76 46 54 46" stroke="white" stroke-width="9" fill="none" stroke-linecap="square"/>
+        <polygon points="54,46 63,46 76,88 68,88" fill="white"/>
+
+        <rect x="82" y="8" width="7" height="80" rx="2" fill="#C4AB78" opacity="0.8"/>
+        <line x1="82" y1="8" x2="88" y2="48" stroke="#C4AB78" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+      </svg>
+      <div class="cell-tag tag-dark">Monogram · Dark</div>
+    </div>
+
+    <!-- Square app icon -->
+    <div class="logo-cell cell-light" style="background: #E8E5E0;">
+      <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="96" height="96" rx="20" fill="#0E1C2F"/>
+        <!-- K -->
+        <rect x="10" y="12" width="7" height="72" rx="1.5" fill="white"/>
+        <polygon points="17,12 30,12 19,42 17,42" fill="white"/>
+        <polygon points="17,42 19,42 32,84 28,84" fill="white"/>
+        <!-- R -->
+        <rect x="36" y="12" width="7" height="72" rx="1.5" fill="white"/>
+        <path d="M 43 12 Q 60 12 60 26 Q 60 40 43 40" stroke="white" stroke-width="7" fill="none" stroke-linecap="square"/>
+        <polygon points="43,40 50,40 62,84 56,84" fill="white"/>
+        <!-- M accent -->
+        <rect x="67" y="12" width="6" height="72" rx="1.5" fill="#C4AB78" opacity="0.85"/>
+        <!-- Gold corner dot -->
+        <rect x="79" y="12" width="7" height="7" rx="1.5" fill="#C4AB78" opacity="0.85"/>
+      </svg>
+      <div class="cell-tag tag-light">App Icon</div>
+    </div>
+  </div>
+
+  <!-- Favicon strip -->
+  <div class="favicon-strip" style="margin-top: 3px;">
+    <div class="fav-section-label">App Icon Scale</div>
+
+    <div class="fav-group">
+      <svg width="72" height="72" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="96" height="96" rx="20" fill="#0E1C2F"/>
+        <rect x="10" y="12" width="7" height="72" rx="1.5" fill="white"/>
+        <polygon points="17,12 30,12 19,42 17,42" fill="white"/>
+        <polygon points="17,42 19,42 32,84 28,84" fill="white"/>
+        <rect x="36" y="12" width="7" height="72" rx="1.5" fill="white"/>
+        <path d="M 43 12 Q 60 12 60 26 Q 60 40 43 40" stroke="white" stroke-width="7" fill="none" stroke-linecap="square"/>
+        <polygon points="43,40 50,40 62,84 56,84" fill="white"/>
+        <rect x="67" y="12" width="6" height="72" rx="1.5" fill="#C4AB78" opacity="0.85"/>
+        <rect x="79" y="12" width="7" height="7" rx="1.5" fill="#C4AB78" opacity="0.85"/>
+      </svg>
+      <div class="fav-label">72px</div>
+    </div>
+
+    <div class="fav-group">
+      <svg width="48" height="48" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="96" height="96" rx="20" fill="#0E1C2F"/>
+        <rect x="10" y="12" width="7" height="72" rx="1.5" fill="white"/>
+        <polygon points="17,12 30,12 19,42 17,42" fill="white"/>
+        <polygon points="17,42 19,42 32,84 28,84" fill="white"/>
+        <rect x="36" y="12" width="7" height="72" rx="1.5" fill="white"/>
+        <path d="M 43 12 Q 60 12 60 26 Q 60 40 43 40" stroke="white" stroke-width="7" fill="none" stroke-linecap="square"/>
+        <polygon points="43,40 50,40 62,84 56,84" fill="white"/>
+        <rect x="67" y="12" width="6" height="72" rx="1.5" fill="#C4AB78" opacity="0.85"/>
+        <rect x="79" y="12" width="7" height="7" rx="1.5" fill="#C4AB78" opacity="0.85"/>
+      </svg>
+      <div class="fav-label">48px</div>
+    </div>
+
+    <div class="fav-group">
+      <svg width="32" height="32" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="96" height="96" rx="20" fill="#0E1C2F"/>
+        <rect x="10" y="12" width="7" height="72" rx="1.5" fill="white"/>
+        <polygon points="17,12 30,12 19,42 17,42" fill="white"/>
+        <polygon points="17,42 19,42 32,84 28,84" fill="white"/>
+        <rect x="36" y="12" width="7" height="72" rx="1.5" fill="white"/>
+        <path d="M 43 12 Q 60 12 60 26 Q 60 40 43 40" stroke="white" stroke-width="7" fill="none" stroke-linecap="square"/>
+        <polygon points="43,40 50,40 62,84 56,84" fill="white"/>
+        <rect x="67" y="12" width="6" height="72" rx="1.5" fill="#C4AB78" opacity="0.85"/>
+        <rect x="79" y="12" width="7" height="7" rx="1.5" fill="#C4AB78" opacity="0.85"/>
+      </svg>
+      <div class="fav-label">32px</div>
+    </div>
+
+    <div class="fav-group">
+      <svg width="16" height="16" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="96" height="96" rx="16" fill="#0E1C2F"/>
+        <!-- At 16px reduce to simplified KR -->
+        <rect x="10" y="12" width="10" height="72" rx="2" fill="white"/>
+        <polygon points="20,12 36,12 22,46 20,46" fill="white"/>
+        <polygon points="20,46 22,46 38,84 32,84" fill="white"/>
+        <rect x="44" y="12" width="10" height="72" rx="2" fill="white"/>
+        <rect x="76" y="12" width="10" height="10" rx="2" fill="#C4AB78"/>
+      </svg>
+      <div class="fav-label">16px</div>
+    </div>
+
+    <div class="fav-divider"></div>
+
+    <!-- Grid mark favicons -->
+    <div class="fav-section-label">Grid Mark Scale</div>
+
+    <div class="fav-group">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="48" height="48" rx="10" fill="#0E1C2F"/>
+        <rect x="5"  y="5"  width="11" height="11" rx="1.5" fill="white"/>
+        <rect x="19" y="5"  width="11" height="11" rx="1.5" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+        <rect x="32" y="5"  width="11" height="11" rx="1.5" fill="#C4AB78" opacity="0.85"/>
+
+        <rect x="5"  y="19" width="11" height="9" rx="1.5" fill="white"/>
+        <rect x="19" y="19" width="11" height="9" rx="1.5" fill="white"/>
+        <rect x="32" y="19" width="11" height="9" rx="1.5" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+
+        <rect x="5"  y="31" width="11" height="12" rx="1.5" fill="white"/>
+        <rect x="19" y="31" width="11" height="12" rx="1.5" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+        <rect x="32" y="31" width="11" height="12" rx="1.5" fill="white"/>
+      </svg>
+      <div class="fav-label">48px</div>
+    </div>
+
+    <div class="fav-group">
+      <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="48" height="48" rx="10" fill="#0E1C2F"/>
+        <rect x="5"  y="5"  width="11" height="11" rx="1.5" fill="white"/>
+        <rect x="19" y="5"  width="11" height="11" rx="1.5" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+        <rect x="32" y="5"  width="11" height="11" rx="1.5" fill="#C4AB78" opacity="0.85"/>
+        <rect x="5"  y="19" width="11" height="9" rx="1.5" fill="white"/>
+        <rect x="19" y="19" width="11" height="9" rx="1.5" fill="white"/>
+        <rect x="32" y="19" width="11" height="9" rx="1.5" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+        <rect x="5"  y="31" width="11" height="12" rx="1.5" fill="white"/>
+        <rect x="19" y="31" width="11" height="12" rx="1.5" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+        <rect x="32" y="31" width="11" height="12" rx="1.5" fill="white"/>
+      </svg>
+      <div class="fav-label">32px</div>
+    </div>
+
+    <div class="fav-group">
+      <svg width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="48" height="48" rx="8" fill="#0E1C2F"/>
+        <rect x="5"  y="5"  width="11" height="11" rx="1.5" fill="white"/>
+        <rect x="19" y="5"  width="11" height="11" rx="1.5" fill="none" stroke="white" stroke-width="2" opacity="0.25"/>
+        <rect x="32" y="5"  width="11" height="11" rx="1.5" fill="#C4AB78"/>
+        <rect x="5"  y="19" width="11" height="9" rx="1.5" fill="white"/>
+        <rect x="19" y="19" width="11" height="9" rx="1.5" fill="white"/>
+        <rect x="5"  y="31" width="11" height="12" rx="1.5" fill="white"/>
+        <rect x="32" y="31" width="11" height="12" rx="1.5" fill="white"/>
+      </svg>
+      <div class="fav-label">16px</div>
+    </div>
+  </div>
+
+  <div class="annotation-block" style="margin-top: 48px;">
+    <div></div>
+    <div class="annotation">
+      <h3>KRM Monogram</h3>
+      <p>K and R are constructed from identical stroke widths. The K diagonal arms are angular — no curves. The R bump uses a single controlled arc, the only curve in the system.</p>
+      <p>The M is deliberately understated: a gold vertical accent on the right edge. It reads as an M to those who look, as a color accent to those who don't.</p>
+      <ul class="spec-list">
+        <li>At 16px: M drops, KR reads cleanly</li>
+        <li>At 32px+: Gold M accent visible</li>
+        <li>Grid Mark favours 32px+ for legibility</li>
+        <li>Both marks work at 16px — test both</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="gold-rule"></div>
+
+
+<!-- ═══════════════════════════════ COLOR SYSTEM ═══════════════════════════════ -->
+<div class="section dark">
+  <div class="section-eyebrow">Brand Foundation</div>
+  <div class="section-title">Colour Architecture</div>
+
+  <div class="swatch-row">
+    <div class="swatch" style="background: #0E1C2F;">
+      <div class="swatch-info" style="color: rgba(255,255,255,0.7);">
+        Deep Navy<br><span style="opacity:.45">#0E1C2F</span><br><span style="opacity:.45">Primary</span>
+      </div>
+    </div>
+    <div class="swatch" style="background: #172440;">
+      <div class="swatch-info" style="color: rgba(255,255,255,0.7);">
+        Navy Mid<br><span style="opacity:.45">#172440</span><br><span style="opacity:.45">Dark BG</span>
+      </div>
+    </div>
+    <div class="swatch" style="background: #1B6B72;">
+      <div class="swatch-info" style="color: rgba(255,255,255,0.7);">
+        Restrained Teal<br><span style="opacity:.45">#1B6B72</span><br><span style="opacity:.45">Accent</span>
+      </div>
+    </div>
+    <div class="swatch" style="background: #9E8A5C;">
+      <div class="swatch-info" style="color: rgba(255,255,255,0.85);">
+        Brass Gold<br><span style="opacity:.55">#9E8A5C</span><br><span style="opacity:.55">Authority</span>
+      </div>
+    </div>
+    <div class="swatch" style="background: #2C3A47;">
+      <div class="swatch-info" style="color: rgba(255,255,255,0.7);">
+        Charcoal<br><span style="opacity:.45">#2C3A47</span><br><span style="opacity:.45">Secondary</span>
+      </div>
+    </div>
+    <div class="swatch" style="background: #F5F3EE; border: 1px solid rgba(0,0,0,0.06);">
+      <div class="swatch-info" style="color: rgba(14,28,47,0.5);">
+        Parchment<br><span style="opacity:.6">#F5F3EE</span><br><span style="opacity:.6">Light BG</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gold usage rule -->
+  <div style="background: rgba(158,138,92,0.08); border: 1px solid rgba(158,138,92,0.2); padding: 32px 40px; margin-bottom: 3px;">
+    <div style="font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 16px;">Gold Usage Protocol</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px;">
+      <div>
+        <div style="font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.8;">Gold appears on: top-right block in the grid mark, master-tier badge, footnote rules, and compliance stamps. It is <em>never</em> used for body text or interactive UI elements.</div>
+      </div>
+      <div>
+        <div style="font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.8;">Gold communicates: Kemis ownership, master tenant hierarchy, auditable trust. Overuse collapses its meaning into decoration. It must be sparse to stay sovereign.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="gold-rule"></div>
+
+
+<!-- ═══════════════════════════════ VERSUS ═══════════════════════════════ -->
+<div class="section mid">
+  <div class="section-eyebrow">Strategic Positioning</div>
+  <div class="section-title">KRM vs The Market</div>
+
+  <div class="versus">
+    <div class="versus-col them">
+      <h4>Salesforce / HubSpot / Zoho</h4>
+      <ul>
+        <li>Cloud shapes, soft curves</li>
+        <li>Gradient-heavy, trend-sensitive</li>
+        <li>Global-generic, no local identity</li>
+        <li>Infinity loops, handshakes, globes</li>
+        <li>Feels like a subscription, not infrastructure</li>
+        <li>Headquartered 5,000 miles away</li>
+        <li>Pricing in USD, built for US orgs</li>
+        <li>Data residency: unknown</li>
+      </ul>
+    </div>
+    <div class="versus-col us">
+      <h4>KRM — by Kemis</h4>
+      <ul>
+        <li>Modular grid, anchored geometry</li>
+        <li>Flat marks, no gradients in the logo</li>
+        <li>Nassau-built, Bahamian sovereign</li>
+        <li>Structure, hierarchy, modules, control</li>
+        <li>Feels like a system, like a foundation</li>
+        <li>Built by people who know the market</li>
+        <li>Pricing for local operators</li>
+        <li>Data stays here</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="gold-rule"></div>
+
+
+<!-- ═══════════════════════════════ SYSTEM HIERARCHY ═══════════════════════════════ -->
+<div class="section dark">
+  <div class="section-eyebrow">Mark Architecture</div>
+  <div class="section-title">When to Use Which Mark</div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px;">
+    <!-- Grid Mark usage -->
+    <div style="background: var(--navy-light); padding: 40px 28px;">
+      <div style="font-family: 'DM Mono', monospace; font-size: 9px; color: var(--gold); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 20px;">01 — Grid Mark</div>
+      <div style="font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.9; font-weight: 400;">
+        Primary brand expression.<br>
+        Letterhead, invoices,<br>
+        website header,<br>
+        sales decks,<br>
+        onboarding screens.
+      </div>
+      <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.07);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.25); letter-spacing: 0.1em;">ALWAYS WITH WORDMARK</div>
+      </div>
+    </div>
+
+    <!-- Fortress badge usage -->
+    <div style="background: var(--navy-light); padding: 40px 28px;">
+      <div style="font-family: 'DM Mono', monospace; font-size: 9px; color: var(--gold); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 20px;">02 — Fortress Badge</div>
+      <div style="font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.9; font-weight: 400;">
+        Security surfaces only.<br>
+        Audit certificates,<br>
+        data agreements,<br>
+        compliance dashboards,<br>
+        "Powered by" footer.
+      </div>
+      <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.07);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.25); letter-spacing: 0.1em;">STANDALONE OR + KRM TEXT</div>
+      </div>
+    </div>
+
+    <!-- Monogram usage -->
+    <div style="background: var(--navy-light); padding: 40px 28px;">
+      <div style="font-family: 'DM Mono', monospace; font-size: 9px; color: var(--gold); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 20px;">03 — KRM Monogram</div>
+      <div style="font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.9; font-weight: 400;">
+        Small format only.<br>
+        App icon, favicon,<br>
+        admin panel header,<br>
+        email signature,<br>
+        loading screen.
+      </div>
+      <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.07);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.25); letter-spacing: 0.1em;">STANDALONE · NO WORDMARK</div>
+      </div>
+    </div>
+
+    <!-- Wordmark alone -->
+    <div style="background: rgba(158,138,92,0.07); padding: 40px 28px; border: 1px solid rgba(158,138,92,0.15);">
+      <div style="font-family: 'DM Mono', monospace; font-size: 9px; color: var(--gold); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 20px;">04 — Wordmark Alone</div>
+      <div style="font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.9; font-weight: 400;">
+        Narrow contexts only.<br>
+        Nav bars under 240px,<br>
+        PDF footers,<br>
+        receipts,<br>
+        ticket headers.
+      </div>
+      <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(158,138,92,0.15);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 9px; color: var(--gold); letter-spacing: 0.1em; opacity: 0.5;">ALL CAPS · BEBAS NEUE</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<div class="footer">
+  <div class="footer-left">
+    KRM — Kemis Relationship Management<br>
+    Identity System v1.0 · Nassau, Bahamas<br>
+    Built on 20+ years of Kemis Digital trust
+  </div>
+  <div class="footer-right">kemisdigital.com</div>
+</div>
+
+</body>
+</html>

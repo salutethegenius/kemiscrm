@@ -1,6 +1,6 @@
-# Kemis CRM Dashboard
+# KRM — Kemis Relationship Management
 
-A comprehensive CRM system built with Next.js, Supabase, and Tailwind CSS.
+KRM is a homegrown relationship management platform built in Nassau for Bahamian businesses, combining CRM, billing, HR, accounting, email, and compliance in one place.
 
 ## Features
 

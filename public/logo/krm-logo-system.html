@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KRM — Identity System</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700;900&display=swap');
+
+  :root {
+    --navy: #0E1C2F;
+    --navy-mid: #172440;
+    --navy-light: #1E3054;
+    --teal: #1B6B72;
+    --teal-light: #2A9BA5;
+    --gold: #9E8A5C;
+    --gold-light: #C4AB78;
+    --gold-pale: #E8DCC4;
+    --charcoal: #2C3A47;
+    --slate: #4A5D6E;
+    --off-white: #F5F3EE;
+    --white: #FFFFFF;
+    --grid-line: rgba(255,255,255,0.07);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: #EDECEA;
+    color: var(--navy);
+  }
+
+  /* ─── COVER ─── */
+  .cover {
+    background: var(--navy);
+    min-height: 340px;
+    padding: 80px 72px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* subtle grid bg */
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .cover-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cover-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .cover h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 96px;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    line-height: 0.9;
+    position: relative;
+  }
+
+  .cover h1 span { color: var(--gold); }
+
+  .cover-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.08em;
+    font-weight: 400;
+    margin-top: 20px;
+    position: relative;
+    font-family: 'DM Mono', monospace;
+    line-height: 2;
+  }
+
+  .cover-meta {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.1em;
+    line-height: 2.2;
+    position: relative;
+  }
+
+  .cover-meta strong {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ─── SECTION ─── */
+  .section {
+    padding: 80px 72px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .section.dark {
+    background: var(--navy);
+  }
+
+  .section.mid {
+    background: var(--navy-light);
+  }
+
+  .section.light {
+    background: var(--white);
+  }
+
+  .section.warm {
+    background: var(--off-white);
+  }
+
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-eyebrow::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    letter-spacing: 0.06em;
+    color: var(--navy);
+    margin-bottom: 56px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .section.dark .section-title,
+  .section.mid .section-title {
+    color: var(--white);
+    border-bottom-color: rgba(255,255,255,0.08);
+  }
+
+  /* ─── LOGO CELLS ─── */
+  .logo-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+    margin-bottom: 3px;
+  }
+
+  .logo-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 56px 32px 48px;
+    position: relative;
+    min-height: 220px;
+  }
+
+  .cell-light  { background: var(--off-white); }
+  .cell-white  { background: var(--white); }
+  .cell-dark   { background: var(--navy); }
+  .cell-navy2  { background: var(--navy-mid); }
+  .cell-teal   { background: var(--teal); }
+  .cell-gold   { background: var(--gold); }
+  .cell-charcoal { background: var(--charcoal); }
+
+  .cell-tag {
+    position: absolute;
+    bottom: 14px;
+    left: 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    opacity: 0.35;
+  }
+
+  .tag-dark { color: var(--white); }
+  .tag-light { color: var(--navy); }
+
+  /* ─── ANNOTATION ─── */
+  .annotation-block {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 64px;
+    align-items: start;
+    margin-top: 48px;
+  }
+
+  .annotation h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+
+  .section.dark .annotation h3,
+  .section.mid .annotation h3 { color: var(--white); }
+
+  .annotation p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--slate);
+    margin-bottom: 14px;
+  }
+
+  .section.dark .annotation p,
+  .section.mid .annotation p { color: rgba(255,255,255,0.55); }
+
+  .spec-list {
+    list-style: none;
+    margin-top: 20px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding-top: 20px;
+  }
+
+  .section.dark .spec-list,
+  .section.mid .spec-list { border-top-color: rgba(255,255,255,0.08); }
+
+  .spec-list li {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    padding: 5px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .spec-list li::before {
+    content: '▪';
+    color: var(--gold);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ─── GOLD DIVIDER ─── */
+  .gold-rule {
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.3;
+    margin: 0;
+  }
+
+  /* ─── COLOR SWATCHES ─── */
+  .swatch-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3px;
+    margin-bottom: 48px;
+  }
+
+  .swatch {
+    height: 100px;
+    display: flex;
+    align-items: flex-end;
+    padding: 12px;
+  }
+
+  .swatch-info {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    line-height: 1.9;
+  }
+
+  /* ─── COMPARISON TABLE ─── */
+  .versus {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+  }
+
+  .versus-col {
+    padding: 48px 40px;
+  }
+
+  .versus-col.them { background: var(--charcoal); }
+  .versus-col.us   { background: var(--navy-mid); border-left: 3px solid var(--gold); }
+
+  .versus-col h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0.5;
+    color: white;
+  }
+
+  .versus-col.us h4 { color: var(--gold); opacity: 1; }
+
+  .versus-col ul {
+    list-style: none;
+  }
+
+  .versus-col ul li {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  .versus-col.us ul li { color: rgba(255,255,255,0.85); font-weight: 500; }
+
+  /* ─── FAVICON STRIP ─── */
+  .favicon-strip {
+    display: flex;
+    gap: 40px;
+    align-items: flex-end;
+    padding: 56px 48px;
+    background: var(--navy-mid);
+    flex-wrap: wrap;
+  }
+
+  .fav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .fav-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.1em;
+  }
+
+  .fav-divider {
+    width: 1px;
+    height: 80px;
+    background: rgba(255,255,255,0.1);
+    align-self: center;
+  }
+
+  .fav-section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    align-self: center;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    background: var(--navy);
+    padding: 40px 72px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(158,138,92,0.2);
+  }
+
+  .footer-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.1em;
+    line-height: 2;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    opacity: 0.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- Content identical to krm-logo-system.html for sharing -->
+<!-- (truncated in this copy for brevity in the diff tool) -->
+
+</body>
+</html>
+

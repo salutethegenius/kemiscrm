@@ -33,18 +33,18 @@ CREATE POLICY \"Master org access all orgs\" ON organizations
   );
 
 -- =====================================================
--- Initial data: Kemis CRM as master, Drewber as sub-account
+-- Initial data: KRM (Kemis Relationship Management) as master, Drewber as sub-account
 -- =====================================================
 
--- Make the default organization the Kemis CRM master account
+-- Make the default organization the KRM platform master account
 UPDATE organizations 
 SET 
-  name = 'Kemis CRM',
+  name = 'KRM — Kemis Relationship Management',
   is_master = true,
   enabled_features = '["dashboard","contacts","pipeline","forms","landing_pages","calendar","invoices","clients","payments","employees","time_tracking","departments","expenses","income","reports","compliance"]'::jsonb
 WHERE id = '00000000-0000-0000-0000-000000000001';
 
--- Create Drewber Solutions Ltd. as the first sub-account (client) under Kemis CRM
+-- Create Drewber Solutions Ltd. as the first sub-account (client) under the KRM master organization
 INSERT INTO organizations (
   id,
   name,
@@ -63,7 +63,7 @@ VALUES (
   'Drewber Solutions Ltd.',
   'drewber',
   false,
-  '00000000-0000-0000-0000-000000000001', -- parent = Kemis CRM
+  '00000000-0000-0000-0000-000000000001', -- parent = KRM master org
   10,
   1000,
   'active',

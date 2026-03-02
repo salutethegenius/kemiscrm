@@ -6,8 +6,8 @@ import { Toaster } from '@/components/ui/toaster'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Kemis CRM Dashboard',
-  description: 'Manage your leads, deals, and customer relationships',
+  title: 'KRM — Kemis Relationship Management',
+  description: 'Built in Nassau, built for Nassau. Manage relationships, money, and teams in one homegrown platform.',
 }
 
 export default function RootLayout({

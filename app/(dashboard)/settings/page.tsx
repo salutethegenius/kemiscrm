@@ -394,7 +394,7 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle>Business Details</CardTitle>
               <CardDescription>
-                Update your organization&apos;s business name. This will be displayed under the Kemis CRM logo in the sidebar.
+                Update your organization&apos;s business name. This will be displayed under the KRM logo in the sidebar.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -537,7 +537,7 @@ export default function SettingsPage() {
           <CardHeader>
             <CardTitle>Email Accounts</CardTitle>
             <CardDescription>
-              Connect an email inbox to send and receive email inside Kemis CRM.
+              Connect an email inbox to send and receive email inside KRM.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
