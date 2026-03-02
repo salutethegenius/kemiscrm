@@ -1,3 +1,7 @@
+'use client'
+
+import { useIntersection } from '@/hooks/useIntersection'
+
 const items = [
   'Next.js 14',
   'Supabase (Postgres + Auth)',
@@ -7,8 +11,15 @@ const items = [
 ]
 
 export function ArchitectureSection() {
+  const { ref, isVisible } = useIntersection()
+
   return (
-    <section className="py-grid-3 border-t border-[var(--border)]">
+    <section
+      ref={ref as any}
+      className={`py-grid-3 border-t border-[var(--border)] ${
+        isVisible ? 'animate-fade-up' : 'opacity-0'
+      }`}
+    >
       <div className="space-y-4">
         <div>
           <h2 className="text-sm font-mono tracking-[0.18em] uppercase text-[var(--krm-slate)] mb-2">

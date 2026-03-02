@@ -1,10 +1,15 @@
+'use client'
+
 import Link from 'next/link'
+import { useIntersection } from '@/hooks/useIntersection'
 
 interface ClosingSectionProps {
   isOwner: boolean
 }
 
 export function ClosingSection({ isOwner }: ClosingSectionProps) {
+  const { ref, isVisible } = useIntersection()
+
   const primaryClasses = isOwner
     ? 'bg-gold text-[var(--krm-navy)] border-gold hover:bg-gold-light'
     : 'bg-[var(--krm-navy)] text-[var(--krm-off-white)] border-[var(--krm-navy)] hover:bg-[var(--krm-gold)] hover:text-[var(--krm-navy)]'
@@ -13,7 +18,13 @@ export function ClosingSection({ isOwner }: ClosingSectionProps) {
   const demoHref = '#enterprise-demo'
 
   return (
-    <section className="py-grid-3 border-t border-[var(--border)]" id="schedule-walkthrough">
+    <section
+      ref={ref as any}
+      className={`py-grid-3 border-t border-[var(--border)] ${
+        isVisible ? 'animate-fade-up' : 'opacity-0'
+      }`}
+      id="schedule-walkthrough"
+    >
       <div className="space-y-grid">
         <div>
           <h2 className="text-sm font-mono tracking-[0.18em] uppercase text-[var(--krm-slate)] mb-2">

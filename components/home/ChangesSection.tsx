@@ -1,6 +1,17 @@
+'use client'
+
+import { useIntersection } from '@/hooks/useIntersection'
+
 export function ChangesSection() {
+  const { ref, isVisible } = useIntersection()
+
   return (
-    <section className="py-grid-3 border-t border-[var(--border)]">
+    <section
+      ref={ref as any}
+      className={`py-grid-3 border-t border-[var(--border)] ${
+        isVisible ? 'animate-fade-up' : 'opacity-0'
+      }`}
+    >
       <div className="grid gap-grid md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] items-start">
         <div>
           <h2 className="text-sm font-mono tracking-[0.18em] uppercase text-[var(--krm-slate)] mb-2">

@@ -65,3 +65,35 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* KRM homepage animation utilities */
+@keyframes krm-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes krm-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-up {
+  animation: krm-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: krm-scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+

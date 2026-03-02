@@ -1,3 +1,7 @@
+ 'use client'
+
+import { useIntersection } from '@/hooks/useIntersection'
+
 const modules = [
   {
     title: 'CRM & Pipeline',
@@ -27,8 +31,15 @@ const modules = [
 ]
 
 export function ModuleGridSection() {
+  const { ref, isVisible } = useIntersection()
+
   return (
-    <section className="py-grid-3 border-t border-[var(--border)]">
+    <section
+      ref={ref as any}
+      className={`py-grid-3 border-t border-[var(--border)] ${
+        isVisible ? 'animate-fade-up' : 'opacity-0'
+      }`}
+    >
       <div className="mb-grid-2 max-w-xl">
         <h2 className="text-sm font-mono tracking-[0.18em] uppercase text-[var(--krm-slate)] mb-2">
           Section 3

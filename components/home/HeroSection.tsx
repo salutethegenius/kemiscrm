@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { useIntersection } from '@/hooks/useIntersection'
 import { HeroGridVisual } from './HeroGridVisual'
 
 interface HeroSectionProps {
@@ -7,6 +10,8 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ isOwner, isAuthenticated }: HeroSectionProps) {
+  const { ref, isVisible } = useIntersection()
+
   const primaryClasses = isOwner
     ? 'bg-gold text-[var(--krm-navy)] border-gold hover:bg-gold-light'
     : 'bg-[var(--krm-navy)] text-[var(--krm-off-white)] border-[var(--krm-navy)] hover:bg-[var(--krm-gold)] hover:text-[var(--krm-navy)]'
@@ -15,7 +20,12 @@ export function HeroSection({ isOwner, isAuthenticated }: HeroSectionProps) {
   const dashboardHref = isAuthenticated ? '/dashboard' : '/login'
 
   return (
-    <section className="grid gap-grid-2 py-grid-3 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-center">
+    <section
+      ref={ref as any}
+      className={`grid items-center gap-grid-2 py-grid-3 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] ${
+        isVisible ? 'animate-fade-up' : 'opacity-0'
+      }`}
+    >
       <div className="space-y-grid">
         <div className="space-y-3">
           <div className="inline-flex flex-col gap-1">
@@ -60,7 +70,7 @@ export function HeroSection({ isOwner, isAuthenticated }: HeroSectionProps) {
         </div>
       </div>
 
-      <div className="hidden md:flex justify-end">
+      <div className={`hidden md:flex justify-end ${isVisible ? 'animate-scale-in' : 'opacity-0'}`}>
         <HeroGridVisual />
       </div>
     </section>
