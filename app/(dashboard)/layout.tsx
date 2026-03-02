@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Sidebar } from '@/components/sidebar'
-import { Footer } from '@/components/footer'
+import { DashboardFooter } from '@/components/dashboard-footer'
 
 export default async function DashboardLayout({
   children,
@@ -23,7 +23,7 @@ export default async function DashboardLayout({
           {children}
         </main>
         <div className="flex-shrink-0 relative">
-          <Footer />
+          <DashboardFooter />
         </div>
       </div>
     </div>
