@@ -55,6 +55,29 @@
     --input: 213 32% 25%;
     --ring: 43 36% 65%; /* gold light */
   }
+
+  /* Landing page color overrides — scoped to .landing-scope */
+  .landing-scope {
+    --background: 38 26% 94%; /* #F5F0E8 */
+    --foreground: 218 46% 20%; /* #1B2A4A */
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 218 46% 20%;
+    --primary: 218 46% 20%; /* #1B2A4A */
+    --primary-foreground: 38 26% 94%; /* #F5F0E8 */
+    --secondary: 36 28% 88%; /* #EDE6D8 */
+    --secondary-foreground: 218 46% 20%;
+    --muted: 36 28% 88%; /* #EDE6D8 */
+    --muted-foreground: 218 6% 46%; /* #6B7280 */
+    --accent: 40 47% 55%; /* #C5A055 */
+    --accent-foreground: 218 46% 20%;
+    --destructive: 0 84% 60%; /* #DC2626 */
+    --destructive-foreground: 0 0% 100%;
+    --border: 33 18% 77%; /* #D4C9B5 */
+    --input: 33 18% 77%;
+    --ring: 40 47% 55%; /* #C5A055 */
+    --landing-border: #D4C9B5;
+    --landing-card: #FFFFFF;
+  }
 }
 
 @layer base {
@@ -66,11 +89,16 @@
   }
 }
 
-/* KRM homepage animation utilities */
+/* Font heading utility for landing page (Space Grotesk) */
+.font-heading {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', system-ui, sans-serif;
+}
+
+/* Landing page animation utilities */
 @keyframes krm-fade-up {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -78,10 +106,37 @@
   }
 }
 
+@keyframes krm-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes krm-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes krm-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @keyframes krm-scale-in {
   from {
     opacity: 0;
-    transform: scale(0.96);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
@@ -90,10 +145,33 @@
 }
 
 .animate-fade-up {
-  animation: krm-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: krm-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: krm-fade-in 0.6s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: krm-slide-in-left 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-right {
+  animation: krm-slide-in-right 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-scale-in {
   animation: krm-scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+.delay-700 { animation-delay: 700ms; }
+
+html {
+  scroll-behavior: smooth;
+}

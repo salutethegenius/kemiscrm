@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
-import { Inter, Bebas_Neue } from 'next/font/google'
+import { Inter, Bebas_Neue, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
 
 const inter = Inter({ subsets: ['latin'] })
 const bebasNeue = Bebas_Neue({ weight: '400', subsets: ['latin'], variable: '--font-bebas' })
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' })
 
 export const metadata: Metadata = {
   title: 'KRM — Kemis Relationship Management',
@@ -20,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={bebasNeue.variable}>
+    <html lang="en" className={`${bebasNeue.variable} ${spaceGrotesk.variable}`}>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
