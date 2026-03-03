@@ -8,6 +8,7 @@ const tiers = [
     name: "Business License",
     description: "For single Bahamian businesses formalizing operations.",
     price: "399",
+    renewalPrice: "129",
     features: [
       "Core CRM for contacts, companies & deals",
       "Pipeline board for work from first touch to close",
@@ -24,6 +25,7 @@ const tiers = [
     name: "Organization License",
     description: "For firms with branches, departments, or client accounts.",
     price: "799",
+    renewalPrice: "269",
     features: [
       "Everything in Business License",
       "Sub-accounts and branches for multi-entity management",
@@ -108,10 +110,19 @@ export function PricingSection() {
                   </p>
                 </div>
 
-                <div className="mb-8">
-                  <span className="text-sm text-muted-foreground">BSD </span>
-                  <span className="font-heading text-3xl font-bold text-foreground">{tier.price}</span>
-                  <span className="text-sm text-muted-foreground"> / year license</span>
+                <div className="mb-8 space-y-1">
+                  <div>
+                    <span className="text-sm text-muted-foreground">BSD </span>
+                    <span className="font-heading text-3xl font-bold text-foreground">
+                      {tier.price}
+                    </span>
+                    <span className="text-sm text-muted-foreground"> / first year license</span>
+                  </div>
+                  {tier.renewalPrice && (
+                    <p className="text-xs text-muted-foreground">
+                      Future years (optional): BSD {tier.renewalPrice}/year for updates & support.
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-3">
@@ -198,8 +209,9 @@ export function PricingSection() {
               isVisible ? "animate-fade-up delay-200" : "opacity-0"
             }`}
           >
-            Licenses cover 1 year of access, updates, and support. If you decide not to renew, you
-            still keep access to your records and can export all of your data at any time.
+            Year 1 covers your full license, setup, and support. From year 2 onward, you can choose
+            to renew at roughly one-third of the license price for ongoing updates and support. If
+            you don&apos;t renew, you keep your system and can export all of your data at any time.
           </p>
         </div>
       </div>
