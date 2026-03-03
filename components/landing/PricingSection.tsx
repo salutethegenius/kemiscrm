@@ -5,49 +5,59 @@ import { Check, ArrowRight } from "lucide-react"
 
 const tiers = [
   {
-    name: "Operator",
-    description: "For structured teams starting discipline.",
-    price: "$149",
+    name: "Business License",
+    description: "For single Bahamian businesses formalizing operations.",
+    price: "399",
     features: [
-      "CRM",
-      "Pipeline board",
-      "Tasks & calendar",
-      "Basic invoicing",
-      "Role permissions (limited)",
+      "Core CRM for contacts, companies & deals",
+      "Pipeline board for work from first touch to close",
+      "Tasks & calendar for follow-ups and reminders",
+      "Basic invoicing to track who owes what",
+      "Single business coverage (one company or location)",
+      "Data ownership with easy export if you leave",
     ],
-    footer: "For businesses formalizing workflow.",
+    footer:
+      "For Bahamian businesses that want discipline and visibility without monthly SaaS bills.",
     highlighted: false,
   },
   {
-    name: "Manager",
-    description: "For growing companies with multiple departments.",
-    price: "$349",
+    name: "Organization License",
+    description: "For firms with branches, departments, or client accounts.",
+    price: "799",
     features: [
-      "Everything in Operator",
-      "Advanced invoicing",
-      "HR & time tracking",
-      "Accounting overview",
-      "Email integration",
-      "Expanded role controls",
+      "Everything in Business License",
+      "Sub-accounts and branches for multi-entity management",
+      "Advanced invoicing and accounting overview",
+      "HR & time tracking for teams",
+      "Advanced permissions across roles and departments",
+      "Compliance suite with audit logging",
+      "White-label option and priority onboarding",
     ],
-    footer: "For companies requiring internal visibility.",
+    footer: "For firms that need structure across multiple teams, locations, or client books.",
     highlighted: true,
   },
+]
+
+const addOns = [
   {
-    name: "Owner",
-    description: "Full operating authority.",
-    price: "$749",
-    features: [
-      "Everything in Manager",
-      "Sub-accounts",
-      "Compliance suite",
-      "Audit logging",
-      "Data export & deletion tools",
-      "White-label option",
-      "Priority onboarding",
-    ],
-    footer: "For firms managing departments, subsidiaries, or client accounts.",
-    highlighted: false,
+    name: "Finance & Billing Pack",
+    price: "79",
+    description: "Advanced invoicing options, templates, and deeper accounting dashboards.",
+  },
+  {
+    name: "People & HR Pack",
+    price: "79",
+    description: "HR records, leave tracking, time tracking, and basic performance notes.",
+  },
+  {
+    name: "Compliance & Audit Pack",
+    price: "99",
+    description: "Compliance workflows, detailed audit trails, and export/deletion tooling.",
+  },
+  {
+    name: "Branding & White-Label Pack",
+    price: "99",
+    description: "Custom branding, logo, and white-label options for client-facing firms.",
   },
 ]
 
@@ -64,15 +74,17 @@ export function PricingSection() {
               Section 6
             </div>
             <h2 className="font-heading text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              KRM structure tiers
+              KRM licenses for Bahamian operators
             </h2>
           </div>
 
           <p className={`mb-16 max-w-xl text-sm leading-relaxed text-muted-foreground ${isVisible ? "animate-fade-up delay-100" : "opacity-0"}`}>
-            {'Positioned by responsibility, not size. No "Basic / Pro / Premium" \u2014 tiers are aligned to authority.'}
+            {
+              "Annual licenses, not rent. Built to empower Bahamian businesses with clear pricing and data you always control."
+            }
           </p>
 
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className="grid gap-6 lg:grid-cols-2">
             {tiers.map((tier, i) => (
               <div
                 key={i}
@@ -97,9 +109,9 @@ export function PricingSection() {
                 </div>
 
                 <div className="mb-8">
-                  <span className="text-sm text-muted-foreground">Starting at BSD </span>
+                  <span className="text-sm text-muted-foreground">BSD </span>
                   <span className="font-heading text-3xl font-bold text-foreground">{tier.price}</span>
-                  <span className="text-sm text-muted-foreground"> / month</span>
+                  <span className="text-sm text-muted-foreground"> / year license</span>
                 </div>
 
                 <div className="space-y-3">
@@ -135,6 +147,60 @@ export function PricingSection() {
               </div>
             ))}
           </div>
+
+          {addOns.length > 0 && (
+            <div
+              className={`mt-12 max-w-3xl ${
+                isVisible ? "animate-fade-up delay-150" : "opacity-0"
+              }`}
+            >
+              <h3 className="font-heading text-sm font-semibold tracking-widest uppercase text-muted-foreground">
+                Optional module packs
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Add depth where you need it, without forcing extra modules on every business.
+              </p>
+              <div className="mt-6 grid gap-4 md:grid-cols-2">
+                {addOns.map((pack) => (
+                  <div
+                    key={pack.name}
+                    className="rounded-2xl border border-[var(--landing-border)] bg-[var(--landing-card)]/60 p-5 text-sm"
+                  >
+                    <div className="flex items-baseline justify-between">
+                      <div>
+                        <h4 className="font-heading text-xs font-semibold tracking-widest uppercase text-foreground">
+                          {pack.name}
+                        </h4>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {pack.description}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="block text-[11px] uppercase tracking-wide text-muted-foreground">
+                          BSD
+                        </span>
+                        <span className="font-heading text-xl font-bold text-foreground">
+                          {pack.price}
+                        </span>
+                        <span className="block text-[11px] text-muted-foreground">
+                          / year
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <p
+            className={`mt-10 max-w-xl text-xs leading-relaxed text-muted-foreground ${
+              isVisible ? "animate-fade-up delay-200" : "opacity-0"
+            }`}
+          >
+            Licenses cover 1 year of access, updates, and support. If you decide not to renew, you
+            still keep access to your records and can export all of your data at any time.
+          </p>
         </div>
       </div>
     </section>

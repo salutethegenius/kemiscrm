@@ -19,7 +19,7 @@ export function Navigation() {
     { label: "Modules", href: "#modules" },
     { label: "Why Local", href: "#why-local" },
     { label: "Infrastructure", href: "#infrastructure" },
-    { label: "Pricing", href: "#pricing" },
+    { label: "Pricing & Licenses", href: "#pricing" },
   ]
 
   return (
@@ -52,7 +52,7 @@ export function Navigation() {
             href="#pricing"
             className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
-            See Pricing
+            See Licenses & Pricing
           </a>
           <Link
             href="/login"
