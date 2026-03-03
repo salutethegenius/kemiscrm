@@ -11,6 +11,7 @@ DROP POLICY IF EXISTS "Users can view their own contacts" ON contacts;
 DROP POLICY IF EXISTS "Users can create their own contacts" ON contacts;
 DROP POLICY IF EXISTS "Users can update their own contacts" ON contacts;
 DROP POLICY IF EXISTS "Users can delete their own contacts" ON contacts;
+DROP POLICY IF EXISTS "Contacts access" ON contacts;
 CREATE POLICY "Contacts access" ON contacts
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR organization_id IS NULL OR user_id = (SELECT auth.uid())
@@ -24,6 +25,7 @@ DROP POLICY IF EXISTS "Users can view their own stages" ON pipeline_stages;
 DROP POLICY IF EXISTS "Users can create their own stages" ON pipeline_stages;
 DROP POLICY IF EXISTS "Users can update their own stages" ON pipeline_stages;
 DROP POLICY IF EXISTS "Users can delete their own stages" ON pipeline_stages;
+DROP POLICY IF EXISTS "Pipeline stages access" ON pipeline_stages;
 CREATE POLICY "Pipeline stages access" ON pipeline_stages
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR organization_id IS NULL OR user_id = (SELECT auth.uid())
@@ -37,6 +39,7 @@ DROP POLICY IF EXISTS "Users can view their own deals" ON deals;
 DROP POLICY IF EXISTS "Users can create their own deals" ON deals;
 DROP POLICY IF EXISTS "Users can update their own deals" ON deals;
 DROP POLICY IF EXISTS "Users can delete their own deals" ON deals;
+DROP POLICY IF EXISTS "Deals access" ON deals;
 CREATE POLICY "Deals access" ON deals
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR organization_id IS NULL OR user_id = (SELECT auth.uid())
@@ -49,6 +52,10 @@ DROP POLICY IF EXISTS "Users can view their own activities" ON activities;
 DROP POLICY IF EXISTS "Users can create their own activities" ON activities;
 DROP POLICY IF EXISTS "Users can update their own activities" ON activities;
 DROP POLICY IF EXISTS "Users can delete their own activities" ON activities;
+DROP POLICY IF EXISTS "Activities select" ON activities;
+DROP POLICY IF EXISTS "Activities insert" ON activities;
+DROP POLICY IF EXISTS "Activities update" ON activities;
+DROP POLICY IF EXISTS "Activities delete" ON activities;
 CREATE POLICY "Activities select" ON activities
   FOR SELECT USING ((SELECT auth.uid()) = user_id OR (SELECT auth.uid()) = assigned_to);
 CREATE POLICY "Activities insert" ON activities
@@ -66,6 +73,7 @@ DROP POLICY IF EXISTS "Users can view their own forms" ON lead_forms;
 DROP POLICY IF EXISTS "Users can create their own forms" ON lead_forms;
 DROP POLICY IF EXISTS "Users can update their own forms" ON lead_forms;
 DROP POLICY IF EXISTS "Users can delete their own forms" ON lead_forms;
+DROP POLICY IF EXISTS "Lead forms access" ON lead_forms;
 CREATE POLICY "Lead forms access" ON lead_forms
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR organization_id IS NULL OR user_id = (SELECT auth.uid())
@@ -92,6 +100,7 @@ DROP POLICY IF EXISTS "Users can create their own groups" ON contact_groups;
 DROP POLICY IF EXISTS "Users can update their own groups" ON contact_groups;
 DROP POLICY IF EXISTS "Users can delete their own groups" ON contact_groups;
 DROP POLICY IF EXISTS "Users can manage their own groups" ON contact_groups;
+DROP POLICY IF EXISTS "Contact groups access" ON contact_groups;
 CREATE POLICY "Contact groups access" ON contact_groups
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR organization_id IS NULL OR user_id = (SELECT auth.uid())
@@ -106,6 +115,7 @@ DROP POLICY IF EXISTS "Users can create their own tags" ON contact_tags;
 DROP POLICY IF EXISTS "Users can update their own tags" ON contact_tags;
 DROP POLICY IF EXISTS "Users can delete their own tags" ON contact_tags;
 DROP POLICY IF EXISTS "Users can manage their own tags" ON contact_tags;
+DROP POLICY IF EXISTS "Contact tags access" ON contact_tags;
 CREATE POLICY "Contact tags access" ON contact_tags
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR organization_id IS NULL OR user_id = (SELECT auth.uid())
@@ -118,6 +128,9 @@ DROP POLICY IF EXISTS "Users can view group members" ON contact_group_members;
 DROP POLICY IF EXISTS "Users can add group members" ON contact_group_members;
 DROP POLICY IF EXISTS "Users can remove group members" ON contact_group_members;
 DROP POLICY IF EXISTS "Users can manage group members" ON contact_group_members;
+DROP POLICY IF EXISTS "Contact group members select" ON contact_group_members;
+DROP POLICY IF EXISTS "Contact group members insert" ON contact_group_members;
+DROP POLICY IF EXISTS "Contact group members delete" ON contact_group_members;
 CREATE POLICY "Contact group members select" ON contact_group_members
   FOR SELECT USING (
     EXISTS (
@@ -150,6 +163,9 @@ DROP POLICY IF EXISTS "Users can view tag assignments" ON contact_tag_assignment
 DROP POLICY IF EXISTS "Users can add tag assignments" ON contact_tag_assignments;
 DROP POLICY IF EXISTS "Users can remove tag assignments" ON contact_tag_assignments;
 DROP POLICY IF EXISTS "Users can manage tag assignments" ON contact_tag_assignments;
+DROP POLICY IF EXISTS "Contact tag assignments select" ON contact_tag_assignments;
+DROP POLICY IF EXISTS "Contact tag assignments insert" ON contact_tag_assignments;
+DROP POLICY IF EXISTS "Contact tag assignments delete" ON contact_tag_assignments;
 CREATE POLICY "Contact tag assignments select" ON contact_tag_assignments
   FOR SELECT USING (
     EXISTS (
@@ -180,6 +196,7 @@ CREATE POLICY "Contact tag assignments delete" ON contact_tag_assignments
 -- =====================================================
 DROP POLICY IF EXISTS "Org members access invoices" ON invoices;
 DROP POLICY IF EXISTS "Users manage own invoices" ON invoices;
+DROP POLICY IF EXISTS "Invoices access" ON invoices;
 CREATE POLICY "Invoices access" ON invoices
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR user_id = (SELECT auth.uid())
@@ -197,18 +214,24 @@ CREATE POLICY "Users manage own calendars" ON user_calendars
 -- =====================================================
 DROP POLICY IF EXISTS "Org members access clients" ON clients;
 DROP POLICY IF EXISTS "Users manage own clients" ON clients;
+DROP POLICY IF EXISTS "Clients access" ON clients;
 CREATE POLICY "Clients access" ON clients
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR user_id = (SELECT auth.uid())
   );
 
 -- =====================================================
--- 14. INVOICE_ITEMS – (select ...) only
+-- 14. INVOICE_ITEMS – org members + invoice owner (select ...)
 -- =====================================================
 DROP POLICY IF EXISTS "Users manage own invoice items" ON invoice_items;
-CREATE POLICY "Users manage own invoice items" ON invoice_items
+DROP POLICY IF EXISTS "Invoice items access" ON invoice_items;
+CREATE POLICY "Invoice items access" ON invoice_items
   FOR ALL USING (
-    EXISTS (SELECT 1 FROM invoices i WHERE i.id = invoice_items.invoice_id AND i.user_id = (SELECT auth.uid()))
+    EXISTS (
+      SELECT 1 FROM invoices i
+      WHERE i.id = invoice_items.invoice_id
+        AND (i.organization_id = (SELECT get_user_organization_id()) OR i.user_id = (SELECT auth.uid()))
+    )
   );
 
 -- =====================================================
@@ -216,6 +239,7 @@ CREATE POLICY "Users manage own invoice items" ON invoice_items
 -- =====================================================
 DROP POLICY IF EXISTS "Org members access payments" ON payments;
 DROP POLICY IF EXISTS "Users manage own payments" ON payments;
+DROP POLICY IF EXISTS "Payments access" ON payments;
 CREATE POLICY "Payments access" ON payments
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR user_id = (SELECT auth.uid())
@@ -226,6 +250,7 @@ CREATE POLICY "Payments access" ON payments
 -- =====================================================
 DROP POLICY IF EXISTS "Org members access departments" ON departments;
 DROP POLICY IF EXISTS "Users manage own departments" ON departments;
+DROP POLICY IF EXISTS "Departments access" ON departments;
 CREATE POLICY "Departments access" ON departments
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR user_id = (SELECT auth.uid())
@@ -236,6 +261,7 @@ CREATE POLICY "Departments access" ON departments
 -- =====================================================
 DROP POLICY IF EXISTS "Org members access employees" ON employees;
 DROP POLICY IF EXISTS "Users manage own employees" ON employees;
+DROP POLICY IF EXISTS "Employees access" ON employees;
 CREATE POLICY "Employees access" ON employees
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR user_id = (SELECT auth.uid())
@@ -246,6 +272,7 @@ CREATE POLICY "Employees access" ON employees
 -- =====================================================
 DROP POLICY IF EXISTS "Org members access time_entries" ON time_entries;
 DROP POLICY IF EXISTS "Users manage own time entries" ON time_entries;
+DROP POLICY IF EXISTS "Time entries access" ON time_entries;
 CREATE POLICY "Time entries access" ON time_entries
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR user_id = (SELECT auth.uid())
@@ -256,6 +283,7 @@ CREATE POLICY "Time entries access" ON time_entries
 -- =====================================================
 DROP POLICY IF EXISTS "Org members access leave_requests" ON leave_requests;
 DROP POLICY IF EXISTS "Users manage own leave requests" ON leave_requests;
+DROP POLICY IF EXISTS "Leave requests access" ON leave_requests;
 CREATE POLICY "Leave requests access" ON leave_requests
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR user_id = (SELECT auth.uid())
@@ -266,6 +294,7 @@ CREATE POLICY "Leave requests access" ON leave_requests
 -- =====================================================
 DROP POLICY IF EXISTS "Org members access categories" ON account_categories;
 DROP POLICY IF EXISTS "Users manage own categories" ON account_categories;
+DROP POLICY IF EXISTS "Account categories access" ON account_categories;
 CREATE POLICY "Account categories access" ON account_categories
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR user_id = (SELECT auth.uid())
@@ -276,6 +305,7 @@ CREATE POLICY "Account categories access" ON account_categories
 -- =====================================================
 DROP POLICY IF EXISTS "Org members access expenses" ON expenses;
 DROP POLICY IF EXISTS "Users manage own expenses" ON expenses;
+DROP POLICY IF EXISTS "Expenses access" ON expenses;
 CREATE POLICY "Expenses access" ON expenses
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR user_id = (SELECT auth.uid())
@@ -286,6 +316,7 @@ CREATE POLICY "Expenses access" ON expenses
 -- =====================================================
 DROP POLICY IF EXISTS "Org members access income" ON income;
 DROP POLICY IF EXISTS "Users manage own income" ON income;
+DROP POLICY IF EXISTS "Income access" ON income;
 CREATE POLICY "Income access" ON income
   FOR ALL USING (
     organization_id = (SELECT get_user_organization_id()) OR user_id = (SELECT auth.uid())
@@ -298,6 +329,9 @@ DROP POLICY IF EXISTS "Org members can view profiles" ON user_profiles;
 DROP POLICY IF EXISTS "Users can update own profile" ON user_profiles;
 DROP POLICY IF EXISTS "Admins can update org profiles" ON user_profiles;
 DROP POLICY IF EXISTS "Auto create profile on signup" ON user_profiles;
+DROP POLICY IF EXISTS "User profiles select" ON user_profiles;
+DROP POLICY IF EXISTS "User profiles update" ON user_profiles;
+DROP POLICY IF EXISTS "User profiles insert" ON user_profiles;
 CREATE POLICY "User profiles select" ON user_profiles
   FOR SELECT USING (
     organization_id = (SELECT get_user_organization_id()) OR id = (SELECT auth.uid())
@@ -315,6 +349,10 @@ CREATE POLICY "User profiles insert" ON user_profiles
 -- =====================================================
 DROP POLICY IF EXISTS "Org members access landing pages" ON landing_pages;
 DROP POLICY IF EXISTS "Public can view published landing pages" ON landing_pages;
+DROP POLICY IF EXISTS "Landing pages select" ON landing_pages;
+DROP POLICY IF EXISTS "Landing pages insert" ON landing_pages;
+DROP POLICY IF EXISTS "Landing pages update" ON landing_pages;
+DROP POLICY IF EXISTS "Landing pages delete" ON landing_pages;
 CREATE POLICY "Landing pages select" ON landing_pages
   FOR SELECT USING (
     published = true
@@ -377,6 +415,10 @@ CREATE POLICY "Users manage own consent" ON consent_records
 -- =====================================================
 DROP POLICY IF EXISTS "Org members view permissions" ON role_permissions;
 DROP POLICY IF EXISTS "Admins manage permissions" ON role_permissions;
+DROP POLICY IF EXISTS "Role permissions select" ON role_permissions;
+DROP POLICY IF EXISTS "Role permissions insert" ON role_permissions;
+DROP POLICY IF EXISTS "Role permissions update" ON role_permissions;
+DROP POLICY IF EXISTS "Role permissions delete" ON role_permissions;
 CREATE POLICY "Role permissions select" ON role_permissions
   FOR SELECT USING (organization_id = (SELECT get_user_organization_id()));
 CREATE POLICY "Role permissions insert" ON role_permissions FOR INSERT WITH CHECK (
