@@ -2,17 +2,16 @@ import { NextResponse } from 'next/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-  // This will surface clearly in server logs if misconfigured
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY')
+function getSupabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY')
+  }
+  return createAdminClient(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  })
 }
-
-const supabaseAdmin = createAdminClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-  auth: { autoRefreshToken: false, persistSession: false },
-})
 
 export async function POST(request: Request) {
   try {
@@ -66,7 +65,8 @@ export async function POST(request: Request) {
 
     const fullName = `${employee.first_name ?? ''} ${employee.last_name ?? ''}`.trim() || null
 
-    // Send an invite email (Supabase will handle email sending)
+    const supabaseAdmin = getSupabaseAdmin()
+
     const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(
       employee.email,
       {
