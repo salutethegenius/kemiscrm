@@ -10,7 +10,7 @@ export function InviteTokenHandler() {
   useEffect(() => {
     // Supabase invite links redirect with auth data in the URL hash:
     // #access_token=...&refresh_token=...&type=invite
-    const { hash } = window
+    const { hash } = window.location
     if (!hash || !hash.includes('access_token')) return
 
     const params = new URLSearchParams(hash.replace(/^#/, ''))
