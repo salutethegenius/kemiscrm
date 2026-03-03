@@ -26,12 +26,28 @@ export function InviteTokenHandler() {
         access_token,
         refresh_token,
       })
-      .then(({ error }) => {
-        if (!error) {
-          // Clean up the URL and send the user to the dashboard
-          window.history.replaceState(null, '', window.location.pathname + window.location.search)
-          router.push('/dashboard')
+      .then(async ({ error }) => {
+        if (error) return
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+
+        if (!user) {
+          router.push('/login')
+          return
         }
+
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('employee_id')
+          .eq('id', user.id)
+          .single()
+
+        const targetPath = profile?.employee_id ? '/hr/portal' : '/dashboard'
+
+        window.history.replaceState(null, '', window.location.pathname + window.location.search)
+        router.push(targetPath)
       })
   }, [router])
 

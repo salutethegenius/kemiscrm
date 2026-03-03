@@ -104,6 +104,7 @@ export function Sidebar({ user }: SidebarProps) {
   const [organizationName, setOrganizationName] = useState<string>('')
   const [organization, setOrganization] = useState<Organization | null>(null)
   const [userFullName, setUserFullName] = useState<string>('')
+  const [isEmployeePortalUser, setIsEmployeePortalUser] = useState<boolean>(false)
 
   // Close mobile sidebar on navigation
   useEffect(() => {
@@ -117,7 +118,7 @@ export function Sidebar({ user }: SidebarProps) {
   const fetchUserPermissions = async () => {
     const { data: profile } = await supabase
       .from('user_profiles')
-      .select('role, organization_id, full_name')
+      .select('role, organization_id, full_name, employee_id')
       .eq('id', user.id)
       .single()
 
@@ -125,7 +126,11 @@ export function Sidebar({ user }: SidebarProps) {
       setUserFullName(profile.full_name)
     }
 
-    if (profile?.role && profile?.organization_id) {
+    if (profile?.employee_id) {
+      setIsEmployeePortalUser(true)
+    }
+
+    if (profile?.role && profile?.organization_id && !profile?.employee_id) {
       const { data: perms } = await supabase
         .from('role_permissions')
         .select('permission, enabled')
@@ -137,8 +142,6 @@ export function Sidebar({ user }: SidebarProps) {
           perms.filter(p => p.enabled).map(p => p.permission)
         )
         setPermissions(enabledPerms)
-      } else {
-        setPermissions(new Set(PERMISSIONS.map(p => p.key)))
       }
 
       const { data: org } = await supabase
@@ -153,14 +156,8 @@ export function Sidebar({ user }: SidebarProps) {
           setOrganizationName(org.name)
         }
       }
-    } else {
-      setPermissions(new Set([
-        'dashboard', 'contacts', 'pipeline', 'forms', 'calendar', 'tasks', 'messages',
-        'invoices', 'clients', 'payments',
-        'employees', 'time_tracking', 'departments',
-        'expenses', 'income', 'reports',
-        'user_management', 'role_permissions'
-      ]))
+    } else if (!profile?.employee_id) {
+      setPermissions(new Set())
     }
     setLoading(false)
   }
@@ -181,6 +178,7 @@ export function Sidebar({ user }: SidebarProps) {
 
   const isFeatureEnabled = (featureKey: string) => {
     if (isDemoAccount) return true
+    if (isEmployeePortalUser) return false
     if (organization?.is_master) return true
     if (!organization?.enabled_features || organization.enabled_features.length === 0) return true
     return organization.enabled_features.includes(featureKey)
@@ -256,6 +254,11 @@ export function Sidebar({ user }: SidebarProps) {
     )
   }
 
+  const employeePortalNav = [
+    { name: 'My Portal', href: '/hr/portal', icon: LayoutDashboard, permission: 'dashboard' },
+    { name: 'My Time', href: '/hr/time?me=1', icon: Clock, permission: 'time_tracking' },
+  ]
+
   const sidebarContent = (
     <>
       {/* Logo */}
@@ -272,43 +275,51 @@ export function Sidebar({ user }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
-        {filteredNav.map(renderNavItem)}
-        {renderCollapsibleSection('Invoicing', 'invoicing', filteredInvoicing)}
-        {renderCollapsibleSection('HR', 'hr', filteredHr)}
-        {renderCollapsibleSection('Accounting', 'accounting', filteredAccounting)}
-        {renderCollapsibleSection('Admin', 'admin', filteredAdmin)}
+        {isEmployeePortalUser ? (
+          <>
+            {employeePortalNav.map(renderNavItem)}
+          </>
+        ) : (
+          <>
+            {filteredNav.map(renderNavItem)}
+            {renderCollapsibleSection('Invoicing', 'invoicing', filteredInvoicing)}
+            {renderCollapsibleSection('HR', 'hr', filteredHr)}
+            {renderCollapsibleSection('Accounting', 'accounting', filteredAccounting)}
+            {renderCollapsibleSection('Admin', 'admin', filteredAdmin)}
 
-        {/* Master Admin Section */}
-        {organization?.is_master === true && (
-          <div className="pt-4">
-            <button
-              onClick={() => toggleSection('master')}
-              className="w-full flex items-center justify-between px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
-            >
-              <span>Platform</span>
-              {isSectionExpanded('master') ? (
-                <ChevronDown className="h-3.5 w-3.5" />
-              ) : (
-                <ChevronRight className="h-3.5 w-3.5" />
-              )}
-            </button>
-            {isSectionExpanded('master') && (
-              <div className="mt-2 space-y-1">
-                {renderNavItem({
-                  name: 'Sub-Accounts',
-                  href: '/master/accounts',
-                  icon: Building2,
-                  permission: 'user_management',
-                })}
-                {renderNavItem({
-                  name: 'Billing Overview',
-                  href: '/master/billing',
-                  icon: CreditCard,
-                  permission: 'user_management',
-                })}
+            {/* Master Admin Section */}
+            {organization?.is_master === true && (
+              <div className="pt-4">
+                <button
+                  onClick={() => toggleSection('master')}
+                  className="w-full flex items-center justify-between px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
+                >
+                  <span>Platform</span>
+                  {isSectionExpanded('master') ? (
+                    <ChevronDown className="h-3.5 w-3.5" />
+                  ) : (
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  )}
+                </button>
+                {isSectionExpanded('master') && (
+                  <div className="mt-2 space-y-1">
+                    {renderNavItem({
+                      name: 'Sub-Accounts',
+                      href: '/master/accounts',
+                      icon: Building2,
+                      permission: 'user_management',
+                    })}
+                    {renderNavItem({
+                      name: 'Billing Overview',
+                      href: '/master/billing',
+                      icon: CreditCard,
+                      permission: 'user_management',
+                    })}
+                  </div>
+                )}
               </div>
             )}
-          </div>
+          </>
         )}
       </nav>
 

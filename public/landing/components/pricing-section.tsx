@@ -39,13 +39,19 @@ const tiers = [
 
 const addOns = [
   {
+    name: "Bahamas Compliant Payroll Pack",
+    price: "249",
+    description:
+      "Payroll that de-risks Bahamian compliance: automate NIB, generate local bank files, and standardize local deductions so every pay run lines up with local requirements.",
+  },
+  {
     name: "Finance & Billing Pack",
-    price: "79",
+    price: "99",
     description: "Advanced invoicing options, templates, and deeper accounting dashboards.",
   },
   {
     name: "People & HR Pack",
-    price: "79",
+    price: "99",
     description: "HR records, leave tracking, time tracking, and basic performance notes.",
   },
   {
@@ -55,8 +61,14 @@ const addOns = [
   },
   {
     name: "Branding & White-Label Pack",
-    price: "99",
+    price: "199",
     description: "Custom branding, logo, and white-label options for client-facing firms.",
+  },
+  {
+    name: "More modules coming soon",
+    price: "—",
+    description:
+      "We’re expanding KRM with additional modules like Inventory, Projects, and Client Portal tuned for Bahamian operators.",
   },
 ]
 

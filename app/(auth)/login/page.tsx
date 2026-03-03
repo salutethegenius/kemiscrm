@@ -115,7 +115,15 @@ function LoginForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-700">Password</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-gray-700">Password</Label>
+                  <Link
+                    href={`/auth/reset-password?email=${encodeURIComponent(email)}`}
+                    className="text-xs font-medium text-[#0E1C2F] hover:text-[#172440] hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <Input
                   id="password"
                   type="password"

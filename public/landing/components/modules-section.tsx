@@ -1,13 +1,7 @@
 "use client"
 
 import { useIntersection } from "@/hooks/use-intersection"
-import {
-  Users,
-  Receipt,
-  UserCheck,
-  Calculator,
-  ShieldCheck,
-} from "lucide-react"
+import { Users, Receipt, UserCheck, Calculator, ShieldCheck, Wallet } from "lucide-react"
 
 const modules = [
   {
@@ -39,6 +33,13 @@ const modules = [
     title: "Compliance Layer",
     tags: ["Role Permissions", "Audit Logs", "Data Export", "Deletion Controls"],
     description: "Aligned with Bahamas Data Protection standards.",
+  },
+  {
+    icon: Wallet,
+    title: "Bahamas Compliant Payroll",
+    tags: ["NIB", "Local Bank Files", "Deductions", "Bahamian Rules"],
+    description:
+      "Payroll that de-risks Bahamian compliance with NIB, local bank exports, and standardized local deductions.",
   },
 ]
 
