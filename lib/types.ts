@@ -172,7 +172,7 @@ export const PERMISSIONS = [
   { key: 'forms', label: 'Forms', group: 'CRM' },
   { key: 'calendar', label: 'Calendar', group: 'CRM' },
   { key: 'tasks', label: 'Tasks', group: 'CRM' },
-   { key: 'email', label: 'Email', group: 'CRM' },
+  { key: 'email', label: 'Email', group: 'CRM' },
   { key: 'messages', label: 'Messages', group: 'CRM' },
   { key: 'invoices', label: 'Invoices', group: 'Invoicing' },
   { key: 'clients', label: 'Clients', group: 'Invoicing' },
@@ -180,6 +180,7 @@ export const PERMISSIONS = [
   { key: 'employees', label: 'Employees', group: 'HR' },
   { key: 'time_tracking', label: 'Time Tracking', group: 'HR' },
   { key: 'departments', label: 'Departments', group: 'HR' },
+  { key: 'payroll', label: 'Payroll', group: 'HR' },
   { key: 'expenses', label: 'Expenses', group: 'Accounting' },
   { key: 'income', label: 'Income', group: 'Accounting' },
   { key: 'reports', label: 'Reports', group: 'Accounting' },
@@ -202,6 +203,7 @@ export const FEATURE_OPTIONS = [
   { key: 'employees', label: 'Employees', group: 'HR' },
   { key: 'time_tracking', label: 'Time Tracking', group: 'HR' },
   { key: 'departments', label: 'Departments', group: 'HR' },
+  { key: 'payroll', label: 'Payroll', group: 'HR' },
   { key: 'expenses', label: 'Expenses', group: 'Accounting' },
   { key: 'income', label: 'Income', group: 'Accounting' },
   { key: 'reports', label: 'Reports', group: 'Accounting' },
@@ -310,6 +312,16 @@ export type Employee = {
   department_id: string | null
   hire_date: string | null
   salary: number | null
+  nib_number?: string | null
+  bank_name?: string | null
+  bank_account_number?: string | null
+  pay_type?: 'salaried' | 'hourly'
+  base_salary_monthly?: number | null
+  hourly_rate?: number | null
+  pay_frequency?: 'weekly' | 'biweekly' | 'monthly'
+  nib_exempt?: boolean
+  employment_start_date?: string | null
+  employment_end_date?: string | null
   employment_type: 'full-time' | 'part-time' | 'contract' | 'intern'
   status: 'active' | 'inactive' | 'terminated'
   address: string | null
@@ -318,6 +330,60 @@ export type Employee = {
   notes: string | null
   user_id: string
   department?: Department
+}
+
+// Payroll
+export type NibRateVersion = {
+  id: string
+  created_at: string
+  employee_rate_percent: number
+  employer_rate_percent: number
+  insurable_ceiling: number
+  effective_from: string
+  effective_to: string | null
+  organization_id: string
+}
+
+export type PayrollRunStatus = 'draft' | 'pending_approval' | 'approved' | 'posted'
+
+export type PayrollRun = {
+  id: string
+  created_at: string
+  updated_at: string
+  period_start: string
+  period_end: string
+  pay_date: string
+  status: PayrollRunStatus
+  created_by: string | null
+  approved_by: string | null
+  approved_at: string | null
+  organization_id: string
+  lines?: PayrollLine[]
+}
+
+export type PayrollLine = {
+  id: string
+  created_at: string
+  payroll_run_id: string
+  employee_id: string
+  gross: number
+  employee_nib: number
+  employer_nib: number
+  other_deductions: number
+  net_pay: number
+  notes: string | null
+  organization_id: string
+  employee?: Employee
+}
+
+export type PayrollDocument = {
+  id: string
+  created_at: string
+  payroll_run_id: string | null
+  employee_id: string | null
+  document_type: string
+  file_path: string
+  organization_id: string
 }
 
 export type TimeEntry = {

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Bebas_Neue, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
+import { InviteTokenHandler } from '@/components/auth/invite-token-handler'
 
 const inter = Inter({ subsets: ['latin'] })
 const bebasNeue = Bebas_Neue({ weight: '400', subsets: ['latin'], variable: '--font-bebas' })
@@ -81,6 +82,7 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
+        <InviteTokenHandler />
         {children}
         <Toaster />
       </body>

@@ -42,6 +42,14 @@ export function EmployeeDialog({ open, onClose, onSuccess, employee, departments
     department_id: '',
     hire_date: '',
     salary: '',
+    nib_number: '',
+    bank_name: '',
+    bank_account_number: '',
+    pay_type: 'salaried' as Employee['pay_type'],
+    base_salary_monthly: '',
+    hourly_rate: '',
+    pay_frequency: 'monthly' as Employee['pay_frequency'],
+    nib_exempt: false,
     employment_type: 'full-time' as Employee['employment_type'],
     status: 'active' as Employee['status'],
     address: '',
@@ -63,6 +71,14 @@ export function EmployeeDialog({ open, onClose, onSuccess, employee, departments
         department_id: employee.department_id || '',
         hire_date: employee.hire_date || '',
         salary: employee.salary?.toString() || '',
+        nib_number: employee.nib_number || '',
+        bank_name: employee.bank_name || '',
+        bank_account_number: employee.bank_account_number || '',
+        pay_type: employee.pay_type || 'salaried',
+        base_salary_monthly: employee.base_salary_monthly?.toString() || '',
+        hourly_rate: employee.hourly_rate?.toString() || '',
+        pay_frequency: employee.pay_frequency || 'monthly',
+        nib_exempt: employee.nib_exempt ?? false,
         employment_type: employee.employment_type,
         status: employee.status,
         address: employee.address || '',
@@ -80,6 +96,14 @@ export function EmployeeDialog({ open, onClose, onSuccess, employee, departments
         department_id: '',
         hire_date: new Date().toISOString().split('T')[0],
         salary: '',
+        nib_number: '',
+        bank_name: '',
+        bank_account_number: '',
+        pay_type: 'salaried',
+        base_salary_monthly: '',
+        hourly_rate: '',
+        pay_frequency: 'monthly',
+        nib_exempt: false,
         employment_type: 'full-time',
         status: 'active',
         address: '',
@@ -106,6 +130,8 @@ export function EmployeeDialog({ open, onClose, onSuccess, employee, departments
       department_id: formData.department_id === '__none__' ? null : (formData.department_id || null),
       hire_date: formData.hire_date || null,
       salary: formData.salary ? parseFloat(formData.salary) : null,
+      base_salary_monthly: formData.base_salary_monthly ? parseFloat(formData.base_salary_monthly) : null,
+      hourly_rate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : null,
       user_id: user.id,
     }
 
@@ -277,6 +303,98 @@ export function EmployeeDialog({ open, onClose, onSuccess, employee, departments
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   rows={2}
                 />
+              </div>
+              <div className="space-y-2 col-span-2">
+                <Label className="font-semibold">Payroll</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>NIB Number</Label>
+                    <Input
+                      value={formData.nib_number}
+                      onChange={(e) => setFormData({ ...formData, nib_number: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Bank Name</Label>
+                    <Input
+                      value={formData.bank_name}
+                      onChange={(e) => setFormData({ ...formData, bank_name: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Bank Account Number</Label>
+                    <Input
+                      type="text"
+                      value={formData.bank_account_number}
+                      onChange={(e) => setFormData({ ...formData, bank_account_number: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Pay Type</Label>
+                    <Select
+                      value={formData.pay_type}
+                      onValueChange={(v) => setFormData({ ...formData, pay_type: v as Employee['pay_type'] })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="salaried">Salaried</SelectItem>
+                        <SelectItem value="hourly">Hourly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {formData.pay_type === 'salaried' && (
+                    <div className="space-y-2">
+                      <Label>Base Salary (Monthly)</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={formData.base_salary_monthly}
+                        onChange={(e) => setFormData({ ...formData, base_salary_monthly: e.target.value })}
+                      />
+                    </div>
+                  )}
+                  {formData.pay_type === 'hourly' && (
+                    <div className="space-y-2">
+                      <Label>Hourly Rate</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={formData.hourly_rate}
+                        onChange={(e) => setFormData({ ...formData, hourly_rate: e.target.value })}
+                      />
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    <Label>Pay Frequency</Label>
+                    <Select
+                      value={formData.pay_frequency}
+                      onValueChange={(v) => setFormData({ ...formData, pay_frequency: v as Employee['pay_frequency'] })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="biweekly">Biweekly</SelectItem>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      id="nib_exempt"
+                      type="checkbox"
+                      className="h-4 w-4 border rounded"
+                      checked={formData.nib_exempt}
+                      onChange={(e) => setFormData({ ...formData, nib_exempt: e.target.checked })}
+                    />
+                    <Label htmlFor="nib_exempt">NIB Exempt</Label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

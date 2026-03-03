@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { useToast } from '@/components/ui/use-toast'
-import { Plus, Search, UserCog, Mail, Phone, Briefcase } from 'lucide-react'
+import { Plus, Search, UserCog, Mail, Briefcase, Send } from 'lucide-react'
 import { EmployeeDialog } from '@/components/hr/employee-dialog'
 import type { Employee, Department } from '@/lib/types'
 
@@ -62,6 +62,36 @@ export default function EmployeesPage() {
   const handleSuccess = () => {
     handleClose()
     fetchData()
+  }
+
+  const handleInvite = async (employee: Employee) => {
+    try {
+      const response = await fetch('/api/hr/invite-employee', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ employeeId: employee.id }),
+      })
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}))
+        throw new Error(data.error || 'Failed to invite employee')
+      }
+
+      const data = await response.json().catch(() => ({}))
+
+      toast({
+        title: data?.alreadyRegistered ? 'User already registered' : 'Invitation sent',
+        description: data?.alreadyRegistered
+          ? `${employee.email} already has an account and can log in to access the portal.`
+          : `An invitation email was sent to ${employee.email}`,
+      })
+    } catch (error: any) {
+      toast({
+        title: 'Error sending invite',
+        description: error.message || 'Something went wrong',
+        variant: 'destructive',
+      })
+    }
   }
 
   return (
@@ -140,6 +170,20 @@ export default function EmployeesPage() {
                       )}
                     </div>
                   </div>
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      handleInvite(employee)
+                    }}
+                  >
+                    <Send className="h-3.5 w-3.5 mr-1" />
+                    Invite to portal
+                  </Button>
                 </div>
               </CardContent>
             </Card>

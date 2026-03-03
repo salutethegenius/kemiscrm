@@ -73,6 +73,7 @@ const hrNav = [
   { name: 'Employees', href: '/hr/employees', icon: UserCog, permission: 'employees' },
   { name: 'Time Tracking', href: '/hr/time', icon: Clock, permission: 'time_tracking' },
   { name: 'Departments', href: '/hr/departments', icon: Building2, permission: 'departments' },
+  { name: 'Payroll', href: '/hr/payroll', icon: Wallet, permission: 'payroll' },
 ]
 
 const accountingNav = [

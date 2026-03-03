@@ -63,6 +63,7 @@ const PROJECT_SUGGESTIONS = [
 
 export default function TimeTrackingPage() {
   const [entries, setEntries] = useState<(TimeEntry & { employee?: Employee })[]>([])
+  const [employees, setEmployees] = useState<Employee[]>([])
   const [loading, setLoading] = useState(true)
   const [activeEntry, setActiveEntry] = useState<TimeEntry | null>(null)
   const [elapsedTime, setElapsedTime] = useState(0)
@@ -70,6 +71,7 @@ export default function TimeTrackingPage() {
   const [customProject, setCustomProject] = useState('')
   const [showManualEntry, setShowManualEntry] = useState(false)
   const [manualEntry, setManualEntry] = useState({
+    employee_id: '',
     date: new Date().toISOString().split('T')[0],
     clock_in: '09:00',
     clock_out: '17:00',
@@ -96,6 +98,16 @@ export default function TimeTrackingPage() {
     
     if (profile?.role) {
       setUserRole(profile.role)
+    }
+
+    // Load employees for manual assignment
+    const { data: employeesData } = await supabase
+      .from('employees')
+      .select('*')
+      .order('last_name', { ascending: true })
+
+    if (employeesData) {
+      setEmployees(employeesData as Employee[])
     }
 
     // Fetch entries - admins see all, users see their own
@@ -232,6 +244,11 @@ export default function TimeTrackingPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
+    if (!manualEntry.employee_id) {
+      toast({ title: 'Select employee', description: 'Please choose an employee for this entry.', variant: 'destructive' })
+      return
+    }
+
     // Calculate total hours
     const [inH, inM] = manualEntry.clock_in.split(':').map(Number)
     const [outH, outM] = manualEntry.clock_out.split(':').map(Number)
@@ -242,6 +259,7 @@ export default function TimeTrackingPage() {
       .from('time_entries')
       .insert({
         user_id: user.id,
+        employee_id: manualEntry.employee_id,
         date: manualEntry.date,
         clock_in: manualEntry.clock_in,
         clock_out: manualEntry.clock_out,
@@ -258,6 +276,7 @@ export default function TimeTrackingPage() {
       toast({ title: 'Entry added', description: `${totalHours.toFixed(1)} hours logged` })
       setShowManualEntry(false)
       setManualEntry({
+        employee_id: '',
         date: new Date().toISOString().split('T')[0],
         clock_in: '09:00',
         clock_out: '17:00',
@@ -598,6 +617,24 @@ export default function TimeTrackingPage() {
             <DialogTitle>Add Manual Entry</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Employee</Label>
+              <Select
+                value={manualEntry.employee_id}
+                onValueChange={(v) => setManualEntry({ ...manualEntry, employee_id: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select employee" />
+                </SelectTrigger>
+                <SelectContent>
+                  {employees.map((emp) => (
+                    <SelectItem key={emp.id} value={emp.id}>
+                      {emp.first_name} {emp.last_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="space-y-2">
               <Label>Date</Label>
               <Input
