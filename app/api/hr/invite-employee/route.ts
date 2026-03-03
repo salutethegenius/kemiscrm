@@ -88,7 +88,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: listError.message }, { status: 500 })
       }
 
-      authUser = usersResult.users.find((u) => u.email?.toLowerCase() === employee.email.toLowerCase())
+      authUser = usersResult.users.find((u) => u.email?.toLowerCase() === employee.email.toLowerCase()) ?? null
 
       if (!authUser) {
         return NextResponse.json({ error: 'Existing user not found for this email' }, { status: 500 })
