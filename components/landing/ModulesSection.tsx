@@ -7,39 +7,44 @@ const modules = [
   {
     icon: Users,
     title: "CRM & Pipeline",
-    tags: ["Contacts", "Deals", "Tasks", "Calendar", "Email Sync"],
-    description: "Complete visibility across your revenue flow.",
+    tags: ["Contacts", "Deals", "Follow-ups", "Pipeline"],
+    description:
+      "Track leads, clients, deals, and follow ups in one place. Know what is closing and what is stalling.",
   },
   {
     icon: Receipt,
     title: "Invoicing & Payments",
-    tags: ["Create Invoices", "Track Payments", "Manage Balances", "Financial Summaries"],
-    description: "From proposal to payment — documented.",
+    tags: ["Invoices", "Payments", "Balances", "Cash Flow"],
+    description:
+      "Create invoices. Track who owes you. See what has been paid. No more wondering where cash flow stands.",
   },
   {
     icon: UserCheck,
     title: "HR & Internal Control",
-    tags: ["Employee Records", "Departments", "Time Logs", "Approvals"],
-    description: "Structure inside the organization.",
+    tags: ["Employees", "Departments", "Time", "Approvals"],
+    description:
+      "Employee records. Departments. Time tracking. Approval flows. Clear accountability inside your organization.",
   },
   {
     icon: Calculator,
     title: "Accounting Overview",
-    tags: ["Income Tracking", "Expense Tracking", "Clean Reporting"],
-    description: "No second system required.",
+    tags: ["Income", "Expenses", "Reporting"],
+    description:
+      "Track income and expenses without needing a second system just to understand your numbers.",
   },
   {
     icon: ShieldCheck,
-    title: "Compliance Layer",
-    tags: ["Role Permissions", "Audit Logs", "Data Export", "Deletion Controls"],
-    description: "Aligned with Bahamas Data Protection standards.",
+    title: "Bahamas Compliant Payroll",
+    tags: ["NIB", "Bank Exports", "Deductions", "Pay History"],
+    description:
+      "Run payroll correctly. NIB calculations, local bank file exports, standardized deductions, organized pay history. Payroll should not feel risky.",
   },
   {
     icon: Wallet,
-    title: "Bahamas Compliant Payroll",
-    tags: ["NIB", "Local Bank Files", "Deductions", "Bahamian Rules"],
+    title: "Compliance & Data Control",
+    tags: ["Permissions", "Audit Logs", "Export", "Deletion"],
     description:
-      "Payroll that de-risks Bahamian compliance with NIB, local bank exports, and standardized local deductions.",
+      "Role permissions. Audit logs. Data export. Deletion controls. Your business data stays structured and controlled.",
   },
 ]
 
@@ -57,7 +62,7 @@ export function ModulesSection() {
         >
           <div className="mb-4 inline-flex items-center gap-2 text-xs font-medium tracking-widest uppercase text-muted-foreground">
             <span className="h-px w-8 bg-[var(--landing-border)]" />
-            Section 3
+            Modules
           </div>
           <h2 className="font-heading text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
             KRM modules in one grid

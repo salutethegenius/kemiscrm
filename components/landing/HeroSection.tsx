@@ -21,12 +21,10 @@ export function HeroSection() {
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
-            <div
-              className={`${isVisible ? "animate-fade-up" : "opacity-0"}`}
-            >
+            <div className={`${isVisible ? "animate-fade-up" : "opacity-0"}`}>
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--landing-border)] bg-[var(--landing-card)]/60 px-4 py-1.5 text-xs font-medium tracking-widest uppercase text-muted-foreground backdrop-blur-sm">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                KRM{'\u2122'} Sovereign Platform
+                KRM{'\u2122'}
               </div>
             </div>
 
@@ -35,30 +33,18 @@ export function HeroSection() {
                 isVisible ? "animate-fade-up delay-100" : "opacity-0"
               }`}
             >
-              Your Business.
+              One System for
               <br />
-              <span className="text-accent">One System.</span>
+              <span className="text-accent">Your Business.</span>
             </h1>
-
-            <div
-              className={`mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium tracking-widest uppercase text-muted-foreground ${
-                isVisible ? "animate-fade-up delay-200" : "opacity-0"
-              }`}
-            >
-              <span>Relationship Management</span>
-              <span className="h-1 w-1 rounded-full bg-accent" />
-              <span>Operations</span>
-              <span className="h-1 w-1 rounded-full bg-accent" />
-              <span>Control</span>
-            </div>
 
             <p
               className={`mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground ${
                 isVisible ? "animate-fade-up delay-300" : "opacity-0"
               }`}
             >
-              A sovereign business operating system built in the Bahamas for
-              Bahamian companies that want structure without foreign complexity.
+              Built in The Bahamas for companies that want structure, visibility,
+              and control, without juggling five different tools.
             </p>
 
             <p
@@ -66,8 +52,8 @@ export function HeroSection() {
                 isVisible ? "animate-fade-up delay-400" : "opacity-0"
               }`}
             >
-              CRM. Marketing. Invoicing. HR. Accounting. Compliance.
-              Unified under one disciplined dashboard.
+              CRM. Invoicing. HR. Payroll. Compliance. All inside one disciplined
+              dashboard.
             </p>
 
             <div
@@ -83,7 +69,7 @@ export function HeroSection() {
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
               <Link
-                href="#modules"
+                href="/login"
                 className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--landing-border)] bg-[var(--landing-card)]/50 px-7 py-3.5 text-sm font-semibold text-foreground backdrop-blur-sm transition-all duration-300 hover:border-accent/50 hover:bg-[var(--landing-card)]"
               >
                 <Play className="h-4 w-4 text-accent" />

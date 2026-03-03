@@ -4,20 +4,22 @@ import { useIntersection } from "@/hooks/use-intersection"
 import { AlertTriangle, Zap } from "lucide-react"
 
 const fragments = [
-  "WhatsApp conversations",
-  "Excel trackers",
+  "WhatsApp messages for approvals",
+  "Excel sheets for payroll",
   "Separate accounting software",
   "Loose HR records",
-  "Foreign CRM tools",
-  "Manual approvals",
+  "Manual invoice tracking",
 ]
+
+const painPoints =
+  "Missed payments. Payroll stress. Unclear reporting. No real visibility."
 
 const solutions = [
   "One login",
+  "One system",
   "One database",
-  "Role-based control",
-  "Audit visibility",
-  "Structured workflows",
+  "Clear permissions",
+  "Documented workflows",
 ]
 
 export function ProblemSection() {
@@ -34,10 +36,10 @@ export function ProblemSection() {
           <div className={`${problemVisible ? "animate-slide-in-left" : "opacity-0"}`}>
             <div className="mb-4 inline-flex items-center gap-2 text-xs font-medium tracking-widest uppercase text-muted-foreground">
               <span className="h-px w-8 bg-[var(--landing-border)]" />
-              Section 1
+              The Reality
             </div>
             <h2 className="font-heading text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              Most businesses
+              Most Bahamian businesses
               <br />
               run on fragments
             </h2>
@@ -56,7 +58,10 @@ export function ProblemSection() {
               ))}
             </div>
             <p className="mt-6 text-sm font-semibold text-foreground">
-              {"This is not structure. It's risk."}
+              {"That is not structure. That is risk."}
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {painPoints}
             </p>
           </div>
         </div>
@@ -76,7 +81,7 @@ export function ProblemSection() {
           <div className={`${solutionVisible ? "animate-slide-in-left" : "opacity-0"}`}>
             <div className="mb-4 inline-flex items-center gap-2 text-xs font-medium tracking-widest uppercase text-muted-foreground">
               <span className="h-px w-8 bg-[var(--landing-border)]" />
-              Section 2
+              The Solution
             </div>
             <h2 className="font-heading text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
               KRM replaces
@@ -102,7 +107,10 @@ export function ProblemSection() {
               ))}
             </div>
             <p className="mt-6 text-sm font-semibold text-foreground">
-              KRM is not another app. It is your operating layer.
+              You stop guessing. You start seeing.
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              KRM brings structure to growing Bahamian businesses.
             </p>
           </div>
         </div>

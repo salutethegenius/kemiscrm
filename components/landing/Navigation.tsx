@@ -18,7 +18,6 @@ export function Navigation() {
   const navLinks = [
     { label: "Modules", href: "#modules" },
     { label: "Why Local", href: "#why-local" },
-    { label: "Infrastructure", href: "#infrastructure" },
     { label: "Pricing & Licenses", href: "#pricing" },
   ]
 

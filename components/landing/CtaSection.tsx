@@ -24,7 +24,7 @@ export function CtaSection() {
           <div className="relative">
             <div className="mb-4 inline-flex items-center gap-2 text-xs font-medium tracking-widest uppercase text-primary-foreground/50">
               <span className="h-px w-8 bg-primary-foreground/20" />
-              Section 8
+              Ready
             </div>
 
             <h2 className="font-heading text-3xl font-bold leading-tight tracking-tight text-primary-foreground sm:text-4xl lg:text-5xl">

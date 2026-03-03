@@ -4,10 +4,11 @@ import { useIntersection } from "@/hooks/use-intersection"
 import { MapPin } from "lucide-react"
 
 const points = [
-  "How approvals actually move",
-  "How departments function locally",
-  "How compliance works here",
-  "How ownership is structured",
+  "How approvals move",
+  "How departments are structured",
+  "How payroll connects to NIB",
+  "How ownership is organized",
+  "How small teams actually operate",
 ]
 
 export function WhyLocalSection() {
@@ -23,9 +24,9 @@ export function WhyLocalSection() {
               Section 4
             </div>
             <h2 className="font-heading text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              Why local
+              Built in The Bahamas.
               <br />
-              matters
+              Built for how business actually works here.
             </h2>
 
             <div className="mt-8 flex items-center gap-3">
@@ -40,12 +41,7 @@ export function WhyLocalSection() {
 
           <div className={`${isVisible ? "animate-slide-in-right delay-200" : "opacity-0"}`}>
             <div className="rounded-2xl border border-[var(--landing-border)] bg-[var(--landing-card)] p-8">
-              <p className="text-sm text-muted-foreground">
-                Salesforce is global. HubSpot is generic. Zoho is broad.
-              </p>
-              <p className="mt-4 text-lg font-bold text-foreground">
-                KRM is built here.
-              </p>
+              <p className="text-lg font-bold text-foreground">KRM is built here.</p>
               <p className="mt-4 text-sm text-muted-foreground">We understand:</p>
 
               <div className="mt-4 space-y-2.5">
@@ -62,7 +58,8 @@ export function WhyLocalSection() {
 
               <div className="mt-6 border-t border-[var(--landing-border)] pt-4">
                 <p className="text-sm font-bold text-foreground">
-                  Context is infrastructure.
+                  You are not adapting to foreign software. The system fits how you already
+                  work.
                 </p>
               </div>
             </div>

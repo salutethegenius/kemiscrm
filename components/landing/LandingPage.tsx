@@ -5,7 +5,6 @@ import { HeroSection } from "@/components/landing/HeroSection"
 import { ProblemSection } from "@/components/landing/ProblemSection"
 import { ModulesSection } from "@/components/landing/ModulesSection"
 import { WhyLocalSection } from "@/components/landing/WhyLocalSection"
-import { InfrastructureSection } from "@/components/landing/InfrastructureSection"
 import { PricingSection } from "@/components/landing/PricingSection"
 import { OutcomesSection } from "@/components/landing/OutcomesSection"
 import { CtaSection } from "@/components/landing/CtaSection"
@@ -20,7 +19,6 @@ export default function LandingPage() {
         <ProblemSection />
         <ModulesSection />
         <WhyLocalSection />
-        <InfrastructureSection />
         <PricingSection />
         <OutcomesSection />
         <CtaSection />

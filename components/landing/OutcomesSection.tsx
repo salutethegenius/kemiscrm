@@ -6,9 +6,10 @@ import { TrendingUp } from "lucide-react"
 const outcomes = [
   "Clear reporting",
   "No lost invoices",
-  "Structured approvals",
-  "Controlled data access",
-  "Reduced operational friction",
+  "Structured payroll",
+  "Defined approvals",
+  "Organized client tracking",
+  "Reduced operational confusion",
 ]
 
 export function OutcomesSection() {
@@ -57,7 +58,7 @@ export function OutcomesSection() {
 
             <div className="mt-8 rounded-xl border border-accent/20 bg-accent/5 px-5 py-4">
               <p className="text-sm font-bold text-foreground">
-                KRM does not digitize chaos. It disciplines it.
+                KRM does not digitize chaos. It organizes your business.
               </p>
             </div>
           </div>

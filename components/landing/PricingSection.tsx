@@ -85,16 +85,16 @@ export function PricingSection() {
           <div className={`mb-6 max-w-2xl ${isVisible ? "animate-fade-up" : "opacity-0"}`}>
             <div className="mb-4 inline-flex items-center gap-2 text-xs font-medium tracking-widest uppercase text-muted-foreground">
               <span className="h-px w-8 bg-[var(--landing-border)]" />
-              Section 6
+              Pricing
             </div>
             <h2 className="font-heading text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              KRM licenses for Bahamian operators
+              Clear pricing. No foreign subscriptions.
             </h2>
           </div>
 
           <p className={`mb-16 max-w-xl text-sm leading-relaxed text-muted-foreground ${isVisible ? "animate-fade-up delay-100" : "opacity-0"}`}>
             {
-              "Annual licenses, not rent. Built to empower Bahamian businesses with clear pricing and data you always control."
+              "Annual licenses. You own your system. Optional renewal for updates and support. No USD SaaS surprise bills."
             }
           </p>
 
